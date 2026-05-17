@@ -2,16 +2,23 @@
 
 import { useState } from "react";
 
-type Screen = "home" | "identite" | "spirituel";
+type Screen =
+  | "home"
+  | "identite"
+  | "spirituel"
+  | "vti";
 
 export default function HomePage() {
-  const [screen, setScreen] = useState<Screen>("home");
+  const [screen, setScreen] =
+    useState<Screen>("home");
 
   if (screen === "identite") {
     return (
       <IdentiteForm
         onBack={() => setScreen("home")}
-        onNext={() => setScreen("spirituel")}
+        onNext={() =>
+          setScreen("spirituel")
+        }
       />
     );
   }
@@ -19,7 +26,20 @@ export default function HomePage() {
   if (screen === "spirituel") {
     return (
       <SpirituelForm
-        onBack={() => setScreen("identite")}
+        onBack={() =>
+          setScreen("identite")
+        }
+        onNext={() => setScreen("vti")}
+      />
+    );
+  }
+
+  if (screen === "vti") {
+    return (
+      <VtiForm
+        onBack={() =>
+          setScreen("spirituel")
+        }
       />
     );
   }
@@ -37,7 +57,9 @@ export default function HomePage() {
 
         <button
           style={styles.button}
-          onClick={() => setScreen("identite")}
+          onClick={() =>
+            setScreen("identite")
+          }
         >
           Hanomboka ny Tombana
         </button>
@@ -49,10 +71,7 @@ export default function HomePage() {
 function IdentiteForm({
   onBack,
   onNext,
-}: {
-  onBack: () => void;
-  onNext: () => void;
-}) {
+}: any) {
   return (
     <main style={styles.main}>
       <section style={styles.card}>
@@ -102,12 +121,12 @@ function IdentiteForm({
 
 function SpirituelForm({
   onBack,
-}: {
-  onBack: () => void;
-}) {
-  const [scores, setScores] = useState<number[]>(
-    Array(13).fill(0)
-  );
+  onNext,
+}: any) {
+  const [scores, setScores] =
+    useState<number[]>(
+      Array(13).fill(0)
+    );
 
   const questions = [
     "Fahazarana mivavaka",
@@ -146,32 +165,163 @@ function SpirituelForm({
           Tombana Ara-panahy
         </h1>
 
-        {questions.map((question, index) => (
-          <div key={index}>
-            <label style={styles.label}>
-              {index + 1}. {question}
-            </label>
+        {questions.map(
+          (question, index) => (
+            <div key={index}>
+              <label style={styles.label}>
+                {index + 1}. {question}
+              </label>
 
-            <select
-              style={styles.input}
-              onChange={(e) =>
-                updateScore(
-                  index,
-                  Number(e.target.value)
-                )
-              }
-            >
-              <option value={0}>Safidio</option>
-              <option value={4}>Tsara be</option>
-              <option value={3}>Tsara</option>
-              <option value={2}>Antonony</option>
-              <option value={1}>Malemy</option>
-            </select>
-          </div>
-        ))}
+              <select
+                style={styles.input}
+                onChange={(e) =>
+                  updateScore(
+                    index,
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              >
+                <option value={0}>
+                  Safidio
+                </option>
+
+                <option value={4}>
+                  Tsara be
+                </option>
+
+                <option value={3}>
+                  Tsara
+                </option>
+
+                <option value={2}>
+                  Antonony
+                </option>
+
+                <option value={1}>
+                  Malemy
+                </option>
+              </select>
+            </div>
+          )
+        )}
 
         <h2 style={styles.score}>
-          Total Score Ara-panahy : {total} / 52
+          Total Score Ara-panahy :
+          {" "}
+          {total} / 52
+        </h2>
+
+        <div style={styles.actions}>
+          <button
+            style={styles.secondaryButton}
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+
+          <button
+            style={styles.button}
+            onClick={onNext}
+          >
+            Manaraka
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function VtiForm({
+  onBack,
+}: any) {
+  const [scores, setScores] =
+    useState<number[]>(
+      Array(7).fill(0)
+    );
+
+  const questions = [
+    "Efa tao anaty fikambanana ve ?",
+    "Efa tao anaty fikambanana tanora ve ?",
+    "Andraikitra teo anivon’ny Fokontany",
+    "Fahalalana ny VTI",
+    "Vaomiera misy azy",
+    "Andraikitra ao amin’ny Vaomiera",
+    "Ora laniana isan-kerinandro",
+  ];
+
+  const updateScore = (
+    index: number,
+    value: number
+  ) => {
+    const newScores = [...scores];
+    newScores[index] = value;
+    setScores(newScores);
+  };
+
+  const total = scores.reduce(
+    (sum, value) => sum + value,
+    0
+  );
+
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>
+          Tombana VTI
+        </h1>
+
+        {questions.map(
+          (question, index) => (
+            <div key={index}>
+              <label style={styles.label}>
+                {index + 1}. {question}
+              </label>
+
+              <select
+                style={styles.input}
+                onChange={(e) =>
+                  updateScore(
+                    index,
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              >
+                <option value={0}>
+                  Safidio
+                </option>
+
+                <option value={5}>
+                  Tsara be
+                </option>
+
+                <option value={4}>
+                  Tsara
+                </option>
+
+                <option value={3}>
+                  Antonony
+                </option>
+
+                <option value={2}>
+                  Malemy
+                </option>
+
+                <option value={1}>
+                  Tena malemy
+                </option>
+              </select>
+            </div>
+          )
+        )}
+
+        <h2 style={styles.score}>
+          Total Score VTI :
+          {" "}
+          {total} / 29
         </h2>
 
         <div style={styles.actions}>
