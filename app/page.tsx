@@ -1,46 +1,179 @@
+"use client";
+
 import { useState } from "react";
 
-type Screen = "home" | "identite" | "spirituel" | "vti" | "economie" | "taniketsa";
+type Screen =
+  | "home"
+  | "identite"
+  | "spirituel"
+  | "vti"
+  | "economie"
+  | "taniketsa";
 
 export default function HomePage() {
-  const [screen, setScreen] = useState<Screen>("home");
+  const [screen, setScreen] =
+    useState<Screen>("home");
 
-  if (screen === "identite") return <IdentiteForm onBack={() => setScreen("home")} onNext={() => setScreen("spirituel")} />;
-  if (screen === "spirituel") return <SpirituelForm onBack={() => setScreen("identite")} onNext={() => setScreen("vti")} />;
-  if (screen === "vti") return <VtiForm onBack={() => setScreen("spirituel")} onNext={() => setScreen("economie")} />;
-  if (screen === "economie") return <EconomieForm onBack={() => setScreen("vti")} onNext={() => setScreen("taniketsa")} />;
-  if (screen === "taniketsa") return <TaniketsaForm onBack={() => setScreen("economie")} />;
+  if (screen === "identite")
+    return (
+      <IdentiteForm
+        onBack={() =>
+          setScreen("home")
+        }
+        onNext={() =>
+          setScreen(
+            "spirituel"
+          )
+        }
+      />
+    );
+
+  if (screen === "spirituel")
+    return (
+      <SpirituelForm
+        onBack={() =>
+          setScreen(
+            "identite"
+          )
+        }
+        onNext={() =>
+          setScreen("vti")
+        }
+      />
+    );
+
+  if (screen === "vti")
+    return (
+      <VtiForm
+        onBack={() =>
+          setScreen(
+            "spirituel"
+          )
+        }
+        onNext={() =>
+          setScreen(
+            "economie"
+          )
+        }
+      />
+    );
+
+  if (screen === "economie")
+    return (
+      <EconomieForm
+        onBack={() =>
+          setScreen("vti")
+        }
+        onNext={() =>
+          setScreen(
+            "taniketsa"
+          )
+        }
+      />
+    );
+
+  if (screen === "taniketsa")
+    return (
+      <TaniketsaForm
+        onBack={() =>
+          setScreen(
+            "economie"
+          )
+        }
+      />
+    );
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.title}>TOMBANA TANORA MAZAVA L1</h1>
-        <h2 style={styles.subtitle}>TOMBANA FANOMBOHANA VTI</h2>
-        <button style={styles.button} onClick={() => setScreen("identite")}>Hanomboka ny Tombana</button>
+        <h1 style={styles.title}>
+          TOMBANA TANORA
+          MAZAVA L1
+        </h1>
+
+        <h2 style={styles.subtitle}>
+          TOMBANA
+          FANOMBOHANA VTI
+        </h2>
+
+        <button
+          style={styles.button}
+          onClick={() =>
+            setScreen(
+              "identite"
+            )
+          }
+        >
+          Hanomboka ny
+          Tombana
+        </button>
       </section>
     </main>
   );
 }
 
-function IdentiteForm({ onBack, onNext }: any) {
+function IdentiteForm({
+  onBack,
+  onNext,
+}: any) {
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Famantarana ny Tanora</h1>
-        {["Anarana sy fanampiny", "Taona", "Kaomina", "Fokontany", "VTI misy azy", "Vaomiera misy azy"].map((p) => (
-          <input key={p} style={styles.input} placeholder={p} />
+        <h1
+          style={
+            styles.titleSmall
+          }
+        >
+          Famantarana ny
+          Tanora
+        </h1>
+
+        {[
+          "Anarana sy fanampiny",
+          "Taona",
+          "Kaomina",
+          "Fokontany",
+          "VTI misy azy",
+          "Vaomiera misy azy",
+        ].map((p) => (
+          <input
+            key={p}
+            style={styles.input}
+            placeholder={p}
+          />
         ))}
+
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-          <button style={styles.button} onClick={onNext}>Manaraka</button>
+          <button
+            style={
+              styles.secondaryButton
+            }
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+
+          <button
+            style={styles.button}
+            onClick={onNext}
+          >
+            Manaraka
+          </button>
         </div>
       </section>
     </main>
   );
 }
 
-function SpirituelForm({ onBack, onNext }: any) {
-  const [scores, setScores] = useState<number[]>(Array(13).fill(0));
+function SpirituelForm({
+  onBack,
+  onNext,
+}: any) {
+  const [scores, setScores] =
+    useState<number[]>(
+      Array(13).fill(0)
+    );
+
   const questions = [
     "Fahazarana mivavaka",
     "Famakiana Baiboly",
@@ -57,33 +190,85 @@ function SpirituelForm({ onBack, onNext }: any) {
     "Fahavononana hanompo",
   ];
 
-  const update = (i: number, v: number) => {
+  const update = (
+    i: number,
+    v: number
+  ) => {
     const a = [...scores];
     a[i] = v;
     setScores(a);
   };
 
-  const total = scores.reduce((s, v) => s + v, 0);
+  const total =
+    scores.reduce(
+      (s, v) => s + v,
+      0
+    );
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Tombana Ara-panahy</h1>
-        {questions.map((q, i) => (
-          <ScoreSelect key={q} label={`${i + 1}. ${q}`} max={4} onChange={(v: number) => update(i, v)} />
-        ))}
-        <h2 style={styles.score}>Total Score Ara-panahy : {total} / 52</h2>
+        <h1
+          style={
+            styles.titleSmall
+          }
+        >
+          Tombana
+          Ara-panahy
+        </h1>
+
+        {questions.map(
+          (q, i) => (
+            <ScoreSelect
+              key={q}
+              label={`${i + 1}. ${q}`}
+              max={4}
+              onChange={(
+                v: number
+              ) =>
+                update(i, v)
+              }
+            />
+          )
+        )}
+
+        <h2 style={styles.score}>
+          Total Score
+          Ara-panahy :
+          {total} / 52
+        </h2>
+
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-          <button style={styles.button} onClick={onNext}>Manaraka</button>
+          <button
+            style={
+              styles.secondaryButton
+            }
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+
+          <button
+            style={styles.button}
+            onClick={onNext}
+          >
+            Manaraka
+          </button>
         </div>
       </section>
     </main>
   );
 }
 
-function VtiForm({ onBack, onNext }: any) {
-  const [scores, setScores] = useState<number[]>(Array(7).fill(0));
+function VtiForm({
+  onBack,
+  onNext,
+}: any) {
+  const [scores, setScores] =
+    useState<number[]>(
+      Array(7).fill(0)
+    );
+
   const questions = [
     "Efa tao anaty fikambanana ve ?",
     "Efa tao anaty fikambanana tanora ve ?",
@@ -94,84 +279,225 @@ function VtiForm({ onBack, onNext }: any) {
     "Ora laniana isan-kerinandro",
   ];
 
-  const update = (i: number, v: number) => {
+  const update = (
+    i: number,
+    v: number
+  ) => {
     const a = [...scores];
     a[i] = v;
     setScores(a);
   };
 
-  const total = scores.reduce((s, v) => s + v, 0);
+  const total =
+    scores.reduce(
+      (s, v) => s + v,
+      0
+    );
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Tombana VTI</h1>
-        {questions.map((q, i) => (
-          <ScoreSelect key={q} label={`${i + 1}. ${q}`} max={5} onChange={(v: number) => update(i, v)} />
-        ))}
-        <h2 style={styles.score}>Total Score VTI : {total} / 29</h2>
+        <h1
+          style={
+            styles.titleSmall
+          }
+        >
+          Tombana VTI
+        </h1>
+
+        {questions.map(
+          (q, i) => (
+            <ScoreSelect
+              key={q}
+              label={`${i + 1}. ${q}`}
+              max={5}
+              onChange={(
+                v: number
+              ) =>
+                update(i, v)
+              }
+            />
+          )
+        )}
+
+        <h2 style={styles.score}>
+          Total Score VTI :
+          {total} / 29
+        </h2>
+
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-          <button style={styles.button} onClick={onNext}>Manaraka</button>
+          <button
+            style={
+              styles.secondaryButton
+            }
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+
+          <button
+            style={styles.button}
+            onClick={onNext}
+          >
+            Manaraka
+          </button>
         </div>
       </section>
     </main>
   );
 }
+function EconomieForm({
+  onBack,
+  onNext,
+}: any) {
+  const [scores, setScores] =
+    useState<number[]>(
+      Array(24).fill(0)
+    );
 
-function EconomieForm({ onBack, onNext }: any) {
-  const [scores, setScores] = useState<number[]>(Array(24).fill(0));
-  const [q1, setQ1] = useState(0); const [p1, setP1] = useState(0); const [d1, setD1] = useState(0);
-  const [q2, setQ2] = useState(0); const [p2, setP2] = useState(0); const [d2, setD2] = useState(0);
-  const [q3, setQ3] = useState(0); const [p3, setP3] = useState(0); const [d3, setD3] = useState(0);
+  const [q1, setQ1] = useState(0);
+  const [p1, setP1] = useState(0);
+  const [d1, setD1] = useState(0);
+
+  const [q2, setQ2] = useState(0);
+  const [p2, setP2] = useState(0);
+  const [d2, setD2] = useState(0);
+
+  const [q3, setQ3] = useState(0);
+  const [p3, setP3] = useState(0);
+  const [d3, setD3] = useState(0);
 
   const revenu1 = q1 * p1;
   const revenu2 = q2 * p2;
   const revenu3 = q3 * p3;
-  const totalRevenu = revenu1 + revenu2 + revenu3;
-  const totalDepenses = d1 + d2 + d3;
-  const beneficeTotal = totalRevenu - totalDepenses;
 
-  const update = (i: number, v: number) => {
+  const totalRevenu =
+    revenu1 + revenu2 + revenu3;
+
+  const totalDepenses =
+    d1 + d2 + d3;
+
+  const beneficeTotal =
+    totalRevenu - totalDepenses;
+
+  const update = (
+    i: number,
+    v: number
+  ) => {
     const a = [...scores];
     a[i] = v;
     setScores(a);
   };
 
-  const totalScore = scores.reduce((s, v) => s + v, 0);
+  const totalScore =
+    scores.reduce(
+      (s, v) => s + v,
+      0
+    );
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Fizarana 3 — Fanadihadiana Ara-toekarena sy Ara-bola</h1>
-        <p style={styles.text}>Ny 03 taona farany — Totalibeny : 48 points</p>
+        <h1 style={styles.titleSmall}>
+          Fizarana 3 — Fanadihadiana Ara-toekarena sy Ara-bola
+        </h1>
 
-        <SehaPihariana title="Seha-pihariana Voalohany" startIndex={0} update={update} setQ={setQ1} setP={setP1} setD={setD1} revenu={revenu1} benefice={revenu1 - d1} />
-        <SehaPihariana title="Seha-pihariana Faharoa" startIndex={6} update={update} setQ={setQ2} setP={setP2} setD={setD2} revenu={revenu2} benefice={revenu2 - d2} />
-        <SehaPihariana title="Seha-pihariana Fahatelo" startIndex={12} update={update} setQ={setQ3} setP={setP3} setD={setD3} revenu={revenu3} benefice={revenu3 - d3} />
+        <SehaPihariana
+          title="Seha-pihariana Voalohany"
+          startIndex={0}
+          update={update}
+          setQ={setQ1}
+          setP={setP1}
+          setD={setD1}
+          revenu={revenu1}
+          benefice={revenu1 - d1}
+        />
+
+        <SehaPihariana
+          title="Seha-pihariana Faharoa"
+          startIndex={6}
+          update={update}
+          setQ={setQ2}
+          setP={setP2}
+          setD={setD2}
+          revenu={revenu2}
+          benefice={revenu2 - d2}
+        />
+
+        <SehaPihariana
+          title="Seha-pihariana Fahatelo"
+          startIndex={12}
+          update={update}
+          setQ={setQ3}
+          setP={setP3}
+          setD={setD3}
+          revenu={revenu3}
+          benefice={revenu3 - d3}
+        />
 
         <div style={styles.scoreBox}>
-          <strong>Total revenus 3 seha-pihariana : </strong>{totalRevenu.toLocaleString()} Ar<br />
-          <strong>Total dépenses : </strong>{totalDepenses.toLocaleString()} Ar<br />
-          <strong>Bénéfice estimé global : </strong>{beneficeTotal.toLocaleString()} Ar
+          Total revenus 3 seha-pihariana :{" "}
+          <strong>
+            {totalRevenu.toLocaleString()} Ar
+          </strong>
+          <br />
+          Total dépenses :{" "}
+          <strong>
+            {totalDepenses.toLocaleString()} Ar
+          </strong>
+          <br />
+          Bénéfice estimé global :{" "}
+          <strong>
+            {beneficeTotal.toLocaleString()} Ar
+          </strong>
         </div>
 
-        <h3 style={styles.sectionTitle}>Fanadihadiana ara-bola générale</h3>
-        {["Total revenu annuel", "Dépenses annuelles", "Épargne annuelle", "Réinvestissement annuel", "Fahafaha-mitahiry", "Fahafaha-manitatra famokarana"].map((q, idx) => (
-          <ScoreSelect key={q} label={q} max={2} onChange={(v: number) => update(18 + idx, v)} />
+        {[
+          "Total revenu annuel",
+          "Dépenses annuelles",
+          "Épargne annuelle",
+          "Réinvestissement annuel",
+          "Fahafaha-mitahiry",
+          "Fahafaha-manitatra famokarana",
+        ].map((q, idx) => (
+          <ScoreSelect
+            key={q}
+            label={q}
+            max={2}
+            onChange={(v: number) =>
+              update(18 + idx, v)
+            }
+          />
         ))}
 
-        <h2 style={styles.score}>Total Score Économie : {totalScore} / 48</h2>
+        <h2 style={styles.score}>
+          Total Score Économie :{" "}
+          {totalScore} / 48
+        </h2>
 
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-          <button style={styles.button} onClick={onNext}>Manaraka</button>
+          <button
+            style={styles.secondaryButton}
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+
+          <button
+            style={styles.button}
+            onClick={onNext}
+          >
+            Manaraka
+          </button>
         </div>
       </section>
     </main>
   );
 }
-function TaniketsaForm({ onBack }: any) {
+
+function TaniketsaForm({
+  onBack,
+}: any) {
   const projets = [
     "Voly rakotra 500m²",
     "Voly vary 750m²",
@@ -180,7 +506,10 @@ function TaniketsaForm({ onBack }: any) {
     "Tantely",
   ];
 
-  const [scores, setScores] = useState<number[]>(Array(5).fill(0));
+  const [scores, setScores] =
+    useState<number[]>(
+      Array(5).fill(0)
+    );
 
   const [data, setData] = useState(
     projets.map(() => ({
@@ -197,17 +526,15 @@ function TaniketsaForm({ onBack }: any) {
   );
 
   const updateData = (
-    projetIndex: number,
+    index: number,
     field: string,
     value: number
   ) => {
     const copy = [...data];
-
-    copy[projetIndex] = {
-      ...copy[projetIndex],
+    copy[index] = {
+      ...copy[index],
       [field]: value,
     };
-
     setData(copy);
   };
 
@@ -220,19 +547,18 @@ function TaniketsaForm({ onBack }: any) {
     setScores(copy);
   };
 
-  const totalScore = scores.reduce(
-    (s, v) => s + v,
-    0
-  );
+  const totalScore =
+    scores.reduce(
+      (s, v) => s + v,
+      0
+    );
 
   const totals = data.reduce(
     (acc, p) => {
       const ca1 =
         p.y1Production * p.y1Prix;
-
       const ca2 =
         p.y2Production * p.y2Prix;
-
       const ca3 =
         p.y3Production * p.y3Prix;
 
@@ -252,11 +578,7 @@ function TaniketsaForm({ onBack }: any) {
           (ca - dep),
       };
     },
-    {
-      ca: 0,
-      depenses: 0,
-      benefice: 0,
-    }
+    { ca: 0, depenses: 0, benefice: 0 }
   );
 
   return (
@@ -267,58 +589,39 @@ function TaniketsaForm({ onBack }: any) {
         </h1>
 
         <div style={styles.scoreBox}>
+          Total CA prévisionnel 3 ans :{" "}
           <strong>
-            Total CA prévisionnel 3 ans :
-          </strong>{" "}
-          {totals.ca.toLocaleString()} Ar
+            {totals.ca.toLocaleString()} Ar
+          </strong>
           <br />
-
+          Total dépenses 3 ans :{" "}
           <strong>
-            Total dépenses 3 ans :
-          </strong>{" "}
-          {totals.depenses.toLocaleString()} Ar
+            {totals.depenses.toLocaleString()} Ar
+          </strong>
           <br />
-
+          Bénéfice prévisionnel 3 ans :{" "}
           <strong>
-            Bénéfice prévisionnel 3 ans :
-          </strong>{" "}
-          {totals.benefice.toLocaleString()} Ar
+            {totals.benefice.toLocaleString()} Ar
+          </strong>
         </div>
 
         {projets.map((name, index) => {
           const p = data[index];
 
           const ca1 =
-            p.y1Production *
-            p.y1Prix;
-
+            p.y1Production * p.y1Prix;
           const ca2 =
-            p.y2Production *
-            p.y2Prix;
-
+            p.y2Production * p.y2Prix;
           const ca3 =
-            p.y3Production *
-            p.y3Prix;
+            p.y3Production * p.y3Prix;
 
-          const b1 =
-            ca1 - p.y1Depenses;
-
-          const b2 =
-            ca2 - p.y2Depenses;
-
-          const b3 =
-            ca3 - p.y3Depenses;
+          const b1 = ca1 - p.y1Depenses;
+          const b2 = ca2 - p.y2Depenses;
+          const b3 = ca3 - p.y3Depenses;
 
           return (
-            <div
-              key={name}
-              style={styles.block}
-            >
-              <h3
-                style={
-                  styles.sectionTitle
-                }
-              >
+            <div key={name} style={styles.block}>
+              <h3 style={styles.sectionTitle}>
                 {index + 1}. {name}
               </h3>
 
@@ -327,199 +630,80 @@ function TaniketsaForm({ onBack }: any) {
                 placeholder="Fananantany / velaran-tany"
               />
 
-              <h4>Taona 1</h4>
+              {[1, 2, 3].map((year) => (
+                <div key={year}>
+                  <h4>Taona {year}</h4>
 
-              <input
-                style={styles.input}
-                type="number"
-                placeholder="Production"
-                onChange={(e) =>
-                  updateData(
-                    index,
-                    "y1Production",
-                    Number(
-                      e.target.value
-                    )
-                  )
-                }
-              />
+                  <input
+                    style={styles.input}
+                    type="number"
+                    placeholder="Production"
+                    onChange={(e) =>
+                      updateData(
+                        index,
+                        `y${year}Production`,
+                        Number(e.target.value)
+                      )
+                    }
+                  />
 
-              <input
-                style={styles.input}
-                type="number"
-                placeholder="Prix unitaire"
-                onChange={(e) =>
-                  updateData(
-                    index,
-                    "y1Prix",
-                    Number(
-                      e.target.value
-                    )
-                  )
-                }
-              />
+                  <input
+                    style={styles.input}
+                    type="number"
+                    placeholder="Prix unitaire"
+                    onChange={(e) =>
+                      updateData(
+                        index,
+                        `y${year}Prix`,
+                        Number(e.target.value)
+                      )
+                    }
+                  />
 
-              <input
-                style={styles.input}
-                type="number"
-                placeholder="Dépenses"
-                onChange={(e) =>
-                  updateData(
-                    index,
-                    "y1Depenses",
-                    Number(
-                      e.target.value
-                    )
-                  )
-                }
-              />
+                  <input
+                    style={styles.input}
+                    type="number"
+                    placeholder="Dépenses"
+                    onChange={(e) =>
+                      updateData(
+                        index,
+                        `y${year}Depenses`,
+                        Number(e.target.value)
+                      )
+                    }
+                  />
 
-              <div
-                style={styles.miniBox}
-              >
-                CA :{" "}
-                <strong>
-                  {ca1.toLocaleString()} Ar
-                </strong>
-                <br />
-                Bénéfice :{" "}
-                <strong>
-                  {b1.toLocaleString()} Ar
-                </strong>
-              </div>
-
-              <h4>Taona 2</h4>
-
-              <input
-                style={styles.input}
-                type="number"
-                placeholder="Production"
-                onChange={(e) =>
-                  updateData(
-                    index,
-                    "y2Production",
-                    Number(
-                      e.target.value
-                    )
-                  )
-                }
-              />
-
-              <input
-                style={styles.input}
-                type="number"
-                placeholder="Prix unitaire"
-                onChange={(e) =>
-                  updateData(
-                    index,
-                    "y2Prix",
-                    Number(
-                      e.target.value
-                    )
-                  )
-                }
-              />
-
-              <input
-                style={styles.input}
-                type="number"
-                placeholder="Dépenses"
-                onChange={(e) =>
-                  updateData(
-                    index,
-                    "y2Depenses",
-                    Number(
-                      e.target.value
-                    )
-                  )
-                }
-              />
-
-              <div
-                style={styles.miniBox}
-              >
-                CA :{" "}
-                <strong>
-                  {ca2.toLocaleString()} Ar
-                </strong>
-                <br />
-                Bénéfice :{" "}
-                <strong>
-                  {b2.toLocaleString()} Ar
-                </strong>
-              </div>
-
-              <h4>Taona 3</h4>
-
-              <input
-                style={styles.input}
-                type="number"
-                placeholder="Production"
-                onChange={(e) =>
-                  updateData(
-                    index,
-                    "y3Production",
-                    Number(
-                      e.target.value
-                    )
-                  )
-                }
-              />
-
-              <input
-                style={styles.input}
-                type="number"
-                placeholder="Prix unitaire"
-                onChange={(e) =>
-                  updateData(
-                    index,
-                    "y3Prix",
-                    Number(
-                      e.target.value
-                    )
-                  )
-                }
-              />
-
-              <input
-                style={styles.input}
-                type="number"
-                placeholder="Dépenses"
-                onChange={(e) =>
-                  updateData(
-                    index,
-                    "y3Depenses",
-                    Number(
-                      e.target.value
-                    )
-                  )
-                }
-              />
-
-              <div
-                style={styles.miniBox}
-              >
-                CA :{" "}
-                <strong>
-                  {ca3.toLocaleString()} Ar
-                </strong>
-                <br />
-                Bénéfice :{" "}
-                <strong>
-                  {b3.toLocaleString()} Ar
-                </strong>
-              </div>
+                  <div style={styles.miniBox}>
+                    CA :{" "}
+                    <strong>
+                      {(year === 1
+                        ? ca1
+                        : year === 2
+                        ? ca2
+                        : ca3
+                      ).toLocaleString()}{" "}
+                      Ar
+                    </strong>
+                    <br />
+                    Bénéfice :{" "}
+                    <strong>
+                      {(year === 1
+                        ? b1
+                        : year === 2
+                        ? b2
+                        : b3
+                      ).toLocaleString()}{" "}
+                      Ar
+                    </strong>
+                  </div>
+                </div>
+              ))}
 
               <ScoreSelect
                 label={`Score faisabilité ${name}`}
                 max={11}
-                onChange={(
-                  v: number
-                ) =>
-                  updateScore(
-                    index,
-                    v
-                  )
+                onChange={(v: number) =>
+                  updateScore(index, v)
                 }
               />
             </div>
@@ -527,21 +711,17 @@ function TaniketsaForm({ onBack }: any) {
         })}
 
         <h2 style={styles.score}>
-          Total Score Taniketsa :
-          {" "}
+          Total Score Taniketsa :{" "}
           {totalScore} / 55
         </h2>
 
         <div style={styles.actions}>
           <button
-            style={
-              styles.secondaryButton
-            }
+            style={styles.secondaryButton}
             onClick={onBack}
           >
             Miverina
           </button>
-
           <button style={styles.button}>
             Vita
           </button>
@@ -586,9 +766,7 @@ function SehaPihariana({
         type="number"
         placeholder="Quantité vendue"
         onChange={(e) =>
-          setQ(
-            Number(e.target.value)
-          )
+          setQ(Number(e.target.value))
         }
       />
 
@@ -597,9 +775,7 @@ function SehaPihariana({
         type="number"
         placeholder="Prix unitaire Ar"
         onChange={(e) =>
-          setP(
-            Number(e.target.value)
-          )
+          setP(Number(e.target.value))
         }
       />
 
@@ -608,21 +784,17 @@ function SehaPihariana({
         type="number"
         placeholder="Dépenses annuelles Ar"
         onChange={(e) =>
-          setD(
-            Number(e.target.value)
-          )
+          setD(Number(e.target.value))
         }
       />
 
       <div style={styles.miniBox}>
-        Revenu automatique :
-        {" "}
+        Revenu automatique :{" "}
         <strong>
           {revenu.toLocaleString()} Ar
         </strong>
         <br />
-        Bénéfice estimé :
-        {" "}
+        Bénéfice estimé :{" "}
         <strong>
           {benefice.toLocaleString()} Ar
         </strong>
@@ -633,13 +805,8 @@ function SehaPihariana({
           key={q}
           label={q}
           max={2}
-          onChange={(
-            v: number
-          ) =>
-            update(
-              startIndex + idx,
-              v
-            )
+          onChange={(v: number) =>
+            update(startIndex + idx, v)
           }
         />
       ))}
@@ -666,18 +833,12 @@ function ScoreSelect({
           )
         }
       >
-        <option value={0}>
-          Safidio
-        </option>
-
+        <option value={0}>Safidio</option>
         {Array.from(
           { length: max },
           (_, i) => max - i
         ).map((v) => (
-          <option
-            key={v}
-            value={v}
-          >
+          <option key={v} value={v}>
             {v} points
           </option>
         ))}
@@ -686,17 +847,13 @@ function ScoreSelect({
   );
 }
 
-const styles: Record<
-  string,
-  any
-> = {
+const styles: Record<string, any> = {
   main: {
     minHeight: "100vh",
     background: "#f1f5f9",
     padding: "40px",
     fontFamily: "Arial",
   },
-
   card: {
     maxWidth: "900px",
     margin: "0 auto",
@@ -704,28 +861,23 @@ const styles: Record<
     padding: "40px",
     borderRadius: "20px",
   },
-
   title: {
     color: "#047857",
     fontSize: "42px",
     textAlign: "center",
   },
-
   titleSmall: {
     color: "#047857",
     fontSize: "32px",
   },
-
   subtitle: {
     color: "#b91c1c",
     textAlign: "center",
   },
-
   text: {
     fontSize: "18px",
     lineHeight: 1.7,
   },
-
   button: {
     background: "#047857",
     color: "white",
@@ -735,7 +887,6 @@ const styles: Record<
     marginTop: "20px",
     cursor: "pointer",
   },
-
   secondaryButton: {
     background: "#e2e8f0",
     color: "#0f172a",
@@ -745,7 +896,6 @@ const styles: Record<
     marginTop: "20px",
     cursor: "pointer",
   },
-
   input: {
     width: "100%",
     padding: "14px",
@@ -754,55 +904,44 @@ const styles: Record<
     borderRadius: "10px",
     border: "1px solid #cbd5e1",
   },
-
   actions: {
     display: "flex",
-    justifyContent:
-      "space-between",
+    justifyContent: "space-between",
     marginTop: "20px",
   },
-
   label: {
     display: "block",
     marginTop: "14px",
     fontWeight: "bold",
   },
-
   score: {
     marginTop: "30px",
     color: "#047857",
     fontSize: "28px",
   },
-
   scoreBox: {
     background: "#ecfdf5",
-    border:
-      "1px solid #10b981",
+    border: "1px solid #10b981",
     color: "#064e3b",
     padding: "18px",
     borderRadius: "16px",
     fontSize: "20px",
     marginTop: "24px",
   },
-
   miniBox: {
     background: "#f0fdf4",
-    border:
-      "1px solid #bbf7d0",
+    border: "1px solid #bbf7d0",
     padding: "14px",
     borderRadius: "12px",
     marginTop: "12px",
   },
-
   block: {
     marginTop: "28px",
     padding: "22px",
-    border:
-      "1px solid #e5e7eb",
+    border: "1px solid #e5e7eb",
     borderRadius: "18px",
     background: "#f8fafc",
   },
-
   sectionTitle: {
     color: "#064e3b",
     fontSize: "24px",
