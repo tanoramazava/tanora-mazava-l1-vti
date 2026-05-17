@@ -70,6 +70,16 @@ function IdentiteForm({
           placeholder="Taona"
         />
 
+        <input
+          style={styles.input}
+          placeholder="Kaomina"
+        />
+
+        <input
+          style={styles.input}
+          placeholder="Fokontany"
+        />
+
         <div style={styles.actions}>
           <button
             style={styles.secondaryButton}
@@ -95,10 +105,39 @@ function SpirituelForm({
 }: {
   onBack: () => void;
 }) {
-  const [vavaka, setVavaka] = useState(0);
-  const [baiboly, setBaiboly] = useState(0);
+  const [scores, setScores] = useState<number[]>(
+    Array(13).fill(0)
+  );
 
-  const total = vavaka + baiboly;
+  const questions = [
+    "Fahazarana mivavaka",
+    "Famakiana Baiboly",
+    "Fandraisana anjara am-piangonana",
+    "Fiainam-piderana",
+    "Fitiavana namana",
+    "Fahadiovam-piainana",
+    "Fahamarinana",
+    "Fanajana ray aman-dreny",
+    "Fanampiana hafa",
+    "Fifehezan-tena",
+    "Fanajana fotoana",
+    "Faharetana",
+    "Fahavononana hanompo",
+  ];
+
+  const updateScore = (
+    index: number,
+    value: number
+  ) => {
+    const newScores = [...scores];
+    newScores[index] = value;
+    setScores(newScores);
+  };
+
+  const total = scores.reduce(
+    (sum, value) => sum + value,
+    0
+  );
 
   return (
     <main style={styles.main}>
@@ -107,48 +146,46 @@ function SpirituelForm({
           Tombana Ara-panahy
         </h1>
 
-        <label style={styles.label}>
-          Fahazarana mivavaka
-        </label>
+        {questions.map((question, index) => (
+          <div key={index}>
+            <label style={styles.label}>
+              {index + 1}. {question}
+            </label>
 
-        <select
-          style={styles.input}
-          onChange={(e) =>
-            setVavaka(Number(e.target.value))
-          }
-        >
-          <option value={0}>Safidio</option>
-          <option value={5}>Tsara</option>
-          <option value={3}>Antonony</option>
-          <option value={1}>Malemy</option>
-        </select>
-
-        <label style={styles.label}>
-          Famakiana Baiboly
-        </label>
-
-        <select
-          style={styles.input}
-          onChange={(e) =>
-            setBaiboly(Number(e.target.value))
-          }
-        >
-          <option value={0}>Safidio</option>
-          <option value={5}>Isan’andro</option>
-          <option value={3}>Indraindray</option>
-          <option value={1}>Tsy dia manao</option>
-        </select>
+            <select
+              style={styles.input}
+              onChange={(e) =>
+                updateScore(
+                  index,
+                  Number(e.target.value)
+                )
+              }
+            >
+              <option value={0}>Safidio</option>
+              <option value={4}>Tsara be</option>
+              <option value={3}>Tsara</option>
+              <option value={2}>Antonony</option>
+              <option value={1}>Malemy</option>
+            </select>
+          </div>
+        ))}
 
         <h2 style={styles.score}>
-          Total Score : {total}
+          Total Score Ara-panahy : {total} / 52
         </h2>
 
-        <button
-          style={styles.secondaryButton}
-          onClick={onBack}
-        >
-          Miverina
-        </button>
+        <div style={styles.actions}>
+          <button
+            style={styles.secondaryButton}
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+
+          <button style={styles.button}>
+            Manaraka
+          </button>
+        </div>
       </section>
     </main>
   );
@@ -163,7 +200,7 @@ const styles: Record<string, any> = {
   },
 
   card: {
-    maxWidth: "700px",
+    maxWidth: "900px",
     margin: "0 auto",
     background: "white",
     padding: "40px",
@@ -204,13 +241,13 @@ const styles: Record<string, any> = {
     borderRadius: "12px",
     marginTop: "20px",
     cursor: "pointer",
-    marginRight: "10px",
   },
 
   input: {
     width: "100%",
     padding: "14px",
-    marginTop: "14px",
+    marginTop: "10px",
+    marginBottom: "10px",
     borderRadius: "10px",
     border: "1px solid #cbd5e1",
   },
@@ -218,6 +255,7 @@ const styles: Record<string, any> = {
   actions: {
     display: "flex",
     justifyContent: "space-between",
+    marginTop: "20px",
   },
 
   label: {
@@ -229,5 +267,6 @@ const styles: Record<string, any> = {
   score: {
     marginTop: "30px",
     color: "#047857",
+    fontSize: "28px",
   },
 };
