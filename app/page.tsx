@@ -1,950 +1,183 @@
-"use client";
-
-import { useState } from "react";
-
-type Screen =
-  | "home"
-  | "identite"
-  | "spirituel"
-  | "vti"
-  | "economie"
-  | "taniketsa";
-
-export default function HomePage() {
-  const [screen, setScreen] =
-    useState<Screen>("home");
-
-  if (screen === "identite")
-    return (
-      <IdentiteForm
-        onBack={() =>
-          setScreen("home")
-        }
-        onNext={() =>
-          setScreen(
-            "spirituel"
-          )
-        }
-      />
-    );
-
-  if (screen === "spirituel")
-    return (
-      <SpirituelForm
-        onBack={() =>
-          setScreen(
-            "identite"
-          )
-        }
-        onNext={() =>
-          setScreen("vti")
-        }
-      />
-    );
-
-  if (screen === "vti")
-    return (
-      <VtiForm
-        onBack={() =>
-          setScreen(
-            "spirituel"
-          )
-        }
-        onNext={() =>
-          setScreen(
-            "economie"
-          )
-        }
-      />
-    );
-
-  if (screen === "economie")
-    return (
-      <EconomieForm
-        onBack={() =>
-          setScreen("vti")
-        }
-        onNext={() =>
-          setScreen(
-            "taniketsa"
-          )
-        }
-      />
-    );
-
-  if (screen === "taniketsa")
-    return (
-      <TaniketsaForm
-        onBack={() =>
-          setScreen(
-            "economie"
-          )
-        }
-      />
-    );
-
-  return (
-    <main style={styles.main}>
-      <section style={styles.card}>
-        <h1 style={styles.title}>
-          TOMBANA TANORA
-          MAZAVA L1
-        </h1>
-
-        <h2 style={styles.subtitle}>
-          TOMBANA
-          FANOMBOHANA VTI
-        </h2>
-
-        <button
-          style={styles.button}
-          onClick={() =>
-            setScreen(
-              "identite"
-            )
-          }
-        >
-          Hanomboka ny
-          Tombana
-        </button>
-      </section>
-    </main>
-  );
-}
-
-function IdentiteForm({
-  onBack,
-  onNext,
-}: any) {
-  return (
-    <main style={styles.main}>
-      <section style={styles.card}>
-        <h1
-          style={
-            styles.titleSmall
-          }
-        >
-          Famantarana ny
-          Tanora
-        </h1>
-
-        {[
-          "Anarana sy fanampiny",
-          "Taona",
-          "Kaomina",
-          "Fokontany",
-          "VTI misy azy",
-          "Vaomiera misy azy",
-        ].map((p) => (
-          <input
-            key={p}
-            style={styles.input}
-            placeholder={p}
-          />
-        ))}
-
-        <div style={styles.actions}>
-          <button
-            style={
-              styles.secondaryButton
-            }
-            onClick={onBack}
-          >
-            Miverina
-          </button>
-
-          <button
-            style={styles.button}
-            onClick={onNext}
-          >
-            Manaraka
-          </button>
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function SpirituelForm({
-  onBack,
-  onNext,
-}: any) {
-  const [scores, setScores] =
-    useState<number[]>(
-      Array(13).fill(0)
-    );
-
-  const questions = [
-    "Fahazarana mivavaka",
-    "Famakiana Baiboly",
-    "Fandraisana anjara am-piangonana",
-    "Fiainam-piderana",
-    "Fitiavana namana",
-    "Fahadiovam-piainana",
-    "Fahamarinana",
-    "Fanajana ray aman-dreny",
-    "Fanampiana hafa",
-    "Fifehezan-tena",
-    "Fanajana fotoana",
-    "Faharetana",
-    "Fahavononana hanompo",
-  ];
-
-  const update = (
-    i: number,
-    v: number
-  ) => {
-    const a = [...scores];
-    a[i] = v;
-    setScores(a);
-  };
-
-  const total =
-    scores.reduce(
-      (s, v) => s + v,
-      0
-    );
-
-  return (
-    <main style={styles.main}>
-      <section style={styles.card}>
-        <h1
-          style={
-            styles.titleSmall
-          }
-        >
-          Tombana
-          Ara-panahy
-        </h1>
-
-        {questions.map(
-          (q, i) => (
-            <ScoreSelect
-              key={q}
-              label={`${i + 1}. ${q}`}
-              max={4}
-              onChange={(
-                v: number
-              ) =>
-                update(i, v)
-              }
-            />
-          )
-        )}
-
-        <h2 style={styles.score}>
-          Total Score
-          Ara-panahy :
-          {total} / 52
-        </h2>
-
-        <div style={styles.actions}>
-          <button
-            style={
-              styles.secondaryButton
-            }
-            onClick={onBack}
-          >
-            Miverina
-          </button>
-
-          <button
-            style={styles.button}
-            onClick={onNext}
-          >
-            Manaraka
-          </button>
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function VtiForm({
-  onBack,
-  onNext,
-}: any) {
-  const [scores, setScores] =
-    useState<number[]>(
-      Array(7).fill(0)
-    );
-
-  const questions = [
-    "Efa tao anaty fikambanana ve ?",
-    "Efa tao anaty fikambanana tanora ve ?",
-    "Andraikitra teo anivon’ny Fokontany",
-    "Fahalalana ny VTI",
-    "Vaomiera misy azy",
-    "Andraikitra ao amin’ny Vaomiera",
-    "Ora laniana isan-kerinandro",
-  ];
-
-  const update = (
-    i: number,
-    v: number
-  ) => {
-    const a = [...scores];
-    a[i] = v;
-    setScores(a);
-  };
-
-  const total =
-    scores.reduce(
-      (s, v) => s + v,
-      0
-    );
-
-  return (
-    <main style={styles.main}>
-      <section style={styles.card}>
-        <h1
-          style={
-            styles.titleSmall
-          }
-        >
-          Tombana VTI
-        </h1>
-
-        {questions.map(
-          (q, i) => (
-            <ScoreSelect
-              key={q}
-              label={`${i + 1}. ${q}`}
-              max={5}
-              onChange={(
-                v: number
-              ) =>
-                update(i, v)
-              }
-            />
-          )
-        )}
-
-        <h2 style={styles.score}>
-          Total Score VTI :
-          {total} / 29
-        </h2>
-
-        <div style={styles.actions}>
-          <button
-            style={
-              styles.secondaryButton
-            }
-            onClick={onBack}
-          >
-            Miverina
-          </button>
-
-          <button
-            style={styles.button}
-            onClick={onNext}
-          >
-            Manaraka
-          </button>
-        </div>
-      </section>
-    </main>
-  );
-}
-function EconomieForm({
-  onBack,
-  onNext,
-}: any) {
-  const [scores, setScores] =
-    useState<number[]>(
-      Array(24).fill(0)
-    );
-
-  const [q1, setQ1] = useState(0);
-  const [p1, setP1] = useState(0);
-  const [d1, setD1] = useState(0);
-
-  const [q2, setQ2] = useState(0);
-  const [p2, setP2] = useState(0);
-  const [d2, setD2] = useState(0);
-
-  const [q3, setQ3] = useState(0);
-  const [p3, setP3] = useState(0);
-  const [d3, setD3] = useState(0);
-
-  const revenu1 = q1 * p1;
-  const revenu2 = q2 * p2;
-  const revenu3 = q3 * p3;
-
-  const totalRevenu =
-    revenu1 + revenu2 + revenu3;
-
-  const totalDepenses =
-    d1 + d2 + d3;
-
-  const beneficeTotal =
-    totalRevenu - totalDepenses;
-
-  const update = (
-    i: number,
-    v: number
-  ) => {
-    const a = [...scores];
-    a[i] = v;
-    setScores(a);
-  };
-
-  const totalScore =
-    scores.reduce(
-      (s, v) => s + v,
-      0
-    );
-
-  return (
-    <main style={styles.main}>
-      <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Fizarana 3 — Fanadihadiana Ara-toekarena sy Ara-bola
-        </h1>
-
-        <SehaPihariana
-          title="Seha-pihariana Voalohany"
-          startIndex={0}
-          update={update}
-          setQ={setQ1}
-          setP={setP1}
-          setD={setD1}
-          revenu={revenu1}
-          benefice={revenu1 - d1}
-        />
-
-        <SehaPihariana
-          title="Seha-pihariana Faharoa"
-          startIndex={6}
-          update={update}
-          setQ={setQ2}
-          setP={setP2}
-          setD={setD2}
-          revenu={revenu2}
-          benefice={revenu2 - d2}
-        />
-
-        <SehaPihariana
-          title="Seha-pihariana Fahatelo"
-          startIndex={12}
-          update={update}
-          setQ={setQ3}
-          setP={setP3}
-          setD={setD3}
-          revenu={revenu3}
-          benefice={revenu3 - d3}
-        />
-
-        <div style={styles.scoreBox}>
-          Total revenus 3 seha-pihariana :{" "}
-          <strong>
-            {totalRevenu.toLocaleString()} Ar
-          </strong>
-          <br />
-          Total dépenses :{" "}
-          <strong>
-            {totalDepenses.toLocaleString()} Ar
-          </strong>
-          <br />
-          Bénéfice estimé global :{" "}
-          <strong>
-            {beneficeTotal.toLocaleString()} Ar
-          </strong>
-        </div>
-
-        {[
-          "Total revenu annuel",
-          "Dépenses annuelles",
-          "Épargne annuelle",
-          "Réinvestissement annuel",
-          "Fahafaha-mitahiry",
-          "Fahafaha-manitatra famokarana",
-        ].map((q, idx) => (
-          <ScoreSelect
-            key={q}
-            label={q}
-            max={2}
-            onChange={(v: number) =>
-              update(18 + idx, v)
-            }
-          />
-        ))}
-
-        <h2 style={styles.score}>
-          Total Score Économie :{" "}
-          {totalScore} / 48
-        </h2>
-
-        <div style={styles.actions}>
-          <button
-            style={styles.secondaryButton}
-            onClick={onBack}
-          >
-            Miverina
-          </button>
-
-          <button
-            style={styles.button}
-            onClick={onNext}
-          >
-            Manaraka
-          </button>
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function TaniketsaForm({
-  onBack,
-}: any) {
-  const projets = [
-    "Voly rakotra 500m²",
-    "Voly vary 750m²",
-    "Akoho gasy",
-    "Fanatavezana kisoa",
-    "Tantely",
-  ];
-
-  const [scores, setScores] =
-    useState<number[]>(
-      Array(5).fill(0)
-    );
-
-  const [data, setData] = useState(
-    projets.map(() => ({
-      y1Production: 0,
-      y1Prix: 0,
-      y1Depenses: 0,
-      y2Production: 0,
-      y2Prix: 0,
-      y2Depenses: 0,
-      y3Production: 0,
-      y3Prix: 0,
-      y3Depenses: 0,
-    }))
-  );
-
-  const updateData = (
-    index: number,
-    field: string,
-    value: number
-  ) => {
-    const copy = [...data];
-    copy[index] = {
-      ...copy[index],
-      [field]: value,
-    };
-    setData(copy);
-  };
-
-  const updateScore = (
-    index: number,
-    value: number
-  ) => {
-    const copy = [...scores];
-    copy[index] = value;
-    setScores(copy);
-  };
-
-  const totalScore =
-    scores.reduce(
-      (s, v) => s + v,
-      0
-    );
-
-  const totals = data.reduce(
-    (acc, p) => {
-      const ca1 =
-        p.y1Production * p.y1Prix;
-      const ca2 =
-        p.y2Production * p.y2Prix;
-      const ca3 =
-        p.y3Production * p.y3Prix;
-
-      const dep =
-        p.y1Depenses +
-        p.y2Depenses +
-        p.y3Depenses;
-
-      const ca = ca1 + ca2 + ca3;
-
-      return {
-        ca: acc.ca + ca,
-        depenses:
-          acc.depenses + dep,
-        benefice:
-          acc.benefice +
-          (ca - dep),
-      };
+function TaniketsaForm({ onBack }: any) {
+  const filieres = [
+    {
+      name: "Voly rakotra 500m²",
+      unitLabel: "Parcelle 500m² firy ao anatin’ny 3 taona ?",
+      caRef: 1753600,
+      depRef: 340000,
     },
-    { ca: 0, depenses: 0, benefice: 0 }
+    {
+      name: "Voly vary 750m²",
+      unitLabel: "Parcelle 750m² firy ao anatin’ny 3 taona ?",
+      caRef: 600000,
+      depRef: 350000,
+    },
+    {
+      name: "Akoho gasy",
+      unitLabel: "Tokatranon’akoho firy ao anatin’ny 3 taona ?",
+      caRef: 1296000,
+      depRef: 420000,
+    },
+    {
+      name: "Fanatavezana kisoa",
+      unitLabel: "Kisoa hatavezina firy ao anatin’ny 3 taona ?",
+      caRef: 640000,
+      depRef: 387500,
+    },
+    {
+      name: "Tantely",
+      unitLabel: "Tohon-tantely firy ao anatin’ny 3 taona ?",
+      caRef: 1500000,
+      depRef: 420000,
+    },
+  ];
+
+  const [units, setUnits] = useState<number[]>(Array(5).fill(0));
+  const [humanScores, setHumanScores] = useState<number[]>(Array(5).fill(0));
+  const [ecoScores, setEcoScores] = useState<number[]>(Array(5).fill(0));
+
+  const updateUnits = (index: number, value: number) => {
+    const copy = [...units];
+    copy[index] = value;
+    setUnits(copy);
+  };
+
+  const updateHumanScore = (index: number, value: number) => {
+    const copy = [...humanScores];
+    copy[index] = value;
+    setHumanScores(copy);
+  };
+
+  const updateEcoScore = (index: number, value: number) => {
+    const copy = [...ecoScores];
+    copy[index] = value;
+    setEcoScores(copy);
+  };
+
+  const totalCA = filieres.reduce(
+    (sum, f, i) => sum + units[i] * f.caRef,
+    0
   );
+
+  const totalDepenses = filieres.reduce(
+    (sum, f, i) => sum + units[i] * f.depRef,
+    0
+  );
+
+  const totalBenefice = totalCA - totalDepenses;
+
+  const totalScore = humanScores.reduce((s, v) => s + v, 0) +
+    ecoScores.reduce((s, v) => s + v, 0);
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Taniketsa Fandraharahana
-        </h1>
+        <h1 style={styles.titleSmall}>Taniketsa Fandraharahana</h1>
+
+        <p style={styles.text}>
+          Fanombanana siantifika ny Taniketsa Fandraharahana mifototra amin’ny
+          fiofanana, ezaka, anjara biriky, faisabilité, ary calcul automatique
+          ny chiffre d’affaires, dépenses ary bénéfices ao anatin’ny 3 taona.
+        </p>
 
         <div style={styles.scoreBox}>
-          Total CA prévisionnel 3 ans :{" "}
-          <strong>
-            {totals.ca.toLocaleString()} Ar
-          </strong>
+          <strong>Total CA prévisionnel :</strong>{" "}
+          {totalCA.toLocaleString()} Ar
           <br />
-          Total dépenses 3 ans :{" "}
-          <strong>
-            {totals.depenses.toLocaleString()} Ar
-          </strong>
+          <strong>Total dépenses prévisionnelles :</strong>{" "}
+          {totalDepenses.toLocaleString()} Ar
           <br />
-          Bénéfice prévisionnel 3 ans :{" "}
-          <strong>
-            {totals.benefice.toLocaleString()} Ar
-          </strong>
+          <strong>Bénéfice prévisionnel :</strong>{" "}
+          {totalBenefice.toLocaleString()} Ar
+          <br />
+          <strong>Total Score Taniketsa :</strong>{" "}
+          {totalScore} / 275
         </div>
 
-        {projets.map((name, index) => {
-          const p = data[index];
-
-          const ca1 =
-            p.y1Production * p.y1Prix;
-          const ca2 =
-            p.y2Production * p.y2Prix;
-          const ca3 =
-            p.y3Production * p.y3Prix;
-
-          const b1 = ca1 - p.y1Depenses;
-          const b2 = ca2 - p.y2Depenses;
-          const b3 = ca3 - p.y3Depenses;
+        {filieres.map((f, index) => {
+          const ca = units[index] * f.caRef;
+          const depenses = units[index] * f.depRef;
+          const benefice = ca - depenses;
+          const scoreFiliere = humanScores[index] + ecoScores[index];
 
           return (
-            <div key={name} style={styles.block}>
+            <div key={f.name} style={styles.block}>
               <h3 style={styles.sectionTitle}>
-                {index + 1}. {name}
+                {index + 1}. {f.name}
               </h3>
 
+              <label style={styles.label}>{f.unitLabel}</label>
               <input
                 style={styles.input}
-                placeholder="Fananantany / velaran-tany"
-              />
-
-              {[1, 2, 3].map((year) => (
-                <div key={year}>
-                  <h4>Taona {year}</h4>
-
-                  <input
-                    style={styles.input}
-                    type="number"
-                    placeholder="Production"
-                    onChange={(e) =>
-                      updateData(
-                        index,
-                        `y${year}Production`,
-                        Number(e.target.value)
-                      )
-                    }
-                  />
-
-                  <input
-                    style={styles.input}
-                    type="number"
-                    placeholder="Prix unitaire"
-                    onChange={(e) =>
-                      updateData(
-                        index,
-                        `y${year}Prix`,
-                        Number(e.target.value)
-                      )
-                    }
-                  />
-
-                  <input
-                    style={styles.input}
-                    type="number"
-                    placeholder="Dépenses"
-                    onChange={(e) =>
-                      updateData(
-                        index,
-                        `y${year}Depenses`,
-                        Number(e.target.value)
-                      )
-                    }
-                  />
-
-                  <div style={styles.miniBox}>
-                    CA :{" "}
-                    <strong>
-                      {(year === 1
-                        ? ca1
-                        : year === 2
-                        ? ca2
-                        : ca3
-                      ).toLocaleString()}{" "}
-                      Ar
-                    </strong>
-                    <br />
-                    Bénéfice :{" "}
-                    <strong>
-                      {(year === 1
-                        ? b1
-                        : year === 2
-                        ? b2
-                        : b3
-                      ).toLocaleString()}{" "}
-                      Ar
-                    </strong>
-                  </div>
-                </div>
-              ))}
-
-              <ScoreSelect
-                label={`Score faisabilité ${name}`}
-                max={11}
-                onChange={(v: number) =>
-                  updateScore(index, v)
+                type="number"
+                min="0"
+                placeholder="Soraty eto ny isa..."
+                onChange={(e) =>
+                  updateUnits(index, Number(e.target.value))
                 }
               />
+
+              <div style={styles.miniBox}>
+                <strong>CA référence par unité :</strong>{" "}
+                {f.caRef.toLocaleString()} Ar
+                <br />
+                <strong>Dépenses référence par unité :</strong>{" "}
+                {f.depRef.toLocaleString()} Ar
+                <br />
+                <strong>CA calculé :</strong>{" "}
+                {ca.toLocaleString()} Ar
+                <br />
+                <strong>Dépenses calculées :</strong>{" "}
+                {depenses.toLocaleString()} Ar
+                <br />
+                <strong>Bénéfice calculé :</strong>{" "}
+                {benefice.toLocaleString()} Ar
+              </div>
+
+              <h4 style={styles.sectionTitle}>
+                A. Fiofanana, ezaka ary anjara biriky — 35 points
+              </h4>
+
+              <textarea
+                style={styles.textarea}
+                placeholder="Hazavao ny fiofanana efa azo, ny traikefa, ny ezaka natao, ny anjara biriky manokana, ny fananantany na fitaovana, ary ny fahavononana hanohy..."
+              />
+
+              <ScoreSelect
+                label="Score fiofanana + ezaka + anjara biriky + faisabilité humaine/technique"
+                max={35}
+                onChange={(v: number) => updateHumanScore(index, v)}
+              />
+
+              <h4 style={styles.sectionTitle}>
+                B. Faisabilité économique sy rentabilité — 20 points
+              </h4>
+
+              <textarea
+                style={styles.textarea}
+                placeholder="Hazavao ny antony mahatonga ity Taniketsa ity ho azo tanterahina ara-toekarena : tsena, vidiny, fandaniana, tombony, fitohizan’ny asa..."
+              />
+
+              <ScoreSelect
+                label="Score faisabilité économique + rentabilité + projection"
+                max={20}
+                onChange={(v: number) => updateEcoScore(index, v)}
+              />
+
+              <h2 style={styles.score}>
+                Score {f.name} : {scoreFiliere} / 55
+              </h2>
             </div>
           );
         })}
 
-        <h2 style={styles.score}>
-          Total Score Taniketsa :{" "}
-          {totalScore} / 55
-        </h2>
-
         <div style={styles.actions}>
-          <button
-            style={styles.secondaryButton}
-            onClick={onBack}
-          >
+          <button style={styles.secondaryButton} onClick={onBack}>
             Miverina
           </button>
-          <button style={styles.button}>
-            Vita
-          </button>
+          <button style={styles.button}>Vita</button>
         </div>
       </section>
     </main>
   );
 }
-
-function SehaPihariana({
-  title,
-  startIndex,
-  update,
-  setQ,
-  setP,
-  setD,
-  revenu,
-  benefice,
-}: any) {
-  const questions = [
-    "Production annuelle",
-    "Dépenses annuelles",
-    "Autoconsommation",
-    "Quantité vendue",
-    "Prix unitaire",
-    "Revenu calculé",
-  ];
-
-  return (
-    <div style={styles.block}>
-      <h3 style={styles.sectionTitle}>
-        {title}
-      </h3>
-
-      <input
-        style={styles.input}
-        placeholder={`Anaran’ny ${title.toLowerCase()}`}
-      />
-
-      <input
-        style={styles.input}
-        type="number"
-        placeholder="Quantité vendue"
-        onChange={(e) =>
-          setQ(Number(e.target.value))
-        }
-      />
-
-      <input
-        style={styles.input}
-        type="number"
-        placeholder="Prix unitaire Ar"
-        onChange={(e) =>
-          setP(Number(e.target.value))
-        }
-      />
-
-      <input
-        style={styles.input}
-        type="number"
-        placeholder="Dépenses annuelles Ar"
-        onChange={(e) =>
-          setD(Number(e.target.value))
-        }
-      />
-
-      <div style={styles.miniBox}>
-        Revenu automatique :{" "}
-        <strong>
-          {revenu.toLocaleString()} Ar
-        </strong>
-        <br />
-        Bénéfice estimé :{" "}
-        <strong>
-          {benefice.toLocaleString()} Ar
-        </strong>
-      </div>
-
-      {questions.map((q, idx) => (
-        <ScoreSelect
-          key={q}
-          label={q}
-          max={2}
-          onChange={(v: number) =>
-            update(startIndex + idx, v)
-          }
-        />
-      ))}
-    </div>
-  );
-}
-
-function ScoreSelect({
-  label,
-  max,
-  onChange,
-}: any) {
-  return (
-    <div>
-      <label style={styles.label}>
-        {label}
-      </label>
-
-      <select
-        style={styles.input}
-        onChange={(e) =>
-          onChange(
-            Number(e.target.value)
-          )
-        }
-      >
-        <option value={0}>Safidio</option>
-        {Array.from(
-          { length: max },
-          (_, i) => max - i
-        ).map((v) => (
-          <option key={v} value={v}>
-            {v} points
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
-
-const styles: Record<string, any> = {
-  main: {
-    minHeight: "100vh",
-    background: "#f1f5f9",
-    padding: "40px",
-    fontFamily: "Arial",
-  },
-  card: {
-    maxWidth: "900px",
-    margin: "0 auto",
-    background: "white",
-    padding: "40px",
-    borderRadius: "20px",
-  },
-  title: {
-    color: "#047857",
-    fontSize: "42px",
-    textAlign: "center",
-  },
-  titleSmall: {
-    color: "#047857",
-    fontSize: "32px",
-  },
-  subtitle: {
-    color: "#b91c1c",
-    textAlign: "center",
-  },
-  text: {
-    fontSize: "18px",
-    lineHeight: 1.7,
-  },
-  button: {
-    background: "#047857",
-    color: "white",
-    border: "none",
-    padding: "14px 20px",
-    borderRadius: "12px",
-    marginTop: "20px",
-    cursor: "pointer",
-  },
-  secondaryButton: {
-    background: "#e2e8f0",
-    color: "#0f172a",
-    border: "none",
-    padding: "14px 20px",
-    borderRadius: "12px",
-    marginTop: "20px",
-    cursor: "pointer",
-  },
-  input: {
-    width: "100%",
-    padding: "14px",
-    marginTop: "10px",
-    marginBottom: "10px",
-    borderRadius: "10px",
-    border: "1px solid #cbd5e1",
-  },
-  actions: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "20px",
-  },
-  label: {
-    display: "block",
-    marginTop: "14px",
-    fontWeight: "bold",
-  },
-  score: {
-    marginTop: "30px",
-    color: "#047857",
-    fontSize: "28px",
-  },
-  scoreBox: {
-    background: "#ecfdf5",
-    border: "1px solid #10b981",
-    color: "#064e3b",
-    padding: "18px",
-    borderRadius: "16px",
-    fontSize: "20px",
-    marginTop: "24px",
-  },
-  miniBox: {
-    background: "#f0fdf4",
-    border: "1px solid #bbf7d0",
-    padding: "14px",
-    borderRadius: "12px",
-    marginTop: "12px",
-  },
-  block: {
-    marginTop: "28px",
-    padding: "22px",
-    border: "1px solid #e5e7eb",
-    borderRadius: "18px",
-    background: "#f8fafc",
-  },
-  sectionTitle: {
-    color: "#064e3b",
-    fontSize: "24px",
-    marginTop: "10px",
-  },
-};
