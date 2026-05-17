@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type Screen = "home" | "identite" | "spirituel" | "vti" | "economie";
+type Screen = "home" | "identite" | "spirituel" | "vti" | "economie" | "taniketsa";
 
 export default function HomePage() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -10,7 +10,8 @@ export default function HomePage() {
   if (screen === "identite") return <IdentiteForm onBack={() => setScreen("home")} onNext={() => setScreen("spirituel")} />;
   if (screen === "spirituel") return <SpirituelForm onBack={() => setScreen("identite")} onNext={() => setScreen("vti")} />;
   if (screen === "vti") return <VtiForm onBack={() => setScreen("spirituel")} onNext={() => setScreen("economie")} />;
-  if (screen === "economie") return <EconomieForm onBack={() => setScreen("vti")} />;
+  if (screen === "economie") return <EconomieForm onBack={() => setScreen("vti")} onNext={() => setScreen("taniketsa")} />;
+  if (screen === "taniketsa") return <TaniketsaForm onBack={() => setScreen("economie")} />;
 
   return (
     <main style={styles.main}>
@@ -74,19 +75,60 @@ function VtiForm({ onBack, onNext }: any) {
   );
 }
 
-function EconomieForm({ onBack }: any) {
+function EconomieForm({ onBack, onNext }: any) {
   const [scores, setScores] = useState<number[]>(Array(24).fill(0));
-
   const [q1, setQ1] = useState(0); const [p1, setP1] = useState(0); const [d1, setD1] = useState(0);
   const [q2, setQ2] = useState(0); const [p2, setP2] = useState(0); const [d2, setD2] = useState(0);
   const [q3, setQ3] = useState(0); const [p3, setP3] = useState(0); const [d3, setD3] = useState(0);
 
-  const revenu1 = q1 * p1;
-  const revenu2 = q2 * p2;
-  const revenu3 = q3 * p3;
+  const revenu1 = q1 * p1, revenu2 = q2 * p2, revenu3 = q3 * p3;
   const totalRevenu = revenu1 + revenu2 + revenu3;
   const totalDepenses = d1 + d2 + d3;
   const beneficeTotal = totalRevenu - totalDepenses;
+
+  const update = (i: number, v: number) => { const a = [...scores]; a[i] = v; setScores(a); };
+  const totalScore = scores.reduce((s, v) => s + v, 0);
+
+  return (
+    <main style={styles.main}><section style={styles.card}>
+      <h1 style={styles.titleSmall}>Fizarana 3 — Fanadihadiana Ara-toekarena sy Ara-bola</h1>
+      <p style={styles.text}>Ny 03 taona farany — Totalibeny : 48 points</p>
+
+      <SehaPihariana title="Seha-pihariana Voalohany" startIndex={0} update={update} setQ={setQ1} setP={setP1} setD={setD1} revenu={revenu1} benefice={revenu1 - d1} />
+      <SehaPihariana title="Seha-pihariana Faharoa" startIndex={6} update={update} setQ={setQ2} setP={setP2} setD={setD2} revenu={revenu2} benefice={revenu2 - d2} />
+      <SehaPihariana title="Seha-pihariana Fahatelo" startIndex={12} update={update} setQ={setQ3} setP={setP3} setD={setD3} revenu={revenu3} benefice={revenu3 - d3} />
+
+      <div style={styles.scoreBox}>
+        <strong>Total revenus 3 seha-pihariana : </strong>{totalRevenu.toLocaleString()} Ar<br />
+        <strong>Total dépenses : </strong>{totalDepenses.toLocaleString()} Ar<br />
+        <strong>Bénéfice estimé global : </strong>{beneficeTotal.toLocaleString()} Ar
+      </div>
+
+      <h3 style={styles.sectionTitle}>Fanadihadiana ara-bola générale</h3>
+      {["Total revenu annuel", "Dépenses annuelles", "Épargne annuelle", "Réinvestissement annuel", "Fahafaha-mitahiry", "Fahafaha-manitatra famokarana"].map((q, idx) => (
+        <ScoreSelect key={q} label={q} max={2} onChange={(v:number)=>update(18 + idx, v)} />
+      ))}
+
+      <h2 style={styles.score}>Total Score Économie : {totalScore} / 48</h2>
+
+      <div style={styles.actions}>
+        <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
+        <button style={styles.button} onClick={onNext}>Manaraka</button>
+      </div>
+    </section></main>
+  );
+}
+
+function TaniketsaForm({ onBack }: any) {
+  const [scores, setScores] = useState<number[]>(Array(5).fill(0));
+
+  const projets = [
+    { name: "Voly rakotra 500m²", ca: [754800, 876800, 1753600], dep: [230000, 110000, 340000] },
+    { name: "Voly vary 750m²", ca: [450000, 600000, 600000], dep: [350000, 350000, 350000] },
+    { name: "Akoho gasy", ca: [432000, 648000, 1296000], dep: [180000, 240000, 420000] },
+    { name: "Fanatavezana kisoa", ca: [1280000, 2560000, 5120000], dep: [850000, 1600000, 3100000] },
+    { name: "Tantely", ca: [300000, 750000, 1500000], dep: [120000, 220000, 420000] },
+  ];
 
   const update = (i: number, v: number) => {
     const a = [...scores];
@@ -95,58 +137,49 @@ function EconomieForm({ onBack }: any) {
   };
 
   const totalScore = scores.reduce((s, v) => s + v, 0);
+  const totalCA3Ans = projets.reduce((s, p) => s + p.ca[0] + p.ca[1] + p.ca[2], 0);
+  const totalDep3Ans = projets.reduce((s, p) => s + p.dep[0] + p.dep[1] + p.dep[2], 0);
+  const totalBenefice3Ans = totalCA3Ans - totalDep3Ans;
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Fizarana 3 — Fanadihadiana Ara-toekarena sy Ara-bola</h1>
-        <p style={styles.text}>Ny 03 taona farany — Totalibeny : 48 points</p>
-
-        <SehaPihariana
-          title="Seha-pihariana Voalohany"
-          startIndex={0}
-          update={update}
-          setQ={setQ1}
-          setP={setP1}
-          setD={setD1}
-          revenu={revenu1}
-          benefice={revenu1 - d1}
-        />
-
-        <SehaPihariana
-          title="Seha-pihariana Faharoa"
-          startIndex={6}
-          update={update}
-          setQ={setQ2}
-          setP={setP2}
-          setD={setD2}
-          revenu={revenu2}
-          benefice={revenu2 - d2}
-        />
-
-        <SehaPihariana
-          title="Seha-pihariana Fahatelo"
-          startIndex={12}
-          update={update}
-          setQ={setQ3}
-          setP={setP3}
-          setD={setD3}
-          revenu={revenu3}
-          benefice={revenu3 - d3}
-        />
+        <h1 style={styles.titleSmall}>Taniketsa Fandraharahana</h1>
+        <p style={styles.text}>Fanadihadiana mahakasika ny fahafaha-manatanteraka, faisabilité ary pérennité.</p>
 
         <div style={styles.scoreBox}>
-          <strong>Total revenus 3 seha-pihariana : </strong>{totalRevenu.toLocaleString()} Ar<br />
-          <strong>Total dépenses : </strong>{totalDepenses.toLocaleString()} Ar<br />
-          <strong>Bénéfice estimé global : </strong>{beneficeTotal.toLocaleString()} Ar
+          <strong>Total CA prévisionnel 3 ans : </strong>{totalCA3Ans.toLocaleString()} Ar<br />
+          <strong>Total dépenses 3 ans : </strong>{totalDep3Ans.toLocaleString()} Ar<br />
+          <strong>Bénéfice prévisionnel 3 ans : </strong>{totalBenefice3Ans.toLocaleString()} Ar
         </div>
 
-        <h3 style={styles.sectionTitle}>Fanadihadiana ara-bola générale</h3>
-        {["Total revenu annuel", "Dépenses annuelles", "Épargne annuelle", "Réinvestissement annuel", "Fahafaha-mitahiry", "Fahafaha-manitatra famokarana"].map((q, idx) => (
-          <ScoreSelect key={q} label={q} max={2} onChange={(v:number)=>update(18 + idx, v)} />
-        ))}
+        {projets.map((p, i) => {
+          const benefice = [p.ca[0] - p.dep[0], p.ca[1] - p.dep[1], p.ca[2] - p.dep[2]];
+          return (
+            <div key={p.name} style={styles.block}>
+              <h3 style={styles.sectionTitle}>{i + 1}. {p.name}</h3>
 
-        <h2 style={styles.score}>Total Score Économie : {totalScore} / 48</h2>
+              <input style={styles.input} placeholder="Fananantany / velaran-tany ampiasaina" />
+              <input style={styles.input} placeholder="Fiofanana efa azo" />
+              <input style={styles.input} placeholder="Ezaka sy anjara biriky efa noraisina" />
+              <input style={styles.input} placeholder="Tohana ilaina" />
+
+              <div style={styles.miniBox}>
+                <strong>Taona 1 :</strong> CA {p.ca[0].toLocaleString()} Ar — Dépenses {p.dep[0].toLocaleString()} Ar — Bénéfice {benefice[0].toLocaleString()} Ar<br />
+                <strong>Taona 2 :</strong> CA {p.ca[1].toLocaleString()} Ar — Dépenses {p.dep[1].toLocaleString()} Ar — Bénéfice {benefice[1].toLocaleString()} Ar<br />
+                <strong>Taona 3 :</strong> CA {p.ca[2].toLocaleString()} Ar — Dépenses {p.dep[2].toLocaleString()} Ar — Bénéfice {benefice[2].toLocaleString()} Ar
+              </div>
+
+              <ScoreSelect
+                label={`Score faisabilité ${p.name}`}
+                max={11}
+                onChange={(v:number)=>update(i, v)}
+              />
+            </div>
+          );
+        })}
+
+        <h2 style={styles.score}>Total Score Taniketsa : {totalScore} / 55</h2>
 
         <div style={styles.actions}>
           <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
@@ -158,14 +191,7 @@ function EconomieForm({ onBack }: any) {
 }
 
 function SehaPihariana({ title, startIndex, update, setQ, setP, setD, revenu, benefice }: any) {
-  const questions = [
-    "Production annuelle",
-    "Dépenses annuelles",
-    "Autoconsommation",
-    "Quantité vendue",
-    "Prix unitaire",
-    "Revenu calculé",
-  ];
+  const questions = ["Production annuelle","Dépenses annuelles","Autoconsommation","Quantité vendue","Prix unitaire","Revenu calculé"];
 
   return (
     <div style={styles.block}>
