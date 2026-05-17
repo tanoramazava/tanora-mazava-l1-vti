@@ -171,3 +171,641 @@ function EconomieForm({ onBack, onNext }: any) {
     </main>
   );
 }
+function TaniketsaForm({ onBack }: any) {
+  const projets = [
+    "Voly rakotra 500m²",
+    "Voly vary 750m²",
+    "Akoho gasy",
+    "Fanatavezana kisoa",
+    "Tantely",
+  ];
+
+  const [scores, setScores] = useState<number[]>(Array(5).fill(0));
+
+  const [data, setData] = useState(
+    projets.map(() => ({
+      y1Production: 0,
+      y1Prix: 0,
+      y1Depenses: 0,
+      y2Production: 0,
+      y2Prix: 0,
+      y2Depenses: 0,
+      y3Production: 0,
+      y3Prix: 0,
+      y3Depenses: 0,
+    }))
+  );
+
+  const updateData = (
+    projetIndex: number,
+    field: string,
+    value: number
+  ) => {
+    const copy = [...data];
+
+    copy[projetIndex] = {
+      ...copy[projetIndex],
+      [field]: value,
+    };
+
+    setData(copy);
+  };
+
+  const updateScore = (
+    index: number,
+    value: number
+  ) => {
+    const copy = [...scores];
+    copy[index] = value;
+    setScores(copy);
+  };
+
+  const totalScore = scores.reduce(
+    (s, v) => s + v,
+    0
+  );
+
+  const totals = data.reduce(
+    (acc, p) => {
+      const ca1 =
+        p.y1Production * p.y1Prix;
+
+      const ca2 =
+        p.y2Production * p.y2Prix;
+
+      const ca3 =
+        p.y3Production * p.y3Prix;
+
+      const dep =
+        p.y1Depenses +
+        p.y2Depenses +
+        p.y3Depenses;
+
+      const ca = ca1 + ca2 + ca3;
+
+      return {
+        ca: acc.ca + ca,
+        depenses:
+          acc.depenses + dep,
+        benefice:
+          acc.benefice +
+          (ca - dep),
+      };
+    },
+    {
+      ca: 0,
+      depenses: 0,
+      benefice: 0,
+    }
+  );
+
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>
+          Taniketsa Fandraharahana
+        </h1>
+
+        <div style={styles.scoreBox}>
+          <strong>
+            Total CA prévisionnel 3 ans :
+          </strong>{" "}
+          {totals.ca.toLocaleString()} Ar
+          <br />
+
+          <strong>
+            Total dépenses 3 ans :
+          </strong>{" "}
+          {totals.depenses.toLocaleString()} Ar
+          <br />
+
+          <strong>
+            Bénéfice prévisionnel 3 ans :
+          </strong>{" "}
+          {totals.benefice.toLocaleString()} Ar
+        </div>
+
+        {projets.map((name, index) => {
+          const p = data[index];
+
+          const ca1 =
+            p.y1Production *
+            p.y1Prix;
+
+          const ca2 =
+            p.y2Production *
+            p.y2Prix;
+
+          const ca3 =
+            p.y3Production *
+            p.y3Prix;
+
+          const b1 =
+            ca1 - p.y1Depenses;
+
+          const b2 =
+            ca2 - p.y2Depenses;
+
+          const b3 =
+            ca3 - p.y3Depenses;
+
+          return (
+            <div
+              key={name}
+              style={styles.block}
+            >
+              <h3
+                style={
+                  styles.sectionTitle
+                }
+              >
+                {index + 1}. {name}
+              </h3>
+
+              <input
+                style={styles.input}
+                placeholder="Fananantany / velaran-tany"
+              />
+
+              <h4>Taona 1</h4>
+
+              <input
+                style={styles.input}
+                type="number"
+                placeholder="Production"
+                onChange={(e) =>
+                  updateData(
+                    index,
+                    "y1Production",
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              />
+
+              <input
+                style={styles.input}
+                type="number"
+                placeholder="Prix unitaire"
+                onChange={(e) =>
+                  updateData(
+                    index,
+                    "y1Prix",
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              />
+
+              <input
+                style={styles.input}
+                type="number"
+                placeholder="Dépenses"
+                onChange={(e) =>
+                  updateData(
+                    index,
+                    "y1Depenses",
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              />
+
+              <div
+                style={styles.miniBox}
+              >
+                CA :{" "}
+                <strong>
+                  {ca1.toLocaleString()} Ar
+                </strong>
+                <br />
+                Bénéfice :{" "}
+                <strong>
+                  {b1.toLocaleString()} Ar
+                </strong>
+              </div>
+
+              <h4>Taona 2</h4>
+
+              <input
+                style={styles.input}
+                type="number"
+                placeholder="Production"
+                onChange={(e) =>
+                  updateData(
+                    index,
+                    "y2Production",
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              />
+
+              <input
+                style={styles.input}
+                type="number"
+                placeholder="Prix unitaire"
+                onChange={(e) =>
+                  updateData(
+                    index,
+                    "y2Prix",
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              />
+
+              <input
+                style={styles.input}
+                type="number"
+                placeholder="Dépenses"
+                onChange={(e) =>
+                  updateData(
+                    index,
+                    "y2Depenses",
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              />
+
+              <div
+                style={styles.miniBox}
+              >
+                CA :{" "}
+                <strong>
+                  {ca2.toLocaleString()} Ar
+                </strong>
+                <br />
+                Bénéfice :{" "}
+                <strong>
+                  {b2.toLocaleString()} Ar
+                </strong>
+              </div>
+
+              <h4>Taona 3</h4>
+
+              <input
+                style={styles.input}
+                type="number"
+                placeholder="Production"
+                onChange={(e) =>
+                  updateData(
+                    index,
+                    "y3Production",
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              />
+
+              <input
+                style={styles.input}
+                type="number"
+                placeholder="Prix unitaire"
+                onChange={(e) =>
+                  updateData(
+                    index,
+                    "y3Prix",
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              />
+
+              <input
+                style={styles.input}
+                type="number"
+                placeholder="Dépenses"
+                onChange={(e) =>
+                  updateData(
+                    index,
+                    "y3Depenses",
+                    Number(
+                      e.target.value
+                    )
+                  )
+                }
+              />
+
+              <div
+                style={styles.miniBox}
+              >
+                CA :{" "}
+                <strong>
+                  {ca3.toLocaleString()} Ar
+                </strong>
+                <br />
+                Bénéfice :{" "}
+                <strong>
+                  {b3.toLocaleString()} Ar
+                </strong>
+              </div>
+
+              <ScoreSelect
+                label={`Score faisabilité ${name}`}
+                max={11}
+                onChange={(
+                  v: number
+                ) =>
+                  updateScore(
+                    index,
+                    v
+                  )
+                }
+              />
+            </div>
+          );
+        })}
+
+        <h2 style={styles.score}>
+          Total Score Taniketsa :
+          {" "}
+          {totalScore} / 55
+        </h2>
+
+        <div style={styles.actions}>
+          <button
+            style={
+              styles.secondaryButton
+            }
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+
+          <button style={styles.button}>
+            Vita
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function SehaPihariana({
+  title,
+  startIndex,
+  update,
+  setQ,
+  setP,
+  setD,
+  revenu,
+  benefice,
+}: any) {
+  const questions = [
+    "Production annuelle",
+    "Dépenses annuelles",
+    "Autoconsommation",
+    "Quantité vendue",
+    "Prix unitaire",
+    "Revenu calculé",
+  ];
+
+  return (
+    <div style={styles.block}>
+      <h3 style={styles.sectionTitle}>
+        {title}
+      </h3>
+
+      <input
+        style={styles.input}
+        placeholder={`Anaran’ny ${title.toLowerCase()}`}
+      />
+
+      <input
+        style={styles.input}
+        type="number"
+        placeholder="Quantité vendue"
+        onChange={(e) =>
+          setQ(
+            Number(e.target.value)
+          )
+        }
+      />
+
+      <input
+        style={styles.input}
+        type="number"
+        placeholder="Prix unitaire Ar"
+        onChange={(e) =>
+          setP(
+            Number(e.target.value)
+          )
+        }
+      />
+
+      <input
+        style={styles.input}
+        type="number"
+        placeholder="Dépenses annuelles Ar"
+        onChange={(e) =>
+          setD(
+            Number(e.target.value)
+          )
+        }
+      />
+
+      <div style={styles.miniBox}>
+        Revenu automatique :
+        {" "}
+        <strong>
+          {revenu.toLocaleString()} Ar
+        </strong>
+        <br />
+        Bénéfice estimé :
+        {" "}
+        <strong>
+          {benefice.toLocaleString()} Ar
+        </strong>
+      </div>
+
+      {questions.map((q, idx) => (
+        <ScoreSelect
+          key={q}
+          label={q}
+          max={2}
+          onChange={(
+            v: number
+          ) =>
+            update(
+              startIndex + idx,
+              v
+            )
+          }
+        />
+      ))}
+    </div>
+  );
+}
+
+function ScoreSelect({
+  label,
+  max,
+  onChange,
+}: any) {
+  return (
+    <div>
+      <label style={styles.label}>
+        {label}
+      </label>
+
+      <select
+        style={styles.input}
+        onChange={(e) =>
+          onChange(
+            Number(e.target.value)
+          )
+        }
+      >
+        <option value={0}>
+          Safidio
+        </option>
+
+        {Array.from(
+          { length: max },
+          (_, i) => max - i
+        ).map((v) => (
+          <option
+            key={v}
+            value={v}
+          >
+            {v} points
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+const styles: Record<
+  string,
+  any
+> = {
+  main: {
+    minHeight: "100vh",
+    background: "#f1f5f9",
+    padding: "40px",
+    fontFamily: "Arial",
+  },
+
+  card: {
+    maxWidth: "900px",
+    margin: "0 auto",
+    background: "white",
+    padding: "40px",
+    borderRadius: "20px",
+  },
+
+  title: {
+    color: "#047857",
+    fontSize: "42px",
+    textAlign: "center",
+  },
+
+  titleSmall: {
+    color: "#047857",
+    fontSize: "32px",
+  },
+
+  subtitle: {
+    color: "#b91c1c",
+    textAlign: "center",
+  },
+
+  text: {
+    fontSize: "18px",
+    lineHeight: 1.7,
+  },
+
+  button: {
+    background: "#047857",
+    color: "white",
+    border: "none",
+    padding: "14px 20px",
+    borderRadius: "12px",
+    marginTop: "20px",
+    cursor: "pointer",
+  },
+
+  secondaryButton: {
+    background: "#e2e8f0",
+    color: "#0f172a",
+    border: "none",
+    padding: "14px 20px",
+    borderRadius: "12px",
+    marginTop: "20px",
+    cursor: "pointer",
+  },
+
+  input: {
+    width: "100%",
+    padding: "14px",
+    marginTop: "10px",
+    marginBottom: "10px",
+    borderRadius: "10px",
+    border: "1px solid #cbd5e1",
+  },
+
+  actions: {
+    display: "flex",
+    justifyContent:
+      "space-between",
+    marginTop: "20px",
+  },
+
+  label: {
+    display: "block",
+    marginTop: "14px",
+    fontWeight: "bold",
+  },
+
+  score: {
+    marginTop: "30px",
+    color: "#047857",
+    fontSize: "28px",
+  },
+
+  scoreBox: {
+    background: "#ecfdf5",
+    border:
+      "1px solid #10b981",
+    color: "#064e3b",
+    padding: "18px",
+    borderRadius: "16px",
+    fontSize: "20px",
+    marginTop: "24px",
+  },
+
+  miniBox: {
+    background: "#f0fdf4",
+    border:
+      "1px solid #bbf7d0",
+    padding: "14px",
+    borderRadius: "12px",
+    marginTop: "12px",
+  },
+
+  block: {
+    marginTop: "28px",
+    padding: "22px",
+    border:
+      "1px solid #e5e7eb",
+    borderRadius: "18px",
+    background: "#f8fafc",
+  },
+
+  sectionTitle: {
+    color: "#064e3b",
+    fontSize: "24px",
+    marginTop: "10px",
+  },
+};
