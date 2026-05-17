@@ -2,35 +2,25 @@
 
 import { useState } from "react";
 
+type Screen = "home" | "identite" | "spirituel";
+
 export default function HomePage() {
-  const [started, setStarted] = useState(false);
+  const [screen, setScreen] = useState<Screen>("home");
 
-  if (started) {
+  if (screen === "identite") {
     return (
-      <main style={styles.main}>
-        <section style={styles.card}>
-          <h1 style={styles.titleSmall}>
-            Famantarana ny Tanora
-          </h1>
+      <IdentiteForm
+        onBack={() => setScreen("home")}
+        onNext={() => setScreen("spirituel")}
+      />
+    );
+  }
 
-          <input
-            style={styles.input}
-            placeholder="Anarana sy fanampiny"
-          />
-
-          <input
-            style={styles.input}
-            placeholder="Taona"
-          />
-
-          <button
-            style={styles.button}
-            onClick={() => setStarted(false)}
-          >
-            Miverina
-          </button>
-        </section>
-      </main>
+  if (screen === "spirituel") {
+    return (
+      <SpirituelForm
+        onBack={() => setScreen("identite")}
+      />
     );
   }
 
@@ -47,9 +37,117 @@ export default function HomePage() {
 
         <button
           style={styles.button}
-          onClick={() => setStarted(true)}
+          onClick={() => setScreen("identite")}
         >
           Hanomboka ny Tombana
+        </button>
+      </section>
+    </main>
+  );
+}
+
+function IdentiteForm({
+  onBack,
+  onNext,
+}: {
+  onBack: () => void;
+  onNext: () => void;
+}) {
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>
+          Famantarana ny Tanora
+        </h1>
+
+        <input
+          style={styles.input}
+          placeholder="Anarana sy fanampiny"
+        />
+
+        <input
+          style={styles.input}
+          placeholder="Taona"
+        />
+
+        <div style={styles.actions}>
+          <button
+            style={styles.secondaryButton}
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+
+          <button
+            style={styles.button}
+            onClick={onNext}
+          >
+            Manaraka
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function SpirituelForm({
+  onBack,
+}: {
+  onBack: () => void;
+}) {
+  const [vavaka, setVavaka] = useState(0);
+  const [baiboly, setBaiboly] = useState(0);
+
+  const total = vavaka + baiboly;
+
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>
+          Tombana Ara-panahy
+        </h1>
+
+        <label style={styles.label}>
+          Fahazarana mivavaka
+        </label>
+
+        <select
+          style={styles.input}
+          onChange={(e) =>
+            setVavaka(Number(e.target.value))
+          }
+        >
+          <option value={0}>Safidio</option>
+          <option value={5}>Tsara</option>
+          <option value={3}>Antonony</option>
+          <option value={1}>Malemy</option>
+        </select>
+
+        <label style={styles.label}>
+          Famakiana Baiboly
+        </label>
+
+        <select
+          style={styles.input}
+          onChange={(e) =>
+            setBaiboly(Number(e.target.value))
+          }
+        >
+          <option value={0}>Safidio</option>
+          <option value={5}>Isan’andro</option>
+          <option value={3}>Indraindray</option>
+          <option value={1}>Tsy dia manao</option>
+        </select>
+
+        <h2 style={styles.score}>
+          Total Score : {total}
+        </h2>
+
+        <button
+          style={styles.secondaryButton}
+          onClick={onBack}
+        >
+          Miverina
         </button>
       </section>
     </main>
@@ -98,11 +196,38 @@ const styles: Record<string, any> = {
     cursor: "pointer",
   },
 
+  secondaryButton: {
+    background: "#e2e8f0",
+    color: "#0f172a",
+    border: "none",
+    padding: "14px 20px",
+    borderRadius: "12px",
+    marginTop: "20px",
+    cursor: "pointer",
+    marginRight: "10px",
+  },
+
   input: {
     width: "100%",
     padding: "14px",
     marginTop: "14px",
     borderRadius: "10px",
     border: "1px solid #cbd5e1",
+  },
+
+  actions: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+
+  label: {
+    display: "block",
+    marginTop: "20px",
+    fontWeight: "bold",
+  },
+
+  score: {
+    marginTop: "30px",
+    color: "#047857",
   },
 };
