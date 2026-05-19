@@ -1,21 +1,18 @@
 {
   "name": "tanora-mazava-l1-vti",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
+
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
+
   "dependencies": {
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest"
-  },
-  "devDependencies": {
-    "typescript": "latest",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest"
+    "@supabase/supabase-js": "^2.56.0",
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18"
   }
 }
