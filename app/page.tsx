@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "../lib/supabaseClient";
 
 type Screen = "home" | "identite" | "spirituel" | "vti" | "economie" | "taniketsa";
 
