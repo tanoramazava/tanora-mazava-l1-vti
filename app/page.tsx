@@ -195,10 +195,21 @@ function VtiForm({ onBack, onNext }: any) {
 
         <h2 style={styles.score}>Total Score VTI : {total} / 29</h2>
 
-        <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-          <button style={styles.button} onClick={onNext}>Manaraka</button>
-        </div>
+       <div style={styles.actions}>
+  <button style={styles.secondaryButton} onClick={onBack}>
+    Miverina
+  </button>
+
+  <button
+    style={styles.button}
+    onClick={async () => {
+      await sauvegarderScoreSpirituel();
+      onNext();
+    }}
+  >
+    Manaraka
+  </button>
+</div> 
       </section>
     </main>
   );
