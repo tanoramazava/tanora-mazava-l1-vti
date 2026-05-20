@@ -117,7 +117,7 @@ onNext();
 }
 
 
-function SpirituelForm({ onBack, onNext }: any) {
+function SpirituelForm({ tanoraId, onBack, onNext }: any) {
   const [scores, setScores] = useState<number[]>(Array(7).fill(0));
 
   const update = (i: number, v: number) => {
@@ -129,13 +129,14 @@ function SpirituelForm({ onBack, onNext }: any) {
   const total = scores.reduce((s, v) => s + v, 0);
 
   const sauvegarderScoreSpirituel = async () => {
-  await supabase
-    .from("scores")
-    .update({
-      score_arapanahy: total,
-    })
-    .eq("tanora_id", tanoraId);
-};
+    if (!tanoraId) return;
+
+    await supabase
+      .from("scores")
+      .update({ score_arapanahy: total })
+      .eq("tanora_id", tanoraId);
+  };
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
@@ -153,16 +154,19 @@ function SpirituelForm({ onBack, onNext }: any) {
         <h2 style={styles.score}>Total Score Ara-panahy : {total} / 52</h2>
 
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+
           <button
-  type="button"
-  style={styles.button}
-  onClick={() => {
-    onNext();
-  }}
->
-  Manaraka
-</button>
+            style={styles.button}
+            onClick={async () => {
+              await sauvegarderScoreSpirituel();
+              onNext();
+            }}
+          >
+            Manaraka
+          </button>
         </div>
       </section>
     </main>
