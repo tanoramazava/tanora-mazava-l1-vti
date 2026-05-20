@@ -36,9 +36,30 @@ function IdentiteForm({ onBack, onNext }: any) {
           <input key={p} style={styles.input} placeholder={p} />
         ))}
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-          <button style={styles.button} onClick={onNext}>Manaraka</button>
-        </div>
+  <button style={styles.secondaryButton} onClick={onBack}>
+    Miverina
+  </button>
+
+  <button
+    style={styles.button}
+    onClick={async () => {
+      await supabase.from("tanora").insert([
+        {
+          anarana: "Test Tanora",
+          taona: 20,
+          kaomina: "Marofarihy",
+          fokontany: "Betela",
+          vti: "VTI Test",
+        },
+      ]);
+
+      alert("Voatahiry ao Supabase !");
+      onNext();
+    }}
+  >
+    Enregistrer sy Hanohy
+  </button>
+</div>
       </section>
     </main>
   );
