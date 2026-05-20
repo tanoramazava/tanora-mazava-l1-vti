@@ -60,10 +60,11 @@ const tanoraId = data?.[0]?.id;
 await supabase.from("scores").insert([
   {
     tanora_id: tanoraId,
-    score_spirituel: 0,
+    score_arapanahy: 0,
     score_vti: 0,
+    score_economie: 0,
     score_taniketsa: 0,
-    score_global: 0,
+    score_taniketsa_max: 0,
   },
 ]);
 
