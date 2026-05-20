@@ -18,7 +18,15 @@ export default function HomePage() {
     />
   );
 }
-  if (screen === "spirituel") return <SpirituelForm onBack={() => setScreen("identite")} onNext={() => setScreen("vti")} />;
+  if (screen === "spirituel") {
+  return (
+    <SpirituelForm
+      tanoraId={tanoraId}
+      onBack={() => setScreen("identite")}
+      onNext={() => setScreen("vti")}
+    />
+  );
+}
   if (screen === "vti") return <VtiForm onBack={() => setScreen("spirituel")} onNext={() => setScreen("economie")} />;
   if (screen === "economie") return <EconomieForm onBack={() => setScreen("vti")} onNext={() => setScreen("taniketsa")} />;
   if (screen === "taniketsa") return <TaniketsaForm onBack={() => setScreen("economie")} />;
@@ -35,7 +43,7 @@ export default function HomePage() {
     </main>
   );
 }
-function IdentiteForm({ onBack, onNext, onSaved }: any) {
+function SpirituelForm({ tanoraId, onBack, onNext }: any) {
   const [anarana, setAnarana] = useState("");
   const [taona, setTaona] = useState("");
   const [kaomina, setKaomina] = useState("");
@@ -119,6 +127,14 @@ function SpirituelForm({ onBack, onNext }: any) {
 
   const total = scores.reduce((s, v) => s + v, 0);
 
+  const sauvegarderScoreSpirituel = async () => {
+  await supabase
+    .from("scores")
+    .update({
+      score_arapanahy: total,
+    })
+    .eq("tanora_id", tanoraId);
+};
   return (
     <main style={styles.main}>
       <section style={styles.card}>
@@ -137,7 +153,15 @@ function SpirituelForm({ onBack, onNext }: any) {
 
         <div style={styles.actions}>
           <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-          <button style={styles.button} onClick={onNext}>Manaraka</button>
+          <button
+  style={styles.button}
+  onClick={async () => {
+    await sauvegarderScoreSpirituel();
+    onNext();
+  }}
+>
+  Manaraka
+</button>
         </div>
       </section>
     </main>
