@@ -43,7 +43,7 @@ export default function HomePage() {
     </main>
   );
 }
-function IdentiteForm({ onBack, onNext }: any) {
+function IdentiteForm({ onBack, onNext, onSaved }: any) {
   const [anarana, setAnarana] = useState("");
   const [taona, setTaona] = useState("");
   const [kaomina, setKaomina] = useState("");
@@ -85,9 +85,11 @@ await supabase.from("scores").insert([
   },
 ]);
 
+onSaved(tanoraId);
+
 alert("Voatahiry ao Supabase ! ID = " + tanoraId);
+
 onNext();
-  };
 
   return (
     <main style={styles.main}>
