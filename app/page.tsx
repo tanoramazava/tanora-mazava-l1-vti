@@ -43,7 +43,7 @@ export default function HomePage() {
     </main>
   );
 }
-function SpirituelForm({ tanoraId, onBack, onNext }: any) {
+function IdentiteForm({ onBack, onNext }: any) {
   const [anarana, setAnarana] = useState("");
   const [taona, setTaona] = useState("");
   const [kaomina, setKaomina] = useState("");
@@ -85,7 +85,6 @@ await supabase.from("scores").insert([
   },
 ]);
 
-onSaved(tanoraId);
 alert("Voatahiry ao Supabase ! ID = " + tanoraId);
 onNext();
   };
