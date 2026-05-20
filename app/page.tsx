@@ -51,7 +51,7 @@ console.log(data);
 console.log(error);
 
 if (error) {
-  alert("Nisy olana tamin’ny sauvegarde.");
+  alert("Erreur : " + JSON.stringify(error));
   return;
 }
 
