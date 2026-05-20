@@ -153,9 +153,9 @@ function SpirituelForm({ onBack, onNext }: any) {
         <div style={styles.actions}>
           <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
           <button
+  type="button"
   style={styles.button}
-  onClick={async () => {
-    await sauvegarderScoreSpirituel();
+  onClick={() => {
     onNext();
   }}
 >
