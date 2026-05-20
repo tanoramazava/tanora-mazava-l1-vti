@@ -55,7 +55,7 @@ if (error) {
   return;
 }
 
-alert("Voatahiry ao Supabase !");
+alert("Voatahiry ao Supabase ! ID = " + data?.[0]?.id);
 onNext();
   };
 
