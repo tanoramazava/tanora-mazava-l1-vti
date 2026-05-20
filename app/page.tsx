@@ -7,8 +7,17 @@ type Screen = "home" | "identite" | "spirituel" | "vti" | "economie" | "tanikets
 
 export default function HomePage() {
   const [screen, setScreen] = useState<Screen>("home");
+  const [tanoraId, setTanoraId] = useState<number | null>(null);
 
-  if (screen === "identite") return <IdentiteForm onBack={() => setScreen("home")} onNext={() => setScreen("spirituel")} />;
+ if (screen === "identite") {
+  return (
+    <IdentiteForm
+      onBack={() => setScreen("home")}
+      onNext={() => setScreen("spirituel")}
+      onSaved={(id: number) => setTanoraId(id)}
+    />
+  );
+}
   if (screen === "spirituel") return <SpirituelForm onBack={() => setScreen("identite")} onNext={() => setScreen("vti")} />;
   if (screen === "vti") return <VtiForm onBack={() => setScreen("spirituel")} onNext={() => setScreen("economie")} />;
   if (screen === "economie") return <EconomieForm onBack={() => setScreen("vti")} onNext={() => setScreen("taniketsa")} />;
@@ -26,7 +35,7 @@ export default function HomePage() {
     </main>
   );
 }
-function IdentiteForm({ onBack, onNext }: any) {
+function IdentiteForm({ onBack, onNext, onSaved }: any) {
   const [anarana, setAnarana] = useState("");
   const [taona, setTaona] = useState("");
   const [kaomina, setKaomina] = useState("");
@@ -68,6 +77,7 @@ await supabase.from("scores").insert([
   },
 ]);
 
+onSaved(tanoraId);
 alert("Voatahiry ao Supabase ! ID = " + tanoraId);
 onNext();
   };
