@@ -34,23 +34,29 @@ function IdentiteForm({ onBack, onNext }: any) {
   const [vti, setVti] = useState("");
 
   const enregistrer = async () => {
-    const { error } = await supabase.from("tanora").insert([
-      {
-        anarana,
-        taona: Number(taona),
-        kaomina,
-        fokontany,
-        vti,
-      },
-    ]);
+    const { data, error } = await supabase
+  .from("tanora")
+  .insert([
+    {
+      anarana,
+      taona: parseInt(taona),
+      kaomina,
+      fokontany,
+      vti,
+    },
+  ])
+  .select();
 
-    if (error) {
-      alert("Nisy olana tamin’ny sauvegarde.");
-      return;
-    }
+console.log(data);
+console.log(error);
 
-    alert("Voatahiry ao Supabase !");
-    onNext();
+if (error) {
+  alert("Nisy olana tamin’ny sauvegarde.");
+  return;
+}
+
+alert("Voatahiry ao Supabase !");
+onNext();
   };
 
   return (
