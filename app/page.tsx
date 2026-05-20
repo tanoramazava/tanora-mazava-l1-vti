@@ -55,7 +55,19 @@ if (error) {
   return;
 }
 
-alert("Voatahiry ao Supabase ! ID = " + data?.[0]?.id);
+const tanoraId = data?.[0]?.id;
+
+await supabase.from("scores").insert([
+  {
+    tanora_id: tanoraId,
+    score_spirituel: 0,
+    score_vti: 0,
+    score_taniketsa: 0,
+    score_global: 0,
+  },
+]);
+
+alert("Voatahiry ao Supabase ! ID = " + tanoraId);
 onNext();
   };
 
