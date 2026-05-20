@@ -26,44 +26,58 @@ export default function HomePage() {
     </main>
   );
 }
-
 function IdentiteForm({ onBack, onNext }: any) {
+  const [anarana, setAnarana] = useState("");
+  const [taona, setTaona] = useState("");
+  const [kaomina, setKaomina] = useState("");
+  const [fokontany, setFokontany] = useState("");
+  const [vti, setVti] = useState("");
+
+  const enregistrer = async () => {
+    const { error } = await supabase.from("tanora").insert([
+      {
+        anarana,
+        taona: Number(taona),
+        kaomina,
+        fokontany,
+        vti,
+      },
+    ]);
+
+    if (error) {
+      alert("Nisy olana tamin’ny sauvegarde.");
+      return;
+    }
+
+    alert("Voatahiry ao Supabase !");
+    onNext();
+  };
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
         <h1 style={styles.titleSmall}>Famantarana ny Tanora</h1>
-        {["Anarana sy fanampiny", "Taona", "Kaomina", "Fokontany", "VTI misy azy"].map((p) => (
-          <input key={p} style={styles.input} placeholder={p} />
-        ))}
+
+        <input style={styles.input} placeholder="Anarana sy fanampiny" value={anarana} onChange={(e) => setAnarana(e.target.value)} />
+        <input style={styles.input} placeholder="Taona" type="number" value={taona} onChange={(e) => setTaona(e.target.value)} />
+        <input style={styles.input} placeholder="Kaomina" value={kaomina} onChange={(e) => setKaomina(e.target.value)} />
+        <input style={styles.input} placeholder="Fokontany" value={fokontany} onChange={(e) => setFokontany(e.target.value)} />
+        <input style={styles.input} placeholder="VTI misy azy" value={vti} onChange={(e) => setVti(e.target.value)} />
+
         <div style={styles.actions}>
-  <button style={styles.secondaryButton} onClick={onBack}>
-    Miverina
-  </button>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
 
-  <button
-    style={styles.button}
-    onClick={async () => {
-      await supabase.from("tanora").insert([
-        {
-          anarana: "Test Tanora",
-          taona: 20,
-          kaomina: "Marofarihy",
-          fokontany: "Betela",
-          vti: "VTI Test",
-        },
-      ]);
-
-      alert("Voatahiry ao Supabase !");
-      onNext();
-    }}
-  >
-    Enregistrer sy Hanohy
-  </button>
-</div>
+          <button style={styles.button} onClick={enregistrer}>
+            Enregistrer sy Hanohy
+          </button>
+        </div>
       </section>
     </main>
   );
 }
+
 
 function SpirituelForm({ onBack, onNext }: any) {
   const [scores, setScores] = useState<number[]>(Array(7).fill(0));
