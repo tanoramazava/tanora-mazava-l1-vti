@@ -39,7 +39,7 @@ function IdentiteForm({ onBack, onNext }: any) {
   .insert([
     {
       anarana,
-      taona: parseInt(taona),
+      taona: taona ? parseInt(taona) : null,
       kaomina,
       fokontany,
       vti,
