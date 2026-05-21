@@ -442,6 +442,16 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
     }))
   );
 
+  const [reponses, setReponses] = useState(
+    filieres.map(() => ({
+      fananantany: "",
+      fiofanana: "",
+      ezaka: "",
+      tohana: "",
+      diagnostic: "",
+    }))
+  );
+
   const updateSelected = (i: number, checked: boolean) => {
     const copy = [...selected];
     copy[i] = checked;
@@ -458,6 +468,12 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
     const copy = scores.map((s) => ({ ...s }));
     copy[i] = { ...copy[i], [key]: value };
     setScores(copy);
+  };
+
+  const updateReponse = (i: number, key: string, value: string) => {
+    const copy = reponses.map((r) => ({ ...r }));
+    copy[i] = { ...copy[i], [key]: value };
+    setReponses(copy);
   };
 
   const scoreFiliere = (i: number) =>
@@ -514,16 +530,17 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
   const selectedCount = selected.filter(Boolean).length;
   const maxScore = selectedCount * 55;
 
-  const totals = filieres.reduce(
-    (acc, _f, i) => {
-      const t = filiereTotal(i);
-      acc.ca += t.ca;
-      acc.dep += t.dep;
-      acc.benefice += t.benefice;
-      return acc;
-    },
-    { ca: 0, dep: 0, benefice: 0 }
-  );
+  const voly = filiereTotal(0);
+  const vary = filiereTotal(1);
+  const akoho = filiereTotal(2);
+  const kisoa = filiereTotal(3);
+  const tantely = filiereTotal(4);
+
+  const totals = {
+    ca: voly.ca + vary.ca + akoho.ca + kisoa.ca + tantely.ca,
+    dep: voly.dep + vary.dep + akoho.dep + kisoa.dep + tantely.dep,
+    benefice: voly.benefice + vary.benefice + akoho.benefice + kisoa.benefice + tantely.benefice,
+  };
 
   const totalScore = scores.reduce((sum, _s, i) => {
     if (!selected[i]) return sum;
@@ -541,18 +558,13 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       return;
     }
 
-    const voly = filiereTotal(0);
-    const vary = filiereTotal(1);
-    const akoho = filiereTotal(2);
-    const kisoa = filiereTotal(3);
-    const tantely = filiereTotal(4);
-
     const { error: scoreError } = await supabase
       .from("scores")
       .update({
         score_taniketsa: totalScore,
         score_economie: totalEconomie,
         score_taniketsa_max: maxScore,
+
         score_voly_rakotra: selected[0] ? scoreFiliere(0) : 0,
         score_vary: selected[1] ? scoreFiliere(1) : 0,
         score_akoho_gasy: selected[2] ? scoreFiliere(2) : 0,
@@ -601,7 +613,48 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       return;
     }
 
-    alert("Scores sy données économiques voatahiry !");
+    const { error: repError } = await supabase.from("reponses_taniketsa_detaillees").insert([
+      {
+        tanora_id: tanoraId,
+
+        voly_rakotra_fananantany: reponses[0].fananantany,
+        voly_rakotra_fiofanana: reponses[0].fiofanana,
+        voly_rakotra_ezaka: reponses[0].ezaka,
+        voly_rakotra_tohana: reponses[0].tohana,
+        voly_rakotra_diagnostic: reponses[0].diagnostic,
+
+        vary_fananantany: reponses[1].fananantany,
+        vary_fiofanana: reponses[1].fiofanana,
+        vary_ezaka: reponses[1].ezaka,
+        vary_tohana: reponses[1].tohana,
+        vary_diagnostic: reponses[1].diagnostic,
+
+        akoho_gasy_fananantany: reponses[2].fananantany,
+        akoho_gasy_fiofanana: reponses[2].fiofanana,
+        akoho_gasy_ezaka: reponses[2].ezaka,
+        akoho_gasy_tohana: reponses[2].tohana,
+        akoho_gasy_diagnostic: reponses[2].diagnostic,
+
+        kisoa_fananantany: reponses[3].fananantany,
+        kisoa_fiofanana: reponses[3].fiofanana,
+        kisoa_ezaka: reponses[3].ezaka,
+        kisoa_tohana: reponses[3].tohana,
+        kisoa_diagnostic: reponses[3].diagnostic,
+
+        tantely_fananantany: reponses[4].fananantany,
+        tantely_fiofanana: reponses[4].fiofanana,
+        tantely_ezaka: reponses[4].ezaka,
+        tantely_tohana: reponses[4].tohana,
+        tantely_diagnostic: reponses[4].diagnostic,
+      },
+    ]);
+
+    if (repError) {
+      alert("Erreur Réponses détaillées : " + JSON.stringify(repError));
+      return;
+    }
+
+    alert("Tombana feno voatahiry : scores, économies ary réponses détaillées !");
   };
 
   return (
@@ -687,23 +740,48 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   })}
 
                   <h4 style={styles.sectionTitle}>A. Fananantany — 5 points</h4>
-                  <textarea style={styles.textarea} placeholder="An’iza ny tany ? Fanananao ve, an’ny ray aman-dreny, hofaina, sa hafa ? Firy ny refiny ?" />
+                  <textarea
+                    style={styles.textarea}
+                    placeholder="An’iza ny tany ? Fanananao ve, an’ny ray aman-dreny, hofaina, sa hafa ? Firy ny refiny ?"
+                    value={reponses[i].fananantany}
+                    onChange={(e) => updateReponse(i, "fananantany", e.target.value)}
+                  />
                   <ScoreSelect label="Score fananantany" max={5} onChange={(v: number) => updateScore(i, "tany", v)} />
 
                   <h4 style={styles.sectionTitle}>B. Fiofanana — 15 points</h4>
-                  <textarea style={styles.textarea} placeholder="Efa nahazo fiofanana ve ? Hazavao ny votoatin’ny fiofanana sy izay hainao ampiharina." />
+                  <textarea
+                    style={styles.textarea}
+                    placeholder="Efa nahazo fiofanana ve ? Hazavao ny votoatin’ny fiofanana sy izay hainao ampiharina."
+                    value={reponses[i].fiofanana}
+                    onChange={(e) => updateReponse(i, "fiofanana", e.target.value)}
+                  />
                   <ScoreSelect label="Score fiofanana" max={15} onChange={(v: number) => updateScore(i, "fiofanana", v)} />
 
                   <h4 style={styles.sectionTitle}>C. Ezaka sy anjara biriky — 20 points</h4>
-                  <textarea style={styles.textarea} placeholder="Sorito ny ezaka sy anjara biriky: tany, fitaovana, vola, asa tanana, akora, sary, taratasy fanekena." />
+                  <textarea
+                    style={styles.textarea}
+                    placeholder="Sorito ny ezaka sy anjara biriky: tany, fitaovana, vola, asa tanana, akora, sary, taratasy fanekena."
+                    value={reponses[i].ezaka}
+                    onChange={(e) => updateReponse(i, "ezaka", e.target.value)}
+                  />
                   <ScoreSelect label="Score ezaka sy anjara biriky" max={20} onChange={(v: number) => updateScore(i, "ezaka", v)} />
 
                   <h4 style={styles.sectionTitle}>D. Tohana ilaina — 5 points</h4>
-                  <textarea style={styles.textarea} placeholder="Inona no tohana tena ilaina izay tsy vitanao irery intsony ?" />
+                  <textarea
+                    style={styles.textarea}
+                    placeholder="Inona no tohana tena ilaina izay tsy vitanao irery intsony ?"
+                    value={reponses[i].tohana}
+                    onChange={(e) => updateReponse(i, "tohana", e.target.value)}
+                  />
                   <ScoreSelect label="Score tohana ilaina" max={5} onChange={(v: number) => updateScore(i, "tohana", v)} />
 
                   <h4 style={styles.sectionTitle}>E. Diagnostic ara-toekarena sy ara-pitantanana — 10 points</h4>
-                  <textarea style={styles.textarea} placeholder="Efa nivarotra zavatra ve ianao tao anatin’ny 3 taona farany ? Fantatrao ve ny dépenses sy tombom-barotra ? Inona ny fiofanana ilainao ?" />
+                  <textarea
+                    style={styles.textarea}
+                    placeholder="Efa nivarotra zavatra ve ianao tao anatin’ny 3 taona farany ? Fantatrao ve ny dépenses sy tombom-barotra ? Inona ny fiofanana ilainao ?"
+                    value={reponses[i].diagnostic}
+                    onChange={(e) => updateReponse(i, "diagnostic", e.target.value)}
+                  />
                   <ScoreSelect label="Score diagnostic ara-toekarena sy ara-pitantanana" max={10} onChange={(v: number) => updateScore(i, "economie", v)} />
 
                   <h2 style={styles.score}>Score {f.name} : {score} / 55</h2>
