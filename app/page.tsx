@@ -34,13 +34,7 @@ export default function HomePage() {
     />
   );
 }
-    return (
-      <SpirituelForm
-        onBack={() => setScreen("identite")}
-        onNext={() => setScreen("vti")}
-      />
-    );
-  }
+    
 
   if (screen === "vti") {
     return (
