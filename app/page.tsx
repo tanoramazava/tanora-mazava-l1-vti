@@ -227,7 +227,7 @@ function IdentiteForm({
     </main>
   );
 }
-function SpirituelForm({ tanoraId, onBack, onNext }: any)
+function SpirituelForm({ tanoraId, onBack, onNext }: any) {
   const [scores, setScores] = useState<number[]>(
     Array(7).fill(0)
   );
