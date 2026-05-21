@@ -26,6 +26,14 @@ export default function HomePage() {
   }
 
   if (screen === "spirituel") {
+  return (
+    <SpirituelForm
+      tanoraId={tanoraId}
+      onBack={() => setScreen("identite")}
+      onNext={() => setScreen("vti")}
+    />
+  );
+}
     return (
       <SpirituelForm
         onBack={() => setScreen("identite")}
@@ -225,7 +233,7 @@ function IdentiteForm({
     </main>
   );
 }
-function SpirituelForm({ onBack, onNext }: any) {
+function SpirituelForm({ tanoraId, onBack, onNext }: any)
   const [scores, setScores] = useState<number[]>(
     Array(7).fill(0)
   );
@@ -237,7 +245,16 @@ function SpirituelForm({ onBack, onNext }: any) {
   };
 
   const total = scores.reduce((s, v) => s + v, 0);
+const sauvegarderScoreSpirituel = async () => {
+  if (!tanoraId) return;
 
+  await supabase
+    .from("scores")
+    .update({
+      score_arapanahy: total,
+    })
+    .eq("tanora_id", tanoraId);
+};
   return (
     <main style={styles.main}>
       <section style={styles.card}>
@@ -339,9 +356,15 @@ function SpirituelForm({ onBack, onNext }: any) {
             Miverina
           </button>
 
-          <button style={styles.button} onClick={onNext}>
-            Manaraka
-          </button>
+          <button
+  style={styles.button}
+  onClick={async () => {
+    await sauvegarderScoreSpirituel();
+    onNext();
+  }}
+>
+  Manaraka
+</button>
         </div>
       </section>
     </main>
