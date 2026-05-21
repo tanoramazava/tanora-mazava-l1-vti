@@ -361,120 +361,61 @@ const sauvegarderScoreSpirituel = async () => {
 }
 
 function VtiForm({ tanoraId, onBack, onNext }: any) {
-  const [scores, setScores] = useState<number[]>(
-    Array(7).fill(0)
-  );
+  const [scores, setScores] = useState<number[]>(Array(7).fill(0));
 
   const update = (i: number, v: number) => {
     const copy = [...scores];
     copy[i] = v;
     setScores(copy);
   };
-const total = scores.reduce((s, v) => s + v, 0);
-  const sauvegarderScoreVti = async () => {
-  if (!tanoraId) return;
 
-  await supabase
-    .from("scores")
-    .update({
-      score_vti: total,
-    })
-    .eq("tanora_id", tanoraId);
-};
+  const total = scores.reduce((s, v) => s + v, 0);
+
+  const sauvegarderScoreVti = async () => {
+    if (!tanoraId) {
+      alert("ID Tanora tsy hita.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("scores")
+      .update({ score_vti: total })
+      .eq("tanora_id", tanoraId);
+
+    if (error) {
+      alert("Erreur VTI : " + JSON.stringify(error));
+      return;
+    }
+  };
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Fizarana 2 — Firotsahana ao anaty VTI
-        </h1>
-
+        <h1 style={styles.titleSmall}>Fizarana 2 — Firotsahana ao anaty VTI</h1>
         <p style={styles.text}>Totalibeny : 29 points</p>
 
-        <OptionSelect
-          label="1. Efa tao anaty fikambanana ve ?"
-          options={[
-            ["Eny — 2 points", 2],
-            ["Tsia — 0 point", 0],
-          ]}
-          onChange={(v: number) => update(0, v)}
-        />
+        <OptionSelect label="1. Efa tao anaty fikambanana ve ?" options={[["Eny — 2 points", 2], ["Tsia — 0 point", 0]]} onChange={(v: number) => update(0, v)} />
+        <OptionSelect label="2. Efa tao anaty fikambanana tanora ve ?" options={[["Eny — 2 points", 2], ["Tsia — 0 point", 0]]} onChange={(v: number) => update(1, v)} />
+        <OptionSelect label="3. Andraikitra teo anivon’ny vohitra na Fokontany" options={[["Mivaingana sy mazava — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy nisy — 0 point", 0]]} onChange={(v: number) => update(2, v)} />
+        <OptionSelect label="4. Fahalalana mikasika ny VTI misy anao" options={[["Mazava tsara sy marina — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy voavaly — 0 point", 0]]} onChange={(v: number) => update(3, v)} />
+        <OptionSelect label="5. Ao anaty Vaomiera inona no misy anao ?" options={[["Ao anaty Vaomiera mazava — 5 points", 5], ["Tsy ao anaty Vaomiera — 0 point", 0]]} onChange={(v: number) => update(4, v)} />
+        <OptionSelect label="6. Inona no andraikitrao ao anatin’ny Vaomiera ?" options={[["Mazava tsara sy marina — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy voavaly — 0 point", 0]]} onChange={(v: number) => update(5, v)} />
+        <OptionSelect label="7. Adiny firy isan-kerinandro no atokanao hiasa ao anaty Vaomiera ?" options={[["Adiny 4 na mihoatra — 5 points", 5], ["Mihoatra adiny 2 — 3 points", 3], ["Latsaky ny adiny 2 — 1 point", 1], ["Tsy misy — 0 point", 0]]} onChange={(v: number) => update(6, v)} />
 
-        <OptionSelect
-          label="2. Efa tao anaty fikambanana tanora ve ?"
-          options={[
-            ["Eny — 2 points", 2],
-            ["Tsia — 0 point", 0],
-          ]}
-          onChange={(v: number) => update(1, v)}
-        />
-
-        <OptionSelect
-          label="3. Andraikitra teo anivon’ny vohitra na Fokontany"
-          options={[
-            ["Mivaingana sy mazava — 5 points", 5],
-            ["Manjavozavo — 2 points", 2],
-            ["Tsy nisy — 0 point", 0],
-          ]}
-          onChange={(v: number) => update(2, v)}
-        />
-
-        <OptionSelect
-          label="4. Fahalalana mikasika ny VTI misy anao"
-          options={[
-            ["Mazava tsara sy marina — 5 points", 5],
-            ["Manjavozavo — 2 points", 2],
-            ["Tsy voavaly — 0 point", 0],
-          ]}
-          onChange={(v: number) => update(3, v)}
-        />
-
-        <OptionSelect
-          label="5. Ao anaty Vaomiera inona no misy anao ?"
-          options={[
-            ["Ao anaty Vaomiera mazava — 5 points", 5],
-            ["Tsy ao anaty Vaomiera — 0 point", 0],
-          ]}
-          onChange={(v: number) => update(4, v)}
-        />
-
-        <OptionSelect
-          label="6. Inona no andraikitrao ao anatin’ny Vaomiera ?"
-          options={[
-            ["Mazava tsara sy marina — 5 points", 5],
-            ["Manjavozavo — 2 points", 2],
-            ["Tsy voavaly — 0 point", 0],
-          ]}
-          onChange={(v: number) => update(5, v)}
-        />
-
-        <OptionSelect
-          label="7. Adiny firy isan-kerinandro no atokanao hiasa ao anaty Vaomiera ?"
-          options={[
-            ["Adiny 4 na mihoatra — 5 points", 5],
-            ["Mihoatra adiny 2 — 3 points", 3],
-            ["Latsaky ny adiny 2 — 1 point", 1],
-            ["Tsy misy — 0 point", 0],
-          ]}
-          onChange={(v: number) => update(6, v)}
-        />
-
-        <h2 style={styles.score}>
-          Total Score VTI : {total} / 29
-        </h2>
+        <h2 style={styles.score}>Total Score VTI : {total} / 29</h2>
 
         <div style={styles.actions}>
-         <button
-  style={styles.button}
-  onClick={async () => {
-    await sauvegarderScoreVti();
-    onNext();
-  }}
->
-  Manaraka
-</button>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
 
-          <button style={styles.button} onClick={onNext}>
+          <button
+            style={styles.button}
+            onClick={async () => {
+              await sauvegarderScoreVti();
+              onNext();
+            }}
+          >
             Manaraka
           </button>
         </div>
