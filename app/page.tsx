@@ -499,6 +499,16 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
     setScores(copy);
   };
 
+  const scoreFiliere = (i: number) => {
+    return (
+      scores[i].tany +
+      scores[i].fiofanana +
+      scores[i].ezaka +
+      scores[i].tohana +
+      scores[i].economie
+    );
+  };
+
   const yearData = (i: number, year: number) => {
     const f = filieres[i];
 
@@ -540,20 +550,22 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
   const totals = filieres.reduce(
     (acc, _f, i) => {
       if (!selected[i]) return acc;
+
       [0, 1, 2].forEach((year) => {
         const d = yearData(i, year);
         acc.ca += d.ca;
         acc.dep += d.dep;
         acc.benefice += d.benefice;
       });
+
       return acc;
     },
     { ca: 0, dep: 0, benefice: 0 }
   );
 
-  const totalScore = scores.reduce((sum, s, i) => {
+  const totalScore = scores.reduce((sum, _s, i) => {
     if (!selected[i]) return sum;
-    return sum + s.tany + s.fiofanana + s.ezaka + s.tohana + s.economie;
+    return sum + scoreFiliere(i);
   }, 0);
 
   const totalEconomie = scores.reduce((sum, s, i) => {
@@ -573,6 +585,12 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
         score_taniketsa: totalScore,
         score_economie: totalEconomie,
         score_taniketsa_max: maxScore,
+
+        score_voly_rakotra: selected[0] ? scoreFiliere(0) : 0,
+        score_vary: selected[1] ? scoreFiliere(1) : 0,
+        score_akoho_gasy: selected[2] ? scoreFiliere(2) : 0,
+        score_kisoa: selected[3] ? scoreFiliere(3) : 0,
+        score_tantely: selected[4] ? scoreFiliere(4) : 0,
       })
       .eq("tanora_id", tanoraId);
 
@@ -598,12 +616,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
         </div>
 
         {filieres.map((f, i) => {
-          const scoreFiliere =
-            scores[i].tany +
-            scores[i].fiofanana +
-            scores[i].ezaka +
-            scores[i].tohana +
-            scores[i].economie;
+          const score = scoreFiliere(i);
 
           return (
             <div key={f.name} style={styles.block}>
@@ -707,7 +720,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <textarea style={styles.textarea} placeholder="Efa nivarotra zavatra ve ianao tao anatin’ny 3 taona farany ? Fantatrao ve ny dépenses sy tombom-barotra ? Inona ny fiofanana ilainao ?" />
                   <ScoreSelect label="Score diagnostic ara-toekarena sy ara-pitantanana" max={10} onChange={(v: number) => updateScore(i, "economie", v)} />
 
-                  <h2 style={styles.score}>Score {f.name} : {scoreFiliere} / 55</h2>
+                  <h2 style={styles.score}>Score {f.name} : {score} / 55</h2>
                 </>
               )}
             </div>
