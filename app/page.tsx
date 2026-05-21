@@ -499,15 +499,8 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
     setScores(copy);
   };
 
-  const scoreFiliere = (i: number) => {
-    return (
-      scores[i].tany +
-      scores[i].fiofanana +
-      scores[i].ezaka +
-      scores[i].tohana +
-      scores[i].economie
-    );
-  };
+  const scoreFiliere = (i: number) =>
+    scores[i].tany + scores[i].fiofanana + scores[i].ezaka + scores[i].tohana + scores[i].economie;
 
   const yearData = (i: number, year: number) => {
     const f = filieres[i];
@@ -519,9 +512,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       const reinvestis = totalPoussins * 0.25;
       const vendus = totalPoussins * 0.75;
       const ca = vendus * 16000;
-      const chargesVente = vendus * 7000;
-      const investissementInitial = year === 0 ? initialHouses * 430000 : 0;
-      const dep = chargesVente + investissementInitial;
+      const dep = vendus * 7000 + (year === 0 ? initialHouses * 430000 : 0);
 
       return {
         ca,
@@ -544,20 +535,30 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
     return { ca, dep, benefice: ca - dep, detail: `${n} ${f.unitName} × référence Taona ${year + 1}` };
   };
 
+  const filiereTotal = (i: number) => {
+    if (!selected[i]) return { ca: 0, dep: 0, benefice: 0 };
+
+    return [0, 1, 2].reduce(
+      (acc, year) => {
+        const d = yearData(i, year);
+        acc.ca += d.ca;
+        acc.dep += d.dep;
+        acc.benefice += d.benefice;
+        return acc;
+      },
+      { ca: 0, dep: 0, benefice: 0 }
+    );
+  };
+
   const selectedCount = selected.filter(Boolean).length;
   const maxScore = selectedCount * 55;
 
   const totals = filieres.reduce(
     (acc, _f, i) => {
-      if (!selected[i]) return acc;
-
-      [0, 1, 2].forEach((year) => {
-        const d = yearData(i, year);
-        acc.ca += d.ca;
-        acc.dep += d.dep;
-        acc.benefice += d.benefice;
-      });
-
+      const t = filiereTotal(i);
+      acc.ca += t.ca;
+      acc.dep += t.dep;
+      acc.benefice += t.benefice;
       return acc;
     },
     { ca: 0, dep: 0, benefice: 0 }
@@ -579,13 +580,18 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       return;
     }
 
-    const { error } = await supabase
+    const voly = filiereTotal(0);
+    const vary = filiereTotal(1);
+    const akoho = filiereTotal(2);
+    const kisoa = filiereTotal(3);
+    const tantely = filiereTotal(4);
+
+    const { error: scoreError } = await supabase
       .from("scores")
       .update({
         score_taniketsa: totalScore,
         score_economie: totalEconomie,
         score_taniketsa_max: maxScore,
-
         score_voly_rakotra: selected[0] ? scoreFiliere(0) : 0,
         score_vary: selected[1] ? scoreFiliere(1) : 0,
         score_akoho_gasy: selected[2] ? scoreFiliere(2) : 0,
@@ -594,12 +600,47 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       })
       .eq("tanora_id", tanoraId);
 
-    if (error) {
-      alert("Erreur Taniketsa : " + JSON.stringify(error));
+    if (scoreError) {
+      alert("Erreur Scores : " + JSON.stringify(scoreError));
       return;
     }
 
-    alert("Scores Taniketsa voatahiry !");
+    const { error: ecoError } = await supabase.from("economies_taniketsa").insert([
+      {
+        tanora_id: tanoraId,
+
+        ca_voly_rakotra: voly.ca,
+        depenses_voly_rakotra: voly.dep,
+        benefice_voly_rakotra: voly.benefice,
+
+        ca_vary: vary.ca,
+        depenses_vary: vary.dep,
+        benefice_vary: vary.benefice,
+
+        ca_akoho_gasy: akoho.ca,
+        depenses_akoho_gasy: akoho.dep,
+        benefice_akoho_gasy: akoho.benefice,
+
+        ca_kisoa: kisoa.ca,
+        depenses_kisoa: kisoa.dep,
+        benefice_kisoa: kisoa.benefice,
+
+        ca_tantely: tantely.ca,
+        depenses_tantely: tantely.dep,
+        benefice_tantely: tantely.benefice,
+
+        ca_total: totals.ca,
+        depenses_total: totals.dep,
+        benefice_total: totals.benefice,
+      },
+    ]);
+
+    if (ecoError) {
+      alert("Erreur Économie : " + JSON.stringify(ecoError));
+      return;
+    }
+
+    alert("Scores sy données économiques voatahiry !");
   };
 
   return (
@@ -621,11 +662,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
           return (
             <div key={f.name} style={styles.block}>
               <label style={styles.checkboxLabel}>
-                <input
-                  type="checkbox"
-                  checked={selected[i]}
-                  onChange={(e) => updateSelected(i, e.target.checked)}
-                />
+                <input type="checkbox" checked={selected[i]} onChange={(e) => updateSelected(i, e.target.checked)} />
                 Safidio ity Taniketsa ity : {f.name}
               </label>
 
@@ -636,13 +673,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   {f.type === "akoho" && (
                     <>
                       <label style={styles.label}>{f.unitQuestion}</label>
-                      <input
-                        style={styles.input}
-                        type="number"
-                        min="0"
-                        placeholder="Ohatra : 1 na 2"
-                        onChange={(e) => updateUnit(i, 0, Number(e.target.value))}
-                      />
+                      <input style={styles.input} type="number" min="0" placeholder="Ohatra : 1 na 2" onChange={(e) => updateUnit(i, 0, Number(e.target.value))} />
                     </>
                   )}
 
@@ -656,13 +687,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                         {f.type !== "akoho" && (
                           <>
                             <label style={styles.label}>{f.unitQuestion}</label>
-                            <input
-                              style={styles.input}
-                              type="number"
-                              min="0"
-                              placeholder={`Isan’ny ${f.unitName}`}
-                              onChange={(e) => updateUnit(i, year, Number(e.target.value))}
-                            />
+                            <input style={styles.input} type="number" min="0" placeholder={`Isan’ny ${f.unitName}`} onChange={(e) => updateUnit(i, year, Number(e.target.value))} />
                           </>
                         )}
 
@@ -732,12 +757,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
             Miverina
           </button>
 
-          <button
-            style={styles.button}
-            onClick={async () => {
-              await sauvegarderScoresTaniketsa();
-            }}
-          >
+          <button style={styles.button} onClick={sauvegarderScoresTaniketsa}>
             Vita ny Tombana
           </button>
         </div>
