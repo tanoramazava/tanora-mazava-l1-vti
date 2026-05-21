@@ -209,19 +209,13 @@ function IdentiteForm({
           onChange={(e) => setVti(e.target.value)}
         />
 
-       <div style={styles.actions}>
+      <div style={styles.actions}>
   <button style={styles.secondaryButton} onClick={onBack}>
     Miverina
   </button>
 
-  <button
-    style={styles.button}
-    onClick={async () => {
-      await sauvegarderScoreVti();
-      onNext();
-    }}
-  >
-    Manaraka
+  <button style={styles.button} onClick={enregistrer}>
+    Enregistrer sy Hanohy
   </button>
 </div>
       </section>
