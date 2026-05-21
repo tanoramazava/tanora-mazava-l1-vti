@@ -8,7 +8,6 @@ type Screen =
   | "identite"
   | "spirituel"
   | "vti"
-  | "economie"
   | "taniketsa";
 
 export default function HomePage() {
@@ -26,43 +25,33 @@ export default function HomePage() {
   }
 
   if (screen === "spirituel") {
-  return (
-    <SpirituelForm
-      tanoraId={tanoraId}
-      onBack={() => setScreen("identite")}
-      onNext={() => setScreen("vti")}
-    />
-  );
-}
-    
+    return (
+      <SpirituelForm
+        tanoraId={tanoraId}
+        onBack={() => setScreen("identite")}
+        onNext={() => setScreen("vti")}
+      />
+    );
+  }
 
   if (screen === "vti") {
-  return (
-    <VtiForm
-      tanoraId={tanoraId}
-      onBack={() => setScreen("spirituel")}
-      onNext={() => setScreen("economie")}
-    />
-  );
-}
-
-  if (screen === "economie") {
     return (
-      <EconomieForm
-        onBack={() => setScreen("vti")}
+      <VtiForm
+        tanoraId={tanoraId}
+        onBack={() => setScreen("spirituel")}
         onNext={() => setScreen("taniketsa")}
       />
     );
   }
 
- if (screen === "taniketsa") {
-  return (
-    <TaniketsaForm
-      tanoraId={tanoraId}
-      onBack={() => setScreen("economie")}
-    />
-  );
-}
+  if (screen === "taniketsa") {
+    return (
+      <TaniketsaForm
+        tanoraId={tanoraId}
+        onBack={() => setScreen("vti")}
+      />
+    );
+  }
 
   return (
     <main style={styles.main}>
@@ -83,7 +72,6 @@ export default function HomePage() {
     </main>
   );
 }
-
 function IdentiteForm({
   onBack,
   onNext,
@@ -429,34 +417,7 @@ function VtiForm({ tanoraId, onBack, onNext }: any) {
   );
 }
 
-function EconomieForm({ onBack, onNext }: any) {
-  return (
-    <main style={styles.main}>
-      <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Fanadihadiana Ara-toekarena
-        </h1>
 
-        <p style={styles.text}>
-          Module économie stable. Tohizo mankany amin’ny Taniketsa Fandraharahana.
-        </p>
-
-        <div style={styles.actions}>
-          <button
-            style={styles.secondaryButton}
-            onClick={onBack}
-          >
-            Miverina
-          </button>
-
-          <button style={styles.button} onClick={onNext}>
-            Manaraka
-          </button>
-        </div>
-      </section>
-    </main>
-  );
-}
 function TaniketsaForm({ tanoraId, onBack }: any) {
   const filieres = [
     { type: "voly", name: "Voly rakotra 500m²", unitQuestion: "Parcelle 500m² firy no ho volenao ?", unitName: "parcelle", caRef: [754800, 876800, 876800], depRef: [230000, 110000, 170000] },
