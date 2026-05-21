@@ -55,9 +55,14 @@ export default function HomePage() {
     );
   }
 
-  if (screen === "taniketsa") {
-    return <TaniketsaForm onBack={() => setScreen("economie")} />;
-  }
+ if (screen === "taniketsa") {
+  return (
+    <TaniketsaForm
+      tanoraId={tanoraId}
+      onBack={() => setScreen("economie")}
+    />
+  );
+}
 
   return (
     <main style={styles.main}>
@@ -452,7 +457,7 @@ function EconomieForm({ onBack, onNext }: any) {
     </main>
   );
 }
-function TaniketsaForm({ onBack }: any) {
+function TaniketsaForm({ tanoraId, onBack }: any) {
   const filieres = [
     { type: "voly", name: "Voly rakotra 500m²", unitQuestion: "Parcelle 500m² firy no ho volenao ?", unitName: "parcelle", caRef: [754800, 876800, 876800], depRef: [230000, 110000, 170000] },
     { type: "vary", name: "Voly vary 750m²", unitQuestion: "Parcelle 750m² firy no ho volenao ?", unitName: "parcelle", caRef: [450000, 600000, 600000], depRef: [350000, 350000, 350000] },
@@ -512,7 +517,7 @@ function TaniketsaForm({ onBack }: any) {
         ca,
         dep,
         benefice: ca - dep,
-        detail: `${activeHouses.toLocaleString()} tranon’akoho actifs ; ${totalPoussins.toLocaleString()} poussins ; ${reinvestis.toLocaleString()} réinvestis ; ${vendus.toLocaleString()} amidy ; charges sakafo/vaksiny 7 000 Ar/poussin vendu`,
+        detail: `${activeHouses.toLocaleString()} tranon’akoho actifs ; ${totalPoussins.toLocaleString()} poussins ; ${reinvestis.toLocaleString()} réinvestis ; ${vendus.toLocaleString()} amidy ; charges 7 000 Ar/poussin vendu`,
       };
     }
 
@@ -526,12 +531,7 @@ function TaniketsaForm({ onBack }: any) {
     const ca = n * f.caRef[year];
     const dep = n * f.depRef[year];
 
-    return {
-      ca,
-      dep,
-      benefice: ca - dep,
-      detail: `${n} ${f.unitName} × référence Taona ${year + 1}`,
-    };
+    return { ca, dep, benefice: ca - dep, detail: `${n} ${f.unitName} × référence Taona ${year + 1}` };
   };
 
   const selectedCount = selected.filter(Boolean).length;
@@ -556,6 +556,34 @@ function TaniketsaForm({ onBack }: any) {
     return sum + s.tany + s.fiofanana + s.ezaka + s.tohana + s.economie;
   }, 0);
 
+  const totalEconomie = scores.reduce((sum, s, i) => {
+    if (!selected[i]) return sum;
+    return sum + s.economie;
+  }, 0);
+
+  const sauvegarderScoresTaniketsa = async () => {
+    if (!tanoraId) {
+      alert("ID Tanora tsy hita.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("scores")
+      .update({
+        score_taniketsa: totalScore,
+        score_economie: totalEconomie,
+        score_taniketsa_max: maxScore,
+      })
+      .eq("tanora_id", tanoraId);
+
+    if (error) {
+      alert("Erreur Taniketsa : " + JSON.stringify(error));
+      return;
+    }
+
+    alert("Scores Taniketsa voatahiry !");
+  };
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
@@ -570,12 +598,21 @@ function TaniketsaForm({ onBack }: any) {
         </div>
 
         {filieres.map((f, i) => {
-          const scoreFiliere = scores[i].tany + scores[i].fiofanana + scores[i].ezaka + scores[i].tohana + scores[i].economie;
+          const scoreFiliere =
+            scores[i].tany +
+            scores[i].fiofanana +
+            scores[i].ezaka +
+            scores[i].tohana +
+            scores[i].economie;
 
           return (
             <div key={f.name} style={styles.block}>
               <label style={styles.checkboxLabel}>
-                <input type="checkbox" checked={selected[i]} onChange={(e) => updateSelected(i, e.target.checked)} />
+                <input
+                  type="checkbox"
+                  checked={selected[i]}
+                  onChange={(e) => updateSelected(i, e.target.checked)}
+                />
                 Safidio ity Taniketsa ity : {f.name}
               </label>
 
@@ -586,7 +623,13 @@ function TaniketsaForm({ onBack }: any) {
                   {f.type === "akoho" && (
                     <>
                       <label style={styles.label}>{f.unitQuestion}</label>
-                      <input style={styles.input} type="number" min="0" placeholder="Ohatra : 1 na 2" onChange={(e) => updateUnit(i, 0, Number(e.target.value))} />
+                      <input
+                        style={styles.input}
+                        type="number"
+                        min="0"
+                        placeholder="Ohatra : 1 na 2"
+                        onChange={(e) => updateUnit(i, 0, Number(e.target.value))}
+                      />
                     </>
                   )}
 
@@ -600,14 +643,39 @@ function TaniketsaForm({ onBack }: any) {
                         {f.type !== "akoho" && (
                           <>
                             <label style={styles.label}>{f.unitQuestion}</label>
-                            <input style={styles.input} type="number" min="0" placeholder={`Isan’ny ${f.unitName}`} onChange={(e) => updateUnit(i, year, Number(e.target.value))} />
+                            <input
+                              style={styles.input}
+                              type="number"
+                              min="0"
+                              placeholder={`Isan’ny ${f.unitName}`}
+                              onChange={(e) => updateUnit(i, year, Number(e.target.value))}
+                            />
                           </>
                         )}
 
                         {f.type === "tantely" && (
                           <>
-                            <input style={styles.input} type="number" placeholder="CA vinavinaina amin’ny tantely" onChange={(e) => { const copy = [...tantelyCA]; copy[year] = Number(e.target.value); setTantelyCA(copy); }} />
-                            <input style={styles.input} type="number" placeholder="Dépenses vinavinaina amin’ny tantely" onChange={(e) => { const copy = [...tantelyDep]; copy[year] = Number(e.target.value); setTantelyDep(copy); }} />
+                            <input
+                              style={styles.input}
+                              type="number"
+                              placeholder="CA vinavinaina amin’ny tantely"
+                              onChange={(e) => {
+                                const copy = [...tantelyCA];
+                                copy[year] = Number(e.target.value);
+                                setTantelyCA(copy);
+                              }}
+                            />
+
+                            <input
+                              style={styles.input}
+                              type="number"
+                              placeholder="Dépenses vinavinaina amin’ny tantely"
+                              onChange={(e) => {
+                                const copy = [...tantelyDep];
+                                copy[year] = Number(e.target.value);
+                                setTantelyDep(copy);
+                              }}
+                            />
                           </>
                         )}
 
@@ -646,12 +714,24 @@ function TaniketsaForm({ onBack }: any) {
           );
         })}
 
-        <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
+        <div style={styles.actions}>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+
+          <button
+            style={styles.button}
+            onClick={async () => {
+              await sauvegarderScoresTaniketsa();
+            }}
+          >
+            Vita ny Tombana
+          </button>
+        </div>
       </section>
     </main>
   );
 }
-
 function OptionSelect({ label, options, onChange }: any) {
   return (
     <div>
