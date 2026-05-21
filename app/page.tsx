@@ -37,13 +37,14 @@ export default function HomePage() {
     
 
   if (screen === "vti") {
-    return (
-      <VtiForm
-        onBack={() => setScreen("spirituel")}
-        onNext={() => setScreen("economie")}
-      />
-    );
-  }
+  return (
+    <VtiForm
+      tanoraId={tanoraId}
+      onBack={() => setScreen("spirituel")}
+      onNext={() => setScreen("economie")}
+    />
+  );
+}
 
   if (screen === "economie") {
     return (
@@ -365,7 +366,7 @@ const sauvegarderScoreSpirituel = async () => {
   );
 }
 
-function VtiForm({ onBack, onNext }: any) {
+function VtiForm({ tanoraId, onBack, onNext }: any) {
   const [scores, setScores] = useState<number[]>(
     Array(7).fill(0)
   );
@@ -375,8 +376,17 @@ function VtiForm({ onBack, onNext }: any) {
     copy[i] = v;
     setScores(copy);
   };
+const total = scores.reduce((s, v) => s + v, 0);
+  const sauvegarderScoreVti = async () => {
+  if (!tanoraId) return;
 
-  const total = scores.reduce((s, v) => s + v, 0);
+  await supabase
+    .from("scores")
+    .update({
+      score_vti: total,
+    })
+    .eq("tanora_id", tanoraId);
+};
 
   return (
     <main style={styles.main}>
@@ -460,12 +470,15 @@ function VtiForm({ onBack, onNext }: any) {
         </h2>
 
         <div style={styles.actions}>
-          <button
-            style={styles.secondaryButton}
-            onClick={onBack}
-          >
-            Miverina
-          </button>
+         <button
+  style={styles.button}
+  onClick={async () => {
+    await sauvegarderScoreVti();
+    onNext();
+  }}
+>
+  Manaraka
+</button>
 
           <button style={styles.button} onClick={onNext}>
             Manaraka
