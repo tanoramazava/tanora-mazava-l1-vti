@@ -9,7 +9,8 @@ type Screen =
   | "spirituel"
   | "vti"
   | "taniketsa"
-  | "imprimable";
+  | "imprimable"
+  | "fiche";
 
 export default function HomePage() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -58,6 +59,10 @@ export default function HomePage() {
     return <FormulaireVierge onBack={() => setScreen("home")} />;
   }
 
+  if (screen === "fiche") {
+    return <FicheRemplie onBack={() => setScreen("home")} />;
+  }
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
@@ -67,18 +72,16 @@ export default function HomePage() {
           TOMBANA FANOMBOHANA VTI
         </h2>
 
-        <button
-          style={styles.button}
-          onClick={() => setScreen("identite")}
-        >
+        <button style={styles.button} onClick={() => setScreen("identite")}>
           Hanomboka ny Tombana
         </button>
 
-        <button
-          style={styles.secondaryButton}
-          onClick={() => setScreen("imprimable")}
-        >
+        <button style={styles.secondaryButton} onClick={() => setScreen("imprimable")}>
           Version imprimable vierge
+        </button>
+
+        <button style={styles.secondaryButton} onClick={() => setScreen("fiche")}>
+          Fiche remplie par ID Tanora
         </button>
       </section>
     </main>
@@ -1011,7 +1014,160 @@ function OptionSelect({ label, options, onChange }: any) {
     </div>
   );
 }
+function FicheRemplie({ onBack }: any) {
+  const [id, setId] = useState("");
+  const [tanora, setTanora] = useState<any>(null);
+  const [scores, setScores] = useState<any>(null);
+  const [eco, setEco] = useState<any>(null);
+  const [rep, setRep] = useState<any>(null);
 
+  const chargerFiche = async () => {
+    const tanoraId = parseInt(id);
+
+    const { data: tanoraData } = await supabase
+      .from("tanora")
+      .select("*")
+      .eq("id", tanoraId)
+      .single();
+
+    const { data: scoresData } = await supabase
+      .from("scores")
+      .select("*")
+      .eq("tanora_id", tanoraId)
+      .single();
+
+    const { data: ecoData } = await supabase
+      .from("economies_taniketsa")
+      .select("*")
+      .eq("tanora_id", tanoraId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    const { data: repData } = await supabase
+      .from("reponses_taniketsa_detaillees")
+      .select("*")
+      .eq("tanora_id", tanoraId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    setTanora(tanoraData);
+    setScores(scoresData);
+    setEco(ecoData);
+    setRep(repData);
+  };
+
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>Fiche individuelle remplie</h1>
+
+        <input
+          style={styles.input}
+          type="number"
+          placeholder="Ampidiro ny ID Tanora"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+        />
+
+        <button style={styles.button} onClick={chargerFiche}>
+          Charger la fiche
+        </button>
+
+        {tanora && (
+          <>
+            <h2>1. Identité</h2>
+            <p>Anarana : {tanora.anarana}</p>
+            <p>Taona : {tanora.taona}</p>
+            <p>Faritra : {tanora.faritra}</p>
+            <p>Distrika : {tanora.distrika}</p>
+            <p>Kaomina : {tanora.kaomina}</p>
+            <p>Type Kaomina : {tanora.type_kaomina}</p>
+            <p>Fokontany : {tanora.fokontany}</p>
+            <p>VTI : {tanora.vti}</p>
+
+            <h2>2. Scores</h2>
+            <p>Ara-panahy : {scores?.score_arapanahy} / 52</p>
+            <p>VTI : {scores?.score_vti} / 29</p>
+            <p>Économie : {scores?.score_economie}</p>
+            <p>Taniketsa : {scores?.score_taniketsa} / {scores?.score_taniketsa_max}</p>
+            <p>Voly rakotra : {scores?.score_voly_rakotra} / 55</p>
+            <p>Vary : {scores?.score_vary} / 55</p>
+            <p>Akoho gasy : {scores?.score_akoho_gasy} / 55</p>
+            <p>Kisoa : {scores?.score_kisoa} / 55</p>
+            <p>Tantely : {scores?.score_tantely} / 55</p>
+
+            <h2>3. Synthèse économique 3 taona</h2>
+            <p>CA total : {eco?.ca_total?.toLocaleString()} Ar</p>
+            <p>Dépenses total : {eco?.depenses_total?.toLocaleString()} Ar</p>
+            <p>Bénéfice total : {eco?.benefice_total?.toLocaleString()} Ar</p>
+
+            <h2>4. Détails économiques par filière</h2>
+            <p>Voly rakotra — CA: {eco?.ca_voly_rakotra} | Dépenses: {eco?.depenses_voly_rakotra} | Bénéfice: {eco?.benefice_voly_rakotra}</p>
+            <p>Vary — CA: {eco?.ca_vary} | Dépenses: {eco?.depenses_vary} | Bénéfice: {eco?.benefice_vary}</p>
+            <p>Akoho gasy — CA: {eco?.ca_akoho_gasy} | Dépenses: {eco?.depenses_akoho_gasy} | Bénéfice: {eco?.benefice_akoho_gasy}</p>
+            <p>Kisoa — CA: {eco?.ca_kisoa} | Dépenses: {eco?.depenses_kisoa} | Bénéfice: {eco?.benefice_kisoa}</p>
+            <p>Tantely — CA: {eco?.ca_tantely} | Dépenses: {eco?.depenses_tantely} | Bénéfice: {eco?.benefice_tantely}</p>
+
+            <h2>5. Réponses détaillées</h2>
+
+            <h3>Voly rakotra</h3>
+            <p>Fananantany : {rep?.voly_rakotra_fananantany}</p>
+            <p>Fiofanana : {rep?.voly_rakotra_fiofanana}</p>
+            <p>Ezaka : {rep?.voly_rakotra_ezaka}</p>
+            <p>Tohana : {rep?.voly_rakotra_tohana}</p>
+            <p>Diagnostic : {rep?.voly_rakotra_diagnostic}</p>
+
+            <h3>Vary</h3>
+            <p>Fananantany : {rep?.vary_fananantany}</p>
+            <p>Fiofanana : {rep?.vary_fiofanana}</p>
+            <p>Ezaka : {rep?.vary_ezaka}</p>
+            <p>Tohana : {rep?.vary_tohana}</p>
+            <p>Diagnostic : {rep?.vary_diagnostic}</p>
+
+            <h3>Akoho gasy</h3>
+            <p>Fananantany : {rep?.akoho_gasy_fananantany}</p>
+            <p>Fiofanana : {rep?.akoho_gasy_fiofanana}</p>
+            <p>Ezaka : {rep?.akoho_gasy_ezaka}</p>
+            <p>Tohana : {rep?.akoho_gasy_tohana}</p>
+            <p>Diagnostic : {rep?.akoho_gasy_diagnostic}</p>
+
+            <h3>Kisoa</h3>
+            <p>Fananantany : {rep?.kisoa_fananantany}</p>
+            <p>Fiofanana : {rep?.kisoa_fiofanana}</p>
+            <p>Ezaka : {rep?.kisoa_ezaka}</p>
+            <p>Tohana : {rep?.kisoa_tohana}</p>
+            <p>Diagnostic : {rep?.kisoa_diagnostic}</p>
+
+            <h3>Tantely</h3>
+            <p>Fananantany : {rep?.tantely_fananantany}</p>
+            <p>Fiofanana : {rep?.tantely_fiofanana}</p>
+            <p>Ezaka : {rep?.tantely_ezaka}</p>
+            <p>Tohana : {rep?.tantely_tohana}</p>
+            <p>Diagnostic : {rep?.tantely_diagnostic}</p>
+
+            <div style={styles.actions}>
+              <button style={styles.button} onClick={() => window.print()}>
+                Imprimer
+              </button>
+
+              <button style={styles.secondaryButton} onClick={() => window.print()}>
+                Télécharger PDF
+              </button>
+            </div>
+          </>
+        )}
+
+        <div style={styles.actions}>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+}
 function ScoreSelect({ label, max, onChange }: any) {
   return (
     <div>
