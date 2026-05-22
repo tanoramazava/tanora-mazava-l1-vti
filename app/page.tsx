@@ -698,110 +698,300 @@ function FormulaireVierge({ onBack }: any) {
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Formulaire vierge complet — Tanora Mazava L1</h1>
+        <h1 style={styles.titleSmall}>
+          Formulaire vierge complet — Tanora Mazava L1
+        </h1>
 
         <p style={styles.text}>
-          Ity formulaire ity dia hofenoina à la main eny ifotony, avy eo ampidirina tsirairay ao amin’ny application.
+          Ity formulaire ity dia hofenoina à la main eny ifotony,
+          avy eo ampidirina tsirairay ao amin’ny application.
         </p>
 
         <h2>1. Famantarana ny Tanora</h2>
-        <p>Anarana sy fanampiny : __________________________________________</p>
+
+        <p>Anarana sy fanampiny : ________________________________________</p>
+
         <p>Taona : __________</p>
-        <p>Faritra : __________________________________________</p>
-        <p>Distrika : __________________________________________</p>
-        <p>Kaomina : __________________________________________</p>
-        <p>Karazana Kaomina : □ Ambanivohitra □ Andrenivohitra</p>
-        <p>Fokontany : __________________________________________</p>
-        <p>VTI misy azy : __________________________________________</p>
+
+        <p>Faritra : ________________________________________</p>
+
+        <p>Distrika : ________________________________________</p>
+
+        <p>Kaomina : ________________________________________</p>
+
+        <p>
+          Karazana Kaomina :
+          □ Ambanivohitra
+          □ Andrenivohitra
+        </p>
+
+        <p>Fokontany : ________________________________________</p>
+
+        <p>VTI misy azy : ________________________________________</p>
+
+        <hr />
 
         <h2>2. Tombana ara-panahy — 52 points</h2>
+
         <p>1. Efa zatra nitokam-bavaka ve ? Score : ____ / 5</p>
-        <p>2. Efa nanana fiainam-bavaka nitohy ve ? Score : ____ / 2</p>
-        <p>3. Efa manao pratika ny Vavaka Betela ve ? Score : ____ / 5</p>
-        <p>4. Fibebahana sy fiderana. Score : ____ / 10</p>
-        <p>Fanazavana : ____________________________________________________________</p>
-        <p>5. Fo madio sy Fanaka dimy. Score : ____ / 10</p>
-        <p>Fanazavana : ____________________________________________________________</p>
-        <p>6. Fandroahana devoly sy fandravana planina satanika. Score : ____ / 10</p>
-        <p>Fanazavana : ____________________________________________________________</p>
-        <p>7. Vavaka mamindra tendrombohitra. Score : ____ / 10</p>
-        <p>Fanazavana : ____________________________________________________________</p>
+
+        <p>
+          2. Efa nanana fiainam-bavaka nitohy ve ?
+          Score : ____ / 2
+        </p>
+
+        <p>
+          3. Efa manao pratika ny Vavaka Betela ve ?
+          Score : ____ / 5
+        </p>
+
+        <p>
+          4. Fibebahana sy fiderana
+          Score : ____ / 10
+        </p>
+
+        <p>
+          Fanazavana :
+          ________________________________________________________
+        </p>
+
+        <p>
+          5. Fo madio sy Fanaka dimy
+          Score : ____ / 10
+        </p>
+
+        <p>
+          Fanazavana :
+          ________________________________________________________
+        </p>
+
+        <p>
+          6. Fandroahana devoly sy fandravana planina satanika
+          Score : ____ / 10
+        </p>
+
+        <p>
+          Fanazavana :
+          ________________________________________________________
+        </p>
+
+        <p>
+          7. Vavaka mamindra tendrombohitra
+          Score : ____ / 10
+        </p>
+
+        <p>
+          Fanazavana :
+          ________________________________________________________
+        </p>
+
         <h3>Total ara-panahy : ____ / 52</h3>
 
+        <hr />
+
         <h2>3. Tombana VTI — 29 points</h2>
-        <p>1. Efa tao anaty fikambanana ve ? Score : ____ / 2</p>
-        <p>2. Efa tao anaty fikambanana tanora ve ? Score : ____ / 2</p>
-        <p>3. Andraikitra teo anivon’ny vohitra/Fokontany. Score : ____ / 5</p>
-        <p>4. Fahalalana mikasika ny VTI misy azy. Score : ____ / 5</p>
-        <p>5. Ao anaty Vaomiera inona ? Score : ____ / 5</p>
-        <p>6. Andraikitra ao anatin’ny Vaomiera. Score : ____ / 5</p>
-        <p>7. Ora isan-kerinandro atokana hiasa ao anaty Vaomiera. Score : ____ / 5</p>
+
+        <p>
+          1. Efa tao anaty fikambanana ve ?
+          Score : ____ / 2
+        </p>
+
+        <p>
+          2. Efa tao anaty fikambanana tanora ve ?
+          Score : ____ / 2
+        </p>
+
+        <p>
+          3. Andraikitra teo anivon’ny vohitra/Fokontany
+          Score : ____ / 5
+        </p>
+
+        <p>
+          4. Fahalalana mikasika ny VTI misy azy
+          Score : ____ / 5
+        </p>
+
+        <p>
+          5. Ao anaty Vaomiera inona ?
+          Score : ____ / 5
+        </p>
+
+        <p>
+          6. Andraikitra ao anatin’ny Vaomiera
+          Score : ____ / 5
+        </p>
+
+        <p>
+          7. Ora isan-kerinandro atokana hiasa ao anaty Vaomiera
+          Score : ____ / 5
+        </p>
+
         <h3>Total VTI : ____ / 29</h3>
 
+        <hr />
+
         <h2>4. Taniketsa Fandraharahana</h2>
+
         <p>Safidio izay Taniketsa kasaina hatao :</p>
-        <p>□ Voly rakotra 500m² □ Voly vary 750m² □ Akoho gasy □ Kisoa □ Tantely</p>
+
+        <p>
+          □ Voly rakotra 500m²
+          □ Voly vary 750m²
+          □ Akoho gasy
+          □ Kisoa
+          □ Tantely
+        </p>
 
         {filieres.map((f) => (
           <div key={f} style={styles.block}>
             <h3>{f}</h3>
 
             <p>Isan’ny unité kasaina atao :</p>
-            <p>Taona 1 : ________ | Taona 2 : ________ | Taona 3 : ________</p>
+
+            <p>
+              Taona 1 : ________
+              | Taona 2 : ________
+              | Taona 3 : ________
+            </p>
 
             <h4>A. Fananantany — 5 points</h4>
-            <p>An’iza ny tany/toerana ? Firy ny refiny ? Azo ampiasaina maharitra ve ?</p>
-            <p>__________________________________________________________________</p>
-            <p>__________________________________________________________________</p>
+
+            <p>
+              An’iza ny tany/toerana ?
+              Firy ny refiny ?
+              Azo ampiasaina maharitra ve ?
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
             <p>Score : ____ / 5</p>
 
             <h4>B. Fiofanana — 15 points</h4>
-            <p>Efa nahazo fiofanana ve ? Inona no hainao ampiharina ?</p>
-            <p>__________________________________________________________________</p>
-            <p>__________________________________________________________________</p>
+
+            <p>
+              Efa nahazo fiofanana ve ?
+              Inona no hainao ampiharina ?
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
             <p>Score : ____ / 15</p>
 
             <h4>C. Ezaka sy anjara biriky — 20 points</h4>
-            <p>Tany, fitaovana, vola, asa tanana, akora, fanomanana efa natao.</p>
-            <p>__________________________________________________________________</p>
-            <p>__________________________________________________________________</p>
+
+            <p>
+              Tany, fitaovana, vola, asa tanana,
+              akora, fanomanana efa natao.
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
             <p>Score : ____ / 20</p>
 
             <h4>D. Tohana ilaina — 5 points</h4>
-            <p>Inona no tohana tena ilaina izay tsy vitanao irery intsony ?</p>
-            <p>__________________________________________________________________</p>
-            <p>__________________________________________________________________</p>
+
+            <p>
+              Inona no tohana tena ilaina
+              izay tsy vitanao irery intsony ?
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
             <p>Score : ____ / 5</p>
 
-            <h4>E. Diagnostic ara-toekarena sy ara-pitantanana — 10 points</h4>
-            <p>Efa nivarotra zavatra ve ianao tao anatin’ny 3 taona farany ? Fantatrao ve ny dépenses sy tombom-barotra ? Inona ny fiofanana ilainao ?</p>
-            <p>__________________________________________________________________</p>
-            <p>__________________________________________________________________</p>
+            <h4>
+              E. Diagnostic ara-toekarena sy ara-pitantanana — 10 points
+            </h4>
+
+            <p>
+              Efa nivarotra zavatra ve ianao tao anatin’ny
+              3 taona farany ?
+              Fantatrao ve ny dépenses sy tombom-barotra ?
+              Inona ny fiofanana ilainao ?
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
+            <p>
+              ________________________________________________________________
+            </p>
+
             <p>Score : ____ / 10</p>
 
             <h4>Synthèse économique 3 taona</h4>
+
             <p>CA 3 taona : __________________ Ar</p>
+
             <p>Dépenses 3 taona : __________________ Ar</p>
+
             <p>Bénéfice 3 taona : __________________ Ar</p>
+
             <h3>Total score {f} : ____ / 55</h3>
+
+            <hr />
           </div>
         ))}
 
         <h2>5. Synthèse générale</h2>
+
         <p>Nombre de Taniketsa choisis : ____ / 5</p>
+
         <p>Total score Taniketsa : ____ / ____</p>
+
         <p>Score économie : ____</p>
+
         <p>Total CA 3 ans : __________________ Ar</p>
+
         <p>Total dépenses 3 ans : __________________ Ar</p>
+
         <p>Total bénéfice 3 ans : __________________ Ar</p>
 
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>
+          <button
+            style={styles.secondaryButton}
+            onClick={onBack}
+          >
             Miverina
           </button>
 
-          <button style={styles.button} onClick={() => window.print()}>
-            Imprimer / Enregistrer en PDF
+          <button
+            style={styles.button}
+            onClick={() => window.print()}
+          >
+            Imprimer
+          </button>
+
+          <button
+            style={styles.secondaryButton}
+            onClick={() => window.print()}
+          >
+            Télécharger PDF
           </button>
         </div>
       </section>
