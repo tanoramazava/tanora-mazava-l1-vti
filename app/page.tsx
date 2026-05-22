@@ -181,32 +181,47 @@ function IdentiteForm({
 }
 function SpirituelForm({ tanoraId, onBack, onNext }: any) {
   const [scores, setScores] = useState<number[]>(Array(7).fill(0));
+  const [reponses, setReponses] = useState<string[]>(Array(7).fill(""));
 
-  const update = (i: number, v: number) => {
-    const copy = [...scores];
-    copy[i] = v;
-    setScores(copy);
+  const update = (i: number, v: number, options: [string, number][]) => {
+    const scoreCopy = [...scores];
+    scoreCopy[i] = v;
+    setScores(scoreCopy);
+
+    const repCopy = [...reponses];
+    repCopy[i] = options.find((o) => o[1] === v)?.[0] || "";
+    setReponses(repCopy);
   };
 
   const total = scores.reduce((s, v) => s + v, 0);
 
+  const q1: [string, number][] = [["Isan’andro — 5 points", 5], ["Mihoatra in-3 isan-kerinandro — 3 points", 3], ["Latsaky ny in-1 isan-kerinandro — 2 points", 2], ["In-3 isam-bolana — 1 point", 1], ["Latsaky ny in-3 isam-bolana / tsy misy — 0 point", 0]];
+  const q2: [string, number][] = [["Eny — 2 points", 2], ["Tsia — 0 point", 0]];
+  const q3: [string, number][] = [["Isan’andro — 5 points", 5], ["Mihoatra in-3 isan-kerinandro — 3 points", 3], ["Latsaky ny in-1 isan-kerinandro — 1 point", 1], ["Tsy misy — 0 point", 0]];
+  const q10: [string, number][] = [["Valiny mahafapo 2/2 — 10 points", 10], ["Valiny mahafapo 1/2 — 5 points", 5], ["Valiny tsy feno / tsy mahafapo — 2 points", 2], ["Valiny tena diso — 0 point", 0]];
+  const q5: [string, number][] = [["Valiny mahafapo 5/5 — 10 points", 10], ["Valiny mahafapo 4/5 — 8 points", 8], ["Valiny mahafapo 3/5 — 6 points", 6], ["Valiny mahafapo 2/5 — 4 points", 4], ["Valiny mahafapo 1/5 — 2 points", 2], ["Valiny mahafapo 0/5 — 0 point", 0]];
+
   const sauvegarderScoreSpirituel = async () => {
-    if (!tanoraId) {
-      alert("ID Tanora tsy hita.");
-      return;
-    }
+    if (!tanoraId) return alert("ID Tanora tsy hita.");
 
-    const { error } = await supabase
-      .from("scores")
-      .update({ score_arapanahy: total })
-      .eq("tanora_id", tanoraId);
+    await supabase.from("scores").update({ score_arapanahy: total }).eq("tanora_id", tanoraId);
 
-    if (error) {
-      alert("Erreur Ara-panahy : " + JSON.stringify(error));
-      return;
-    }
+    const { error } = await supabase.from("reponses_spirituel_vti").insert([
+      {
+        tanora_id: tanoraId,
+        spirituel_q1: reponses[0],
+        spirituel_q2: reponses[1],
+        spirituel_q3: reponses[2],
+        spirituel_q4: reponses[3],
+        spirituel_q5: reponses[4],
+        spirituel_q6: reponses[5],
+        spirituel_q7: reponses[6],
+      },
+    ]);
 
-    alert("Score ara-panahy voatahiry !");
+    if (error) return alert("Erreur réponses ara-panahy : " + JSON.stringify(error));
+
+    alert("Score sy réponses ara-panahy voatahiry !");
     onNext();
   };
 
@@ -214,62 +229,69 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
     <main style={styles.main}>
       <section style={styles.card}>
         <h1 style={styles.titleSmall}>Fizarana Voalohany Ara-panahy</h1>
-        <p style={styles.text}>
-          Fanabeazana mitohy ho “Mpianatry ny Tompo” — Totalibeny : 52 points
-        </p>
+        <p style={styles.text}>Fanabeazana mitohy ho “Mpianatry ny Tompo” — Totalibeny : 52 points</p>
 
-        <OptionSelect label="1. Efa zatra nitokam-bavaka ve ?" options={[["Isan’andro — 5 points", 5], ["Mihoatra in-3 isan-kerinandro — 3 points", 3], ["Latsaky ny in-1 isan-kerinandro — 2 points", 2], ["In-3 isam-bolana — 1 point", 1], ["Latsaky ny in-3 isam-bolana / tsy misy — 0 point", 0]]} onChange={(v: number) => update(0, v)} />
-        <OptionSelect label="2. Efa nanana fiainam-bavaka nitohy ve ?" options={[["Eny — 2 points", 2], ["Tsia — 0 point", 0]]} onChange={(v: number) => update(1, v)} />
-        <OptionSelect label="3. Efa manao pratika ny Vavaka Betela ve ?" options={[["Isan’andro — 5 points", 5], ["Mihoatra in-3 isan-kerinandro — 3 points", 3], ["Latsaky ny in-1 isan-kerinandro — 1 point", 1], ["Tsy misy — 0 point", 0]]} onChange={(v: number) => update(2, v)} />
-        <OptionSelect label="4. Fibebahana sy fiderana" options={[["Valiny mahafapo 2/2 — 10 points", 10], ["Valiny mahafapo 1/2 — 5 points", 5], ["Valiny tsy feno / tsy mahafapo — 2 points", 2], ["Valiny tena diso — 0 point", 0]]} onChange={(v: number) => update(3, v)} />
-        <OptionSelect label="5. Fo madio sy Fanaka dimy" options={[["Valiny mahafapo 5/5 — 10 points", 10], ["Valiny mahafapo 4/5 — 8 points", 8], ["Valiny mahafapo 3/5 — 6 points", 6], ["Valiny mahafapo 2/5 — 4 points", 4], ["Valiny mahafapo 1/5 — 2 points", 2], ["Valiny mahafapo 0/5 — 0 point", 0]]} onChange={(v: number) => update(4, v)} />
-        <OptionSelect label="6. Fandroahana devoly sy fandravana planina satanika isan’andro" options={[["Valiny mahafapo 2/2 — 10 points", 10], ["Valiny mahafapo 1/2 — 5 points", 5], ["Valiny tsy feno / tsy mahafapo — 2 points", 2], ["Valiny tena diso — 0 point", 0]]} onChange={(v: number) => update(5, v)} />
-        <OptionSelect label="7. Vavaka mamindra tendrombohitra" options={[["Valiny mahafapo 2/2 — 10 points", 10], ["Valiny mahafapo 1/2 — 5 points", 5], ["Valiny tsy feno / tsy mahafapo — 2 points", 2], ["Valiny tena diso — 0 point", 0]]} onChange={(v: number) => update(6, v)} />
+        <OptionSelect label="1. Efa zatra nitokam-bavaka ve ?" options={q1} onChange={(v: number) => update(0, v, q1)} />
+        <OptionSelect label="2. Efa nanana fiainam-bavaka nitohy ve ?" options={q2} onChange={(v: number) => update(1, v, q2)} />
+        <OptionSelect label="3. Efa manao pratika ny Vavaka Betela ve ?" options={q3} onChange={(v: number) => update(2, v, q3)} />
+        <OptionSelect label="4. Fibebahana sy fiderana" options={q10} onChange={(v: number) => update(3, v, q10)} />
+        <OptionSelect label="5. Fo madio sy Fanaka dimy" options={q5} onChange={(v: number) => update(4, v, q5)} />
+        <OptionSelect label="6. Fandroahana devoly sy fandravana planina satanika isan’andro" options={q10} onChange={(v: number) => update(5, v, q10)} />
+        <OptionSelect label="7. Vavaka mamindra tendrombohitra" options={q10} onChange={(v: number) => update(6, v, q10)} />
 
         <h2 style={styles.score}>Total Score Ara-panahy : {total} / 52</h2>
 
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>
-            Miverina
-          </button>
-
-          <button style={styles.button} onClick={sauvegarderScoreSpirituel}>
-            Enregistrer score ara-panahy sy hanohy
-          </button>
+          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
+          <button style={styles.button} onClick={sauvegarderScoreSpirituel}>Enregistrer score ara-panahy sy hanohy</button>
         </div>
       </section>
     </main>
   );
 }
-
 function VtiForm({ tanoraId, onBack, onNext }: any) {
   const [scores, setScores] = useState<number[]>(Array(7).fill(0));
+  const [reponses, setReponses] = useState<string[]>(Array(7).fill(""));
 
-  const update = (i: number, v: number) => {
-    const copy = [...scores];
-    copy[i] = v;
-    setScores(copy);
+  const update = (i: number, v: number, options: [string, number][]) => {
+    const scoreCopy = [...scores];
+    scoreCopy[i] = v;
+    setScores(scoreCopy);
+
+    const repCopy = [...reponses];
+    repCopy[i] = options.find((o) => o[1] === v)?.[0] || "";
+    setReponses(repCopy);
   };
 
   const total = scores.reduce((s, v) => s + v, 0);
 
+  const ouiNon: [string, number][] = [["Eny — 2 points", 2], ["Tsia — 0 point", 0]];
+  const q5: [string, number][] = [["Mazava tsara sy marina — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy voavaly — 0 point", 0]];
+  const q3: [string, number][] = [["Mivaingana sy mazava — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy nisy — 0 point", 0]];
+  const vaomiera: [string, number][] = [["Ao anaty Vaomiera mazava — 5 points", 5], ["Tsy ao anaty Vaomiera — 0 point", 0]];
+  const ora: [string, number][] = [["Adiny 4 na mihoatra — 5 points", 5], ["Mihoatra adiny 2 — 3 points", 3], ["Latsaky ny adiny 2 — 1 point", 1], ["Tsy misy — 0 point", 0]];
+
   const sauvegarderScoreVti = async () => {
-    if (!tanoraId) {
-      alert("ID Tanora tsy hita.");
-      return;
-    }
+    if (!tanoraId) return alert("ID Tanora tsy hita.");
+
+    await supabase.from("scores").update({ score_vti: total }).eq("tanora_id", tanoraId);
 
     const { error } = await supabase
-      .from("scores")
-      .update({ score_vti: total })
+      .from("reponses_spirituel_vti")
+      .update({
+        vti_q1: reponses[0],
+        vti_q2: reponses[1],
+        vti_q3: reponses[2],
+        vti_q4: reponses[3],
+        vti_q5: reponses[4],
+        vti_q6: reponses[5],
+        vti_q7: reponses[6],
+      })
       .eq("tanora_id", tanoraId);
 
-    if (error) {
-      alert("Erreur VTI : " + JSON.stringify(error));
-      return;
-    }
+    if (error) return alert("Erreur réponses VTI : " + JSON.stringify(error));
 
-    alert("Score VTI voatahiry !");
+    alert("Score sy réponses VTI voatahiry !");
     onNext();
   };
 
@@ -279,30 +301,24 @@ function VtiForm({ tanoraId, onBack, onNext }: any) {
         <h1 style={styles.titleSmall}>Fizarana 2 — Firotsahana ao anaty VTI</h1>
         <p style={styles.text}>Totalibeny : 29 points</p>
 
-        <OptionSelect label="1. Efa tao anaty fikambanana ve ?" options={[["Eny — 2 points", 2], ["Tsia — 0 point", 0]]} onChange={(v: number) => update(0, v)} />
-        <OptionSelect label="2. Efa tao anaty fikambanana tanora ve ?" options={[["Eny — 2 points", 2], ["Tsia — 0 point", 0]]} onChange={(v: number) => update(1, v)} />
-        <OptionSelect label="3. Andraikitra teo anivon’ny vohitra na Fokontany" options={[["Mivaingana sy mazava — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy nisy — 0 point", 0]]} onChange={(v: number) => update(2, v)} />
-        <OptionSelect label="4. Fahalalana mikasika ny VTI misy anao" options={[["Mazava tsara sy marina — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy voavaly — 0 point", 0]]} onChange={(v: number) => update(3, v)} />
-        <OptionSelect label="5. Ao anaty Vaomiera inona no misy anao ?" options={[["Ao anaty Vaomiera mazava — 5 points", 5], ["Tsy ao anaty Vaomiera — 0 point", 0]]} onChange={(v: number) => update(4, v)} />
-        <OptionSelect label="6. Inona no andraikitrao ao anatin’ny Vaomiera ?" options={[["Mazava tsara sy marina — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy voavaly — 0 point", 0]]} onChange={(v: number) => update(5, v)} />
-        <OptionSelect label="7. Adiny firy isan-kerinandro no atokanao hiasa ao anaty Vaomiera ?" options={[["Adiny 4 na mihoatra — 5 points", 5], ["Mihoatra adiny 2 — 3 points", 3], ["Latsaky ny adiny 2 — 1 point", 1], ["Tsy misy — 0 point", 0]]} onChange={(v: number) => update(6, v)} />
+        <OptionSelect label="1. Efa tao anaty fikambanana ve ?" options={ouiNon} onChange={(v: number) => update(0, v, ouiNon)} />
+        <OptionSelect label="2. Efa tao anaty fikambanana tanora ve ?" options={ouiNon} onChange={(v: number) => update(1, v, ouiNon)} />
+        <OptionSelect label="3. Andraikitra teo anivon’ny vohitra na Fokontany" options={q3} onChange={(v: number) => update(2, v, q3)} />
+        <OptionSelect label="4. Fahalalana mikasika ny VTI misy anao" options={q5} onChange={(v: number) => update(3, v, q5)} />
+        <OptionSelect label="5. Ao anaty Vaomiera inona no misy anao ?" options={vaomiera} onChange={(v: number) => update(4, v, vaomiera)} />
+        <OptionSelect label="6. Inona no andraikitrao ao anatin’ny Vaomiera ?" options={q5} onChange={(v: number) => update(5, v, q5)} />
+        <OptionSelect label="7. Adiny firy isan-kerinandro no atokanao hiasa ao anaty Vaomiera ?" options={ora} onChange={(v: number) => update(6, v, ora)} />
 
         <h2 style={styles.score}>Total Score VTI : {total} / 29</h2>
 
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>
-            Miverina
-          </button>
-
-          <button style={styles.button} onClick={sauvegarderScoreVti}>
-            Enregistrer score VTI sy hanohy
-          </button>
+          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
+          <button style={styles.button} onClick={sauvegarderScoreVti}>Enregistrer score VTI sy hanohy</button>
         </div>
       </section>
     </main>
   );
 }
-
 function TaniketsaForm({ tanoraId, onBack }: any) {
   const filieres = [
     { type: "voly", name: "Voly rakotra 500m²", unitQuestion: "Parcelle 500m² firy no ho volenao ?", unitName: "parcelle", caRef: [754800, 876800, 876800], depRef: [230000, 110000, 170000] },
