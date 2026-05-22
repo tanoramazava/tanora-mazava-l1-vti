@@ -1024,17 +1024,8 @@ function FicheRemplie({ onBack }: any) {
   const chargerFiche = async () => {
     const tanoraId = parseInt(id);
 
-    const { data: tanoraData } = await supabase
-      .from("tanora")
-      .select("*")
-      .eq("id", tanoraId)
-      .single();
-
-    const { data: scoresData } = await supabase
-      .from("scores")
-      .select("*")
-      .eq("tanora_id", tanoraId)
-      .single();
+    const { data: tanoraData } = await supabase.from("tanora").select("*").eq("id", tanoraId).single();
+    const { data: scoresData } = await supabase.from("scores").select("*").eq("tanora_id", tanoraId).single();
 
     const { data: ecoData } = await supabase
       .from("economies_taniketsa")
@@ -1058,10 +1049,54 @@ function FicheRemplie({ onBack }: any) {
     setRep(repData);
   };
 
+  const FiliereSection = ({
+    title,
+    score,
+    ca,
+    depenses,
+    benefice,
+    fananantany,
+    fiofanana,
+    ezaka,
+    tohana,
+    diagnostic,
+  }: any) => (
+    <div style={styles.block}>
+      <h3>{title}</h3>
+
+      <h4>A. Fananantany — 5 points</h4>
+      <p>An’iza ny tany/toerana ? Firy ny refiny ? Azo ampiasaina maharitra ve ?</p>
+      <p><strong>Valiny :</strong> {fananantany || "—"}</p>
+
+      <h4>B. Fiofanana — 15 points</h4>
+      <p>Efa nahazo fiofanana ve ? Inona no hainao ampiharina ?</p>
+      <p><strong>Valiny :</strong> {fiofanana || "—"}</p>
+
+      <h4>C. Ezaka sy anjara biriky — 20 points</h4>
+      <p>Tany, fitaovana, vola, asa tanana, akora, fanomanana efa natao.</p>
+      <p><strong>Valiny :</strong> {ezaka || "—"}</p>
+
+      <h4>D. Tohana ilaina — 5 points</h4>
+      <p>Inona no tohana tena ilaina izay tsy vitanao irery intsony ?</p>
+      <p><strong>Valiny :</strong> {tohana || "—"}</p>
+
+      <h4>E. Diagnostic ara-toekarena sy ara-pitantanana — 10 points</h4>
+      <p>Efa nivarotra zavatra ve ianao tao anatin’ny 3 taona farany ? Fantatrao ve ny dépenses sy tombom-barotra ? Inona ny fiofanana ilainao ?</p>
+      <p><strong>Valiny :</strong> {diagnostic || "—"}</p>
+
+      <h4>Synthèse économique 3 taona</h4>
+      <p>CA 3 taona : {ca?.toLocaleString?.() || 0} Ar</p>
+      <p>Dépenses 3 taona : {depenses?.toLocaleString?.() || 0} Ar</p>
+      <p>Bénéfice 3 taona : {benefice?.toLocaleString?.() || 0} Ar</p>
+
+      <h3>Total score {title} : {score || 0} / 55</h3>
+    </div>
+  );
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Fiche individuelle remplie</h1>
+        <h1 style={styles.titleSmall}>Formulaire rempli complet — Tanora Mazava L1</h1>
 
         <input
           style={styles.input}
@@ -1077,75 +1112,104 @@ function FicheRemplie({ onBack }: any) {
 
         {tanora && (
           <>
-            <h2>1. Identité</h2>
-            <p>Anarana : {tanora.anarana}</p>
+            <h2>1. Famantarana ny Tanora</h2>
+            <p>Anarana sy fanampiny : {tanora.anarana}</p>
             <p>Taona : {tanora.taona}</p>
             <p>Faritra : {tanora.faritra}</p>
             <p>Distrika : {tanora.distrika}</p>
             <p>Kaomina : {tanora.kaomina}</p>
-            <p>Type Kaomina : {tanora.type_kaomina}</p>
+            <p>Karazana Kaomina : {tanora.type_kaomina}</p>
             <p>Fokontany : {tanora.fokontany}</p>
-            <p>VTI : {tanora.vti}</p>
+            <p>VTI misy azy : {tanora.vti}</p>
 
-            <h2>2. Scores</h2>
-            <p>Ara-panahy : {scores?.score_arapanahy} / 52</p>
-            <p>VTI : {scores?.score_vti} / 29</p>
-            <p>Économie : {scores?.score_economie}</p>
-            <p>Taniketsa : {scores?.score_taniketsa} / {scores?.score_taniketsa_max}</p>
-            <p>Voly rakotra : {scores?.score_voly_rakotra} / 55</p>
-            <p>Vary : {scores?.score_vary} / 55</p>
-            <p>Akoho gasy : {scores?.score_akoho_gasy} / 55</p>
-            <p>Kisoa : {scores?.score_kisoa} / 55</p>
-            <p>Tantely : {scores?.score_tantely} / 55</p>
+            <hr />
 
-            <h2>3. Synthèse économique 3 taona</h2>
-            <p>CA total : {eco?.ca_total?.toLocaleString()} Ar</p>
-            <p>Dépenses total : {eco?.depenses_total?.toLocaleString()} Ar</p>
-            <p>Bénéfice total : {eco?.benefice_total?.toLocaleString()} Ar</p>
+            <h2>2. Tombana ara-panahy — 52 points</h2>
+            <p>Total ara-panahy : {scores?.score_arapanahy || 0} / 52</p>
 
-            <h2>4. Détails économiques par filière</h2>
-            <p>Voly rakotra — CA: {eco?.ca_voly_rakotra} | Dépenses: {eco?.depenses_voly_rakotra} | Bénéfice: {eco?.benefice_voly_rakotra}</p>
-            <p>Vary — CA: {eco?.ca_vary} | Dépenses: {eco?.depenses_vary} | Bénéfice: {eco?.benefice_vary}</p>
-            <p>Akoho gasy — CA: {eco?.ca_akoho_gasy} | Dépenses: {eco?.depenses_akoho_gasy} | Bénéfice: {eco?.benefice_akoho_gasy}</p>
-            <p>Kisoa — CA: {eco?.ca_kisoa} | Dépenses: {eco?.depenses_kisoa} | Bénéfice: {eco?.benefice_kisoa}</p>
-            <p>Tantely — CA: {eco?.ca_tantely} | Dépenses: {eco?.depenses_tantely} | Bénéfice: {eco?.benefice_tantely}</p>
+            <hr />
 
-            <h2>5. Réponses détaillées</h2>
+            <h2>3. Tombana VTI — 29 points</h2>
+            <p>Total VTI : {scores?.score_vti || 0} / 29</p>
 
-            <h3>Voly rakotra</h3>
-            <p>Fananantany : {rep?.voly_rakotra_fananantany}</p>
-            <p>Fiofanana : {rep?.voly_rakotra_fiofanana}</p>
-            <p>Ezaka : {rep?.voly_rakotra_ezaka}</p>
-            <p>Tohana : {rep?.voly_rakotra_tohana}</p>
-            <p>Diagnostic : {rep?.voly_rakotra_diagnostic}</p>
+            <hr />
 
-            <h3>Vary</h3>
-            <p>Fananantany : {rep?.vary_fananantany}</p>
-            <p>Fiofanana : {rep?.vary_fiofanana}</p>
-            <p>Ezaka : {rep?.vary_ezaka}</p>
-            <p>Tohana : {rep?.vary_tohana}</p>
-            <p>Diagnostic : {rep?.vary_diagnostic}</p>
+            <h2>4. Taniketsa Fandraharahana</h2>
+            <p>Nombre de Taniketsa choisis : {(scores?.score_taniketsa_max || 0) / 55} / 5</p>
+            <p>Total score Taniketsa : {scores?.score_taniketsa || 0} / {scores?.score_taniketsa_max || 0}</p>
+            <p>Score économie : {scores?.score_economie || 0}</p>
 
-            <h3>Akoho gasy</h3>
-            <p>Fananantany : {rep?.akoho_gasy_fananantany}</p>
-            <p>Fiofanana : {rep?.akoho_gasy_fiofanana}</p>
-            <p>Ezaka : {rep?.akoho_gasy_ezaka}</p>
-            <p>Tohana : {rep?.akoho_gasy_tohana}</p>
-            <p>Diagnostic : {rep?.akoho_gasy_diagnostic}</p>
+            <FiliereSection
+              title="Voly rakotra 500m²"
+              score={scores?.score_voly_rakotra}
+              ca={eco?.ca_voly_rakotra}
+              depenses={eco?.depenses_voly_rakotra}
+              benefice={eco?.benefice_voly_rakotra}
+              fananantany={rep?.voly_rakotra_fananantany}
+              fiofanana={rep?.voly_rakotra_fiofanana}
+              ezaka={rep?.voly_rakotra_ezaka}
+              tohana={rep?.voly_rakotra_tohana}
+              diagnostic={rep?.voly_rakotra_diagnostic}
+            />
 
-            <h3>Kisoa</h3>
-            <p>Fananantany : {rep?.kisoa_fananantany}</p>
-            <p>Fiofanana : {rep?.kisoa_fiofanana}</p>
-            <p>Ezaka : {rep?.kisoa_ezaka}</p>
-            <p>Tohana : {rep?.kisoa_tohana}</p>
-            <p>Diagnostic : {rep?.kisoa_diagnostic}</p>
+            <FiliereSection
+              title="Voly vary 750m²"
+              score={scores?.score_vary}
+              ca={eco?.ca_vary}
+              depenses={eco?.depenses_vary}
+              benefice={eco?.benefice_vary}
+              fananantany={rep?.vary_fananantany}
+              fiofanana={rep?.vary_fiofanana}
+              ezaka={rep?.vary_ezaka}
+              tohana={rep?.vary_tohana}
+              diagnostic={rep?.vary_diagnostic}
+            />
 
-            <h3>Tantely</h3>
-            <p>Fananantany : {rep?.tantely_fananantany}</p>
-            <p>Fiofanana : {rep?.tantely_fiofanana}</p>
-            <p>Ezaka : {rep?.tantely_ezaka}</p>
-            <p>Tohana : {rep?.tantely_tohana}</p>
-            <p>Diagnostic : {rep?.tantely_diagnostic}</p>
+            <FiliereSection
+              title="Akoho gasy"
+              score={scores?.score_akoho_gasy}
+              ca={eco?.ca_akoho_gasy}
+              depenses={eco?.depenses_akoho_gasy}
+              benefice={eco?.benefice_akoho_gasy}
+              fananantany={rep?.akoho_gasy_fananantany}
+              fiofanana={rep?.akoho_gasy_fiofanana}
+              ezaka={rep?.akoho_gasy_ezaka}
+              tohana={rep?.akoho_gasy_tohana}
+              diagnostic={rep?.akoho_gasy_diagnostic}
+            />
+
+            <FiliereSection
+              title="Fanatavezana kisoa"
+              score={scores?.score_kisoa}
+              ca={eco?.ca_kisoa}
+              depenses={eco?.depenses_kisoa}
+              benefice={eco?.benefice_kisoa}
+              fananantany={rep?.kisoa_fananantany}
+              fiofanana={rep?.kisoa_fiofanana}
+              ezaka={rep?.kisoa_ezaka}
+              tohana={rep?.kisoa_tohana}
+              diagnostic={rep?.kisoa_diagnostic}
+            />
+
+            <FiliereSection
+              title="Tantely"
+              score={scores?.score_tantely}
+              ca={eco?.ca_tantely}
+              depenses={eco?.depenses_tantely}
+              benefice={eco?.benefice_tantely}
+              fananantany={rep?.tantely_fananantany}
+              fiofanana={rep?.tantely_fiofanana}
+              ezaka={rep?.tantely_ezaka}
+              tohana={rep?.tantely_tohana}
+              diagnostic={rep?.tantely_diagnostic}
+            />
+
+            <hr />
+
+            <h2>5. Synthèse générale</h2>
+            <p>Total CA 3 ans : {eco?.ca_total?.toLocaleString?.() || 0} Ar</p>
+            <p>Total dépenses 3 ans : {eco?.depenses_total?.toLocaleString?.() || 0} Ar</p>
+            <p>Total bénéfice 3 ans : {eco?.benefice_total?.toLocaleString?.() || 0} Ar</p>
 
             <div style={styles.actions}>
               <button style={styles.button} onClick={() => window.print()}>
