@@ -8,7 +8,8 @@ type Screen =
   | "identite"
   | "spirituel"
   | "vti"
-  | "taniketsa";
+  | "taniketsa"
+  | "imprimable";
 
 export default function HomePage() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -53,6 +54,10 @@ export default function HomePage() {
     );
   }
 
+  if (screen === "imprimable") {
+    return <FormulaireVierge onBack={() => setScreen("home")} />;
+  }
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
@@ -67,6 +72,13 @@ export default function HomePage() {
           onClick={() => setScreen("identite")}
         >
           Hanomboka ny Tombana
+        </button>
+
+        <button
+          style={styles.secondaryButton}
+          onClick={() => setScreen("imprimable")}
+        >
+          Version imprimable vierge
         </button>
       </section>
     </main>
@@ -668,6 +680,71 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
 
           <button style={styles.button} onClick={sauvegarderScoresTaniketsa}>
             Vita ny Tombana
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+}
+function FormulaireVierge({ onBack }: any) {
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>Formulaire vierge imprimable</h1>
+
+        <p style={styles.text}>
+          À imprimer ou enregistrer en PDF : CTRL + P → Enregistrer en PDF.
+        </p>
+
+        <h2>1. Identité</h2>
+        {[
+          "Anarana sy fanampiny",
+          "Taona",
+          "Faritra",
+          "Distrika",
+          "Kaomina",
+          "Karazana Kaomina : Ambanivohitra / Andrenivohitra",
+          "Fokontany",
+          "VTI misy azy",
+        ].map((q) => (
+          <p key={q}>□ {q} : ________________________________</p>
+        ))}
+
+        <h2>2. Tombana ara-panahy /52</h2>
+        <p>Score : ____ / 52</p>
+
+        <h2>3. Tombana VTI /29</h2>
+        <p>Score : ____ / 29</p>
+
+        <h2>4. Taniketsa Fandraharahana</h2>
+        {["Voly rakotra", "Vary", "Akoho gasy", "Kisoa", "Tantely"].map((f) => (
+          <div key={f} style={styles.block}>
+            <h3>{f}</h3>
+            <p>Fananantany : ________________________________</p>
+            <p>Fiofanana : ________________________________</p>
+            <p>Ezaka sy anjara biriky : ________________________________</p>
+            <p>Tohana ilaina : ________________________________</p>
+            <p>Diagnostic ara-toekarena : ________________________________</p>
+            <p>Score : ____ / 55</p>
+            <p>CA 3 taona : __________ Ar</p>
+            <p>Dépenses 3 taona : __________ Ar</p>
+            <p>Bénéfice 3 taona : __________ Ar</p>
+          </div>
+        ))}
+
+        <h2>5. Synthèse</h2>
+        <p>Total Score : ____ / ____</p>
+        <p>Total CA : __________ Ar</p>
+        <p>Total dépenses : __________ Ar</p>
+        <p>Total bénéfice : __________ Ar</p>
+
+        <div style={styles.actions}>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+
+          <button style={styles.button} onClick={() => window.print()}>
+            Imprimer / Enregistrer en PDF
           </button>
         </div>
       </section>
