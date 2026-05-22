@@ -83,6 +83,7 @@ function IdentiteForm({
   const [faritra, setFaritra] = useState("");
   const [distrika, setDistrika] = useState("");
   const [kaomina, setKaomina] = useState("");
+  const [typeKaomina, setTypeKaomina] = useState("Ambanivohitra");
   const [fokontany, setFokontany] = useState("");
 
   const [vti, setVti] = useState("");
@@ -94,12 +95,11 @@ function IdentiteForm({
         {
           anarana,
           taona: taona ? parseInt(taona) : null,
-
           faritra,
           distrika,
           kaomina,
+          type_kaomina: typeKaomina,
           fokontany,
-
           vti,
         },
       ])
@@ -115,7 +115,6 @@ function IdentiteForm({
     await supabase.from("scores").insert([
       {
         tanora_id: newTanoraId,
-
         score_arapanahy: 0,
         score_vti: 0,
         score_economie: 0,
@@ -125,92 +124,42 @@ function IdentiteForm({
     ]);
 
     onSaved(newTanoraId);
-
-    alert(
-      "Voatahiry ao Supabase ! ID = " + newTanoraId
-    );
-
+    alert("Voatahiry ao Supabase ! ID = " + newTanoraId);
     onNext();
   };
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Famantarana ny Tanora
-        </h1>
+        <h1 style={styles.titleSmall}>Famantarana ny Tanora</h1>
 
-        <input
+        <input style={styles.input} placeholder="Anarana sy fanampiny" value={anarana} onChange={(e) => setAnarana(e.target.value)} />
+        <input style={styles.input} placeholder="Taona" type="number" value={taona} onChange={(e) => setTaona(e.target.value)} />
+        <input style={styles.input} placeholder="Faritra" value={faritra} onChange={(e) => setFaritra(e.target.value)} />
+        <input style={styles.input} placeholder="Distrika" value={distrika} onChange={(e) => setDistrika(e.target.value)} />
+        <input style={styles.input} placeholder="Kaomina" value={kaomina} onChange={(e) => setKaomina(e.target.value)} />
+
+        <select
           style={styles.input}
-          placeholder="Anarana sy fanampiny"
-          value={anarana}
-          onChange={(e) =>
-            setAnarana(e.target.value)
-          }
-        />
+          value={typeKaomina}
+          onChange={(e) => setTypeKaomina(e.target.value)}
+        >
+          <option value="Ambanivohitra">Kaomina Ambanivohitra</option>
+          <option value="Andrenivohitra">Kaomina Andrenivohitra</option>
+        </select>
 
-        <input
-          style={styles.input}
-          placeholder="Taona"
-          type="number"
-          value={taona}
-          onChange={(e) =>
-            setTaona(e.target.value)
-          }
-        />
+        <input style={styles.input} placeholder="Fokontany" value={fokontany} onChange={(e) => setFokontany(e.target.value)} />
+        <input style={styles.input} placeholder="VTI misy azy" value={vti} onChange={(e) => setVti(e.target.value)} />
 
-        <input
-          style={styles.input}
-          placeholder="Faritra"
-          value={faritra}
-          onChange={(e) =>
-            setFaritra(e.target.value)
-          }
-        />
+        <div style={styles.actions}>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
 
-        <input
-          style={styles.input}
-          placeholder="Distrika"
-          value={distrika}
-          onChange={(e) =>
-            setDistrika(e.target.value)
-          }
-        />
-
-        <input
-          style={styles.input}
-          placeholder="Kaomina"
-          value={kaomina}
-          onChange={(e) =>
-            setKaomina(e.target.value)
-          }
-        />
-
-        <input
-          style={styles.input}
-          placeholder="Fokontany"
-          value={fokontany}
-          onChange={(e) =>
-            setFokontany(e.target.value)
-          }
-        />
-
-        <input
-          style={styles.input}
-          placeholder="VTI misy azy"
-          value={vti}
-          onChange={(e) => setVti(e.target.value)}
-        />
-
-      <div style={styles.actions}>
-  <button style={styles.secondaryButton} onClick={onBack}>
-    Miverina
-  </button>
-
-  <button style={styles.button} onClick={enregistrer}>
-    Enregistrer sy Hanohy
-  </button>
-</div>
+          <button style={styles.button} onClick={enregistrer}>
+            Enregistrer sy Hanohy
+          </button>
+        </div>
       </section>
     </main>
   );
