@@ -195,11 +195,41 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
 
   const total = scores.reduce((s, v) => s + v, 0);
 
-  const q1: [string, number][] = [["Isan’andro — 5 points", 5], ["Mihoatra in-3 isan-kerinandro — 3 points", 3], ["Latsaky ny in-1 isan-kerinandro — 2 points", 2], ["In-3 isam-bolana — 1 point", 1], ["Latsaky ny in-3 isam-bolana / tsy misy — 0 point", 0]];
-  const q2: [string, number][] = [["Eny — 2 points", 2], ["Tsia — 0 point", 0]];
-  const q3: [string, number][] = [["Isan’andro — 5 points", 5], ["Mihoatra in-3 isan-kerinandro — 3 points", 3], ["Latsaky ny in-1 isan-kerinandro — 1 point", 1], ["Tsy misy — 0 point", 0]];
-  const q10: [string, number][] = [["Valiny mahafapo 2/2 — 10 points", 10], ["Valiny mahafapo 1/2 — 5 points", 5], ["Valiny tsy feno / tsy mahafapo — 2 points", 2], ["Valiny tena diso — 0 point", 0]];
-  const q5: [string, number][] = [["Valiny mahafapo 5/5 — 10 points", 10], ["Valiny mahafapo 4/5 — 8 points", 8], ["Valiny mahafapo 3/5 — 6 points", 6], ["Valiny mahafapo 2/5 — 4 points", 4], ["Valiny mahafapo 1/5 — 2 points", 2], ["Valiny mahafapo 0/5 — 0 point", 0]];
+  const q1: [string, number][] = [
+    ["Isan’andro — 5 points", 5],
+    ["Mihoatra in-3 isan-kerinandro — 3 points", 3],
+    ["Latsaky ny in-1 isan-kerinandro — 2 points", 2],
+    ["In-3 isam-bolana — 1 point", 1],
+    ["Latsaky ny in-3 isam-bolana / tsy misy — 0 point", 0],
+  ];
+
+  const q2: [string, number][] = [
+    ["Eny — 2 points", 2],
+    ["Tsia — 0 point", 0],
+  ];
+
+  const q3: [string, number][] = [
+    ["Isan’andro — 5 points", 5],
+    ["Mihoatra in-3 isan-kerinandro — 3 points", 3],
+    ["Latsaky ny in-1 isan-kerinandro — 1 point", 1],
+    ["Tsy misy — 0 point", 0],
+  ];
+
+  const q10: [string, number][] = [
+    ["Valiny mahafapo 2/2 — 10 points", 10],
+    ["Valiny mahafapo 1/2 — 5 points", 5],
+    ["Valiny tsy feno / tsy mahafapo — 2 points", 2],
+    ["Valiny tena diso — 0 point", 0],
+  ];
+
+  const q5: [string, number][] = [
+    ["Valiny mahafapo 5/5 — 10 points", 10],
+    ["Valiny mahafapo 4/5 — 8 points", 8],
+    ["Valiny mahafapo 3/5 — 6 points", 6],
+    ["Valiny mahafapo 2/5 — 4 points", 4],
+    ["Valiny mahafapo 1/5 — 2 points", 2],
+    ["Valiny mahafapo 0/5 — 0 point", 0],
+  ];
 
   const sauvegarderScoreSpirituel = async () => {
     if (!tanoraId) {
@@ -276,7 +306,10 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
     <main style={styles.main}>
       <section style={styles.card}>
         <h1 style={styles.titleSmall}>Fizarana Voalohany Ara-panahy</h1>
-        <p style={styles.text}>Fanabeazana mitohy ho “Mpianatry ny Tompo” — Totalibeny : 52 points</p>
+
+        <p style={styles.text}>
+          Fanabeazana mitohy ho “Mpianatry ny Tompo” — Totalibeny : 52 points
+        </p>
 
         <OptionSelect label="1. Efa zatra nitokam-bavaka ve ?" options={q1} onChange={(v: number) => update(0, v, q1)} />
         <OptionSelect label="2. Efa nanana fiainam-bavaka nitohy ve ?" options={q2} onChange={(v: number) => update(1, v, q2)} />
@@ -286,7 +319,9 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
         <OptionSelect label="6. Fandroahana devoly sy fandravana planina satanika isan’andro" options={q10} onChange={(v: number) => update(5, v, q10)} />
         <OptionSelect label="7. Vavaka mamindra tendrombohitra" options={q10} onChange={(v: number) => update(6, v, q10)} />
 
-        <h2 style={styles.score}>Total Score Ara-panahy : {total} / 52</h2>
+        <h2 style={styles.score}>
+          Total Score Ara-panahy : {total} / 52
+        </h2>
 
         <div style={styles.actions}>
           <button style={styles.secondaryButton} onClick={onBack}>
