@@ -202,24 +202,40 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
   const q5: [string, number][] = [["Valiny mahafapo 5/5 — 10 points", 10], ["Valiny mahafapo 4/5 — 8 points", 8], ["Valiny mahafapo 3/5 — 6 points", 6], ["Valiny mahafapo 2/5 — 4 points", 4], ["Valiny mahafapo 1/5 — 2 points", 2], ["Valiny mahafapo 0/5 — 0 point", 0]];
 
   const sauvegarderScoreSpirituel = async () => {
-    if (!tanoraId) return alert("ID Tanora tsy hita.");
+    if (!tanoraId) {
+      alert("ID Tanora tsy hita.");
+      return;
+    }
 
-    await supabase.from("scores").update({ score_arapanahy: total }).eq("tanora_id", tanoraId);
+    const { error: scoreError } = await supabase
+      .from("scores")
+      .update({ score_arapanahy: total })
+      .eq("tanora_id", tanoraId);
 
-    const { error } = await supabase.from("reponses_spirituel_vti").insert([
-      {
-        tanora_id: tanoraId,
-        spirituel_q1: reponses[0],
-        spirituel_q2: reponses[1],
-        spirituel_q3: reponses[2],
-        spirituel_q4: reponses[3],
-        spirituel_q5: reponses[4],
-        spirituel_q6: reponses[5],
-        spirituel_q7: reponses[6],
-      },
-    ]);
+    if (scoreError) {
+      alert("Erreur score ara-panahy : " + JSON.stringify(scoreError));
+      return;
+    }
 
-    if (error) return alert("Erreur réponses ara-panahy : " + JSON.stringify(error));
+    const { error: repError } = await supabase
+      .from("reponses_spirituel_vti")
+      .insert([
+        {
+          tanora_id: tanoraId,
+          spirituel_q1: reponses[0],
+          spirituel_q2: reponses[1],
+          spirituel_q3: reponses[2],
+          spirituel_q4: reponses[3],
+          spirituel_q5: reponses[4],
+          spirituel_q6: reponses[5],
+          spirituel_q7: reponses[6],
+        },
+      ]);
+
+    if (repError) {
+      alert("Erreur réponses ara-panahy : " + JSON.stringify(repError));
+      return;
+    }
 
     alert("Score sy réponses ara-panahy voatahiry !");
     onNext();
@@ -242,8 +258,13 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
         <h2 style={styles.score}>Total Score Ara-panahy : {total} / 52</h2>
 
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-          <button style={styles.button} onClick={sauvegarderScoreSpirituel}>Enregistrer score ara-panahy sy hanohy</button>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+
+          <button style={styles.button} onClick={sauvegarderScoreSpirituel}>
+            Enregistrer score ara-panahy sy hanohy
+          </button>
         </div>
       </section>
     </main>
@@ -272,11 +293,22 @@ function VtiForm({ tanoraId, onBack, onNext }: any) {
   const ora: [string, number][] = [["Adiny 4 na mihoatra — 5 points", 5], ["Mihoatra adiny 2 — 3 points", 3], ["Latsaky ny adiny 2 — 1 point", 1], ["Tsy misy — 0 point", 0]];
 
   const sauvegarderScoreVti = async () => {
-    if (!tanoraId) return alert("ID Tanora tsy hita.");
+    if (!tanoraId) {
+      alert("ID Tanora tsy hita.");
+      return;
+    }
 
-    await supabase.from("scores").update({ score_vti: total }).eq("tanora_id", tanoraId);
+    const { error: scoreError } = await supabase
+      .from("scores")
+      .update({ score_vti: total })
+      .eq("tanora_id", tanoraId);
 
-    const { error } = await supabase
+    if (scoreError) {
+      alert("Erreur score VTI : " + JSON.stringify(scoreError));
+      return;
+    }
+
+    const { error: repError } = await supabase
       .from("reponses_spirituel_vti")
       .update({
         vti_q1: reponses[0],
@@ -289,7 +321,10 @@ function VtiForm({ tanoraId, onBack, onNext }: any) {
       })
       .eq("tanora_id", tanoraId);
 
-    if (error) return alert("Erreur réponses VTI : " + JSON.stringify(error));
+    if (repError) {
+      alert("Erreur réponses VTI : " + JSON.stringify(repError));
+      return;
+    }
 
     alert("Score sy réponses VTI voatahiry !");
     onNext();
@@ -312,8 +347,13 @@ function VtiForm({ tanoraId, onBack, onNext }: any) {
         <h2 style={styles.score}>Total Score VTI : {total} / 29</h2>
 
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-          <button style={styles.button} onClick={sauvegarderScoreVti}>Enregistrer score VTI sy hanohy</button>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+
+          <button style={styles.button} onClick={sauvegarderScoreVti}>
+            Enregistrer score VTI sy hanohy
+          </button>
         </div>
       </section>
     </main>
