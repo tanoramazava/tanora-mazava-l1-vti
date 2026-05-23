@@ -308,22 +308,55 @@ function VtiForm({ tanoraId, onBack, onNext }: any) {
       return;
     }
 
-    const { error: repError } = await supabase
+    const { data: existingRow, error: findError } = await supabase
       .from("reponses_spirituel_vti")
-      .update({
-        vti_q1: reponses[0],
-        vti_q2: reponses[1],
-        vti_q3: reponses[2],
-        vti_q4: reponses[3],
-        vti_q5: reponses[4],
-        vti_q6: reponses[5],
-        vti_q7: reponses[6],
-      })
-      .eq("tanora_id", tanoraId);
+      .select("id")
+      .eq("tanora_id", tanoraId)
+      .maybeSingle();
 
-    if (repError) {
-      alert("Erreur réponses VTI : " + JSON.stringify(repError));
+    if (findError) {
+      alert("Erreur recherche ligne VTI : " + JSON.stringify(findError));
       return;
+    }
+
+    if (existingRow?.id) {
+      const { error: updateError } = await supabase
+        .from("reponses_spirituel_vti")
+        .update({
+          vti_q1: reponses[0],
+          vti_q2: reponses[1],
+          vti_q3: reponses[2],
+          vti_q4: reponses[3],
+          vti_q5: reponses[4],
+          vti_q6: reponses[5],
+          vti_q7: reponses[6],
+        })
+        .eq("id", existingRow.id);
+
+      if (updateError) {
+        alert("Erreur réponses VTI update : " + JSON.stringify(updateError));
+        return;
+      }
+    } else {
+      const { error: insertError } = await supabase
+        .from("reponses_spirituel_vti")
+        .insert([
+          {
+            tanora_id: tanoraId,
+            vti_q1: reponses[0],
+            vti_q2: reponses[1],
+            vti_q3: reponses[2],
+            vti_q4: reponses[3],
+            vti_q5: reponses[4],
+            vti_q6: reponses[5],
+            vti_q7: reponses[6],
+          },
+        ]);
+
+      if (insertError) {
+        alert("Erreur réponses VTI insert : " + JSON.stringify(insertError));
+        return;
+      }
     }
 
     alert("Score sy réponses VTI voatahiry !");
