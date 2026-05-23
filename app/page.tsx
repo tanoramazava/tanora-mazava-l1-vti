@@ -1267,22 +1267,138 @@ function ScoreSelect({ label, max, onChange }: any) {
 }
 
 const styles: Record<string, any> = {
-  main: { minHeight: "100vh", background: "#f1f5f9", padding: "40px", fontFamily: "Arial" },
-  card: { maxWidth: "900px", margin: "0 auto", background: "white", padding: "40px", borderRadius: "20px" },
-  title: { color: "#047857", fontSize: "42px", textAlign: "center" },
-  titleSmall: { color: "#047857", fontSize: "32px" },
-  subtitle: { color: "#b91c1c", textAlign: "center" },
-  text: { fontSize: "18px", lineHeight: 1.7 },
-  button: { background: "#047857", color: "white", border: "none", padding: "14px 20px", borderRadius: "12px", marginTop: "20px", cursor: "pointer" },
-  secondaryButton: { background: "#e2e8f0", color: "#0f172a", border: "none", padding: "14px 20px", borderRadius: "12px", marginTop: "20px", cursor: "pointer" },
-  input: { width: "100%", padding: "14px", marginTop: "10px", marginBottom: "10px", borderRadius: "10px", border: "1px solid #cbd5e1" },
-  textarea: { width: "100%", minHeight: "120px", padding: "14px", marginTop: "10px", marginBottom: "10px", borderRadius: "10px", border: "1px solid #cbd5e1" },
-  actions: { display: "flex", justifyContent: "space-between", marginTop: "20px" },
-  label: { display: "block", marginTop: "14px", fontWeight: "bold" },
-  checkboxLabel: { display: "flex", gap: "10px", alignItems: "center", fontWeight: "bold", fontSize: "18px", color: "#064e3b" },
-  score: { marginTop: "24px", color: "#047857", fontSize: "24px" },
-  scoreBox: { background: "#ecfdf5", border: "1px solid #10b981", color: "#064e3b", padding: "18px", borderRadius: "16px", fontSize: "20px", marginTop: "24px" },
-  miniBox: { background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "14px", borderRadius: "12px", marginTop: "12px" },
-  block: { marginTop: "28px", padding: "22px", border: "1px solid #e5e7eb", borderRadius: "18px", background: "#f8fafc" },
-  sectionTitle: { color: "#064e3b", fontSize: "24px", marginTop: "10px" },
+  main: {
+    minHeight: "100vh",
+    background: "#f1f5f9",
+    padding: 40,
+    fontFamily: "Arial",
+  },
+
+  card: {
+    maxWidth: 900,
+    margin: "0 auto",
+    background: "white",
+    padding: 40,
+    borderRadius: 20,
+  },
+
+  title: {
+    color: "#047857",
+    fontSize: 42,
+    textAlign: "center",
+  },
+
+  titleSmall: {
+    color: "#047857",
+    fontSize: 32,
+  },
+
+  subtitle: {
+    color: "#b91c1c",
+    textAlign: "center",
+  },
+
+  text: {
+    fontSize: 18,
+    lineHeight: 1.7,
+  },
+
+  button: {
+    background: "#047857",
+    color: "white",
+    border: "none",
+    padding: "14px 20px",
+    borderRadius: 12,
+    marginTop: 20,
+    cursor: "pointer",
+  },
+
+  secondaryButton: {
+    background: "#e2e8f0",
+    color: "#0f172a",
+    border: "none",
+    padding: "14px 20px",
+    borderRadius: 12,
+    marginTop: 20,
+    cursor: "pointer",
+  },
+
+  input: {
+    width: "100%",
+    padding: 14,
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+    border: "1px solid #cbd5e1",
+  },
+
+  textarea: {
+    width: "100%",
+    minHeight: 120,
+    padding: 14,
+    marginTop: 10,
+    marginBottom: 10,
+    borderRadius: 10,
+    border: "1px solid #cbd5e1",
+  },
+
+  actions: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: 12,
+    marginTop: 20,
+  },
+
+  label: {
+    display: "block",
+    marginTop: 14,
+    fontWeight: "bold",
+  },
+
+  checkboxLabel: {
+    display: "flex",
+    gap: 10,
+    alignItems: "center",
+    fontWeight: "bold",
+    fontSize: 18,
+    color: "#064e3b",
+  },
+
+  score: {
+    marginTop: 24,
+    color: "#047857",
+    fontSize: 24,
+  },
+
+  scoreBox: {
+    background: "#ecfdf5",
+    border: "1px solid #10b981",
+    color: "#064e3b",
+    padding: 18,
+    borderRadius: 16,
+    fontSize: 20,
+    marginTop: 24,
+  },
+
+  miniBox: {
+    background: "#f0fdf4",
+    border: "1px solid #bbf7d0",
+    padding: 14,
+    borderRadius: 12,
+    marginTop: 12,
+  },
+
+  block: {
+    marginTop: 28,
+    padding: 22,
+    border: "1px solid #e5e7eb",
+    borderRadius: 18,
+    background: "#f8fafc",
+  },
+
+  sectionTitle: {
+    color: "#064e3b",
+    fontSize: 24,
+    marginTop: 10,
+  },
 };
