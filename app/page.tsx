@@ -1081,41 +1081,55 @@ function FicheRemplie({ onBack }: any) {
   const chargerFiche = async () => {
     const tanoraId = parseInt(id);
 
-    const { data: tanoraData } = await supabase
+    const { data: tanoraData, error: tanoraError } = await supabase
       .from("tanora")
       .select("*")
       .eq("id", tanoraId)
-      .single();
+      .maybeSingle();
 
-    const { data: scoresData } = await supabase
+    const { data: scoresData, error: scoresError } = await supabase
       .from("scores")
       .select("*")
       .eq("tanora_id", tanoraId)
-      .single();
+      .maybeSingle();
 
-    const { data: ecoData } = await supabase
+    const { data: ecoData, error: ecoError } = await supabase
       .from("economies_taniketsa")
       .select("*")
       .eq("tanora_id", tanoraId)
       .order("created_at", { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
-    const { data: repData } = await supabase
+    const { data: repData, error: repError } = await supabase
       .from("reponses_taniketsa_detaillees")
       .select("*")
       .eq("tanora_id", tanoraId)
       .order("created_at", { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
-    const { data: repSVData } = await supabase
+    const { data: repSVData, error: repSVError } = await supabase
       .from("reponses_spirituel_vti")
       .select("*")
       .eq("tanora_id", tanoraId)
       .order("created_at", { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
+
+    if (tanoraError || scoresError || ecoError || repError || repSVError) {
+      alert(
+        "Erreur chargement fiche : " +
+          JSON.stringify({
+            tanoraError,
+            scoresError,
+            ecoError,
+            repError,
+            repSVError,
+          })
+      );
+      return;
+    }
 
     setTanora(tanoraData);
     setScores(scoresData);
@@ -1208,47 +1222,13 @@ function FicheRemplie({ onBack }: any) {
 
             <h2>2. Tombana ara-panahy — 52 points</h2>
 
-            <LigneQuestion
-              numero="1"
-              question="Efa zatra nitokam-bavaka ve ?"
-              reponse={repSV?.spirituel_q1}
-            />
-
-            <LigneQuestion
-              numero="2"
-              question="Efa nanana fiainam-bavaka nitohy ve ?"
-              reponse={repSV?.spirituel_q2}
-            />
-
-            <LigneQuestion
-              numero="3"
-              question="Efa manao pratika ny Vavaka Betela ve ?"
-              reponse={repSV?.spirituel_q3}
-            />
-
-            <LigneQuestion
-              numero="4"
-              question="Fibebahana sy fiderana"
-              reponse={repSV?.spirituel_q4}
-            />
-
-            <LigneQuestion
-              numero="5"
-              question="Fo madio sy Fanaka dimy"
-              reponse={repSV?.spirituel_q5}
-            />
-
-            <LigneQuestion
-              numero="6"
-              question="Fandroahana devoly sy fandravana planina satanika isan’andro"
-              reponse={repSV?.spirituel_q6}
-            />
-
-            <LigneQuestion
-              numero="7"
-              question="Vavaka mamindra tendrombohitra"
-              reponse={repSV?.spirituel_q7}
-            />
+            <LigneQuestion numero="1" question="Efa zatra nitokam-bavaka ve ?" reponse={repSV?.spirituel_q1} />
+            <LigneQuestion numero="2" question="Efa nanana fiainam-bavaka nitohy ve ?" reponse={repSV?.spirituel_q2} />
+            <LigneQuestion numero="3" question="Efa manao pratika ny Vavaka Betela ve ?" reponse={repSV?.spirituel_q3} />
+            <LigneQuestion numero="4" question="Fibebahana sy fiderana" reponse={repSV?.spirituel_q4} />
+            <LigneQuestion numero="5" question="Fo madio sy Fanaka dimy" reponse={repSV?.spirituel_q5} />
+            <LigneQuestion numero="6" question="Fandroahana devoly sy fandravana planina satanika isan’andro" reponse={repSV?.spirituel_q6} />
+            <LigneQuestion numero="7" question="Vavaka mamindra tendrombohitra" reponse={repSV?.spirituel_q7} />
 
             <h3>Total ara-panahy : {scores?.score_arapanahy || 0} / 52</h3>
 
@@ -1256,47 +1236,13 @@ function FicheRemplie({ onBack }: any) {
 
             <h2>3. Tombana VTI — 29 points</h2>
 
-            <LigneQuestion
-              numero="1"
-              question="Efa tao anaty fikambanana ve ?"
-              reponse={repSV?.vti_q1}
-            />
-
-            <LigneQuestion
-              numero="2"
-              question="Efa tao anaty fikambanana tanora ve ?"
-              reponse={repSV?.vti_q2}
-            />
-
-            <LigneQuestion
-              numero="3"
-              question="Andraikitra teo anivon’ny vohitra na Fokontany"
-              reponse={repSV?.vti_q3}
-            />
-
-            <LigneQuestion
-              numero="4"
-              question="Fahalalana mikasika ny VTI misy azy"
-              reponse={repSV?.vti_q4}
-            />
-
-            <LigneQuestion
-              numero="5"
-              question="Ao anaty Vaomiera inona no misy azy ?"
-              reponse={repSV?.vti_q5}
-            />
-
-            <LigneQuestion
-              numero="6"
-              question="Inona no andraikiny ao anatin’ny Vaomiera ?"
-              reponse={repSV?.vti_q6}
-            />
-
-            <LigneQuestion
-              numero="7"
-              question="Adiny firy isan-kerinandro no atokany hiasa ao anaty Vaomiera ?"
-              reponse={repSV?.vti_q7}
-            />
+            <LigneQuestion numero="1" question="Efa tao anaty fikambanana ve ?" reponse={repSV?.vti_q1} />
+            <LigneQuestion numero="2" question="Efa tao anaty fikambanana tanora ve ?" reponse={repSV?.vti_q2} />
+            <LigneQuestion numero="3" question="Andraikitra teo anivon’ny vohitra na Fokontany" reponse={repSV?.vti_q3} />
+            <LigneQuestion numero="4" question="Fahalalana mikasika ny VTI misy azy" reponse={repSV?.vti_q4} />
+            <LigneQuestion numero="5" question="Ao anaty Vaomiera inona no misy azy ?" reponse={repSV?.vti_q5} />
+            <LigneQuestion numero="6" question="Inona no andraikiny ao anatin’ny Vaomiera ?" reponse={repSV?.vti_q6} />
+            <LigneQuestion numero="7" question="Adiny firy isan-kerinandro no atokany hiasa ao anaty Vaomiera ?" reponse={repSV?.vti_q7} />
 
             <h3>Total VTI : {scores?.score_vti || 0} / 29</h3>
 
@@ -1307,70 +1253,15 @@ function FicheRemplie({ onBack }: any) {
             <p>Total score Taniketsa : {scores?.score_taniketsa || 0} / {scores?.score_taniketsa_max || 0}</p>
             <p>Score économie : {scores?.score_economie || 0}</p>
 
-            <FiliereSection
-              title="Voly rakotra 500m²"
-              score={scores?.score_voly_rakotra}
-              ca={eco?.ca_voly_rakotra}
-              depenses={eco?.depenses_voly_rakotra}
-              benefice={eco?.benefice_voly_rakotra}
-              fananantany={rep?.voly_rakotra_fananantany}
-              fiofanana={rep?.voly_rakotra_fiofanana}
-              ezaka={rep?.voly_rakotra_ezaka}
-              tohana={rep?.voly_rakotra_tohana}
-              diagnostic={rep?.voly_rakotra_diagnostic}
-            />
+            <FiliereSection title="Voly rakotra 500m²" score={scores?.score_voly_rakotra} ca={eco?.ca_voly_rakotra} depenses={eco?.depenses_voly_rakotra} benefice={eco?.benefice_voly_rakotra} fananantany={rep?.voly_rakotra_fananantany} fiofanana={rep?.voly_rakotra_fiofanana} ezaka={rep?.voly_rakotra_ezaka} tohana={rep?.voly_rakotra_tohana} diagnostic={rep?.voly_rakotra_diagnostic} />
 
-            <FiliereSection
-              title="Voly vary 750m²"
-              score={scores?.score_vary}
-              ca={eco?.ca_vary}
-              depenses={eco?.depenses_vary}
-              benefice={eco?.benefice_vary}
-              fananantany={rep?.vary_fananantany}
-              fiofanana={rep?.vary_fiofanana}
-              ezaka={rep?.vary_ezaka}
-              tohana={rep?.vary_tohana}
-              diagnostic={rep?.vary_diagnostic}
-            />
+            <FiliereSection title="Voly vary 750m²" score={scores?.score_vary} ca={eco?.ca_vary} depenses={eco?.depenses_vary} benefice={eco?.benefice_vary} fananantany={rep?.vary_fananantany} fiofanana={rep?.vary_fiofanana} ezaka={rep?.vary_ezaka} tohana={rep?.vary_tohana} diagnostic={rep?.vary_diagnostic} />
 
-            <FiliereSection
-              title="Akoho gasy"
-              score={scores?.score_akoho_gasy}
-              ca={eco?.ca_akoho_gasy}
-              depenses={eco?.depenses_akoho_gasy}
-              benefice={eco?.benefice_akoho_gasy}
-              fananantany={rep?.akoho_gasy_fananantany}
-              fiofanana={rep?.akoho_gasy_fiofanana}
-              ezaka={rep?.akoho_gasy_ezaka}
-              tohana={rep?.akoho_gasy_tohana}
-              diagnostic={rep?.akoho_gasy_diagnostic}
-            />
+            <FiliereSection title="Akoho gasy" score={scores?.score_akoho_gasy} ca={eco?.ca_akoho_gasy} depenses={eco?.depenses_akoho_gasy} benefice={eco?.benefice_akoho_gasy} fananantany={rep?.akoho_gasy_fananantany} fiofanana={rep?.akoho_gasy_fiofanana} ezaka={rep?.akoho_gasy_ezaka} tohana={rep?.akoho_gasy_tohana} diagnostic={rep?.akoho_gasy_diagnostic} />
 
-            <FiliereSection
-              title="Fanatavezana kisoa"
-              score={scores?.score_kisoa}
-              ca={eco?.ca_kisoa}
-              depenses={eco?.depenses_kisoa}
-              benefice={eco?.benefice_kisoa}
-              fananantany={rep?.kisoa_fananantany}
-              fiofanana={rep?.kisoa_fiofanana}
-              ezaka={rep?.kisoa_ezaka}
-              tohana={rep?.kisoa_tohana}
-              diagnostic={rep?.kisoa_diagnostic}
-            />
+            <FiliereSection title="Fanatavezana kisoa" score={scores?.score_kisoa} ca={eco?.ca_kisoa} depenses={eco?.depenses_kisoa} benefice={eco?.benefice_kisoa} fananantany={rep?.kisoa_fananantany} fiofanana={rep?.kisoa_fiofanana} ezaka={rep?.kisoa_ezaka} tohana={rep?.kisoa_tohana} diagnostic={rep?.kisoa_diagnostic} />
 
-            <FiliereSection
-              title="Tantely"
-              score={scores?.score_tantely}
-              ca={eco?.ca_tantely}
-              depenses={eco?.depenses_tantely}
-              benefice={eco?.benefice_tantely}
-              fananantany={rep?.tantely_fananantany}
-              fiofanana={rep?.tantely_fiofanana}
-              ezaka={rep?.tantely_ezaka}
-              tohana={rep?.tantely_tohana}
-              diagnostic={rep?.tantely_diagnostic}
-            />
+            <FiliereSection title="Tantely" score={scores?.score_tantely} ca={eco?.ca_tantely} depenses={eco?.depenses_tantely} benefice={eco?.benefice_tantely} fananantany={rep?.tantely_fananantany} fiofanana={rep?.tantely_fiofanana} ezaka={rep?.tantely_ezaka} tohana={rep?.tantely_tohana} diagnostic={rep?.tantely_diagnostic} />
 
             <hr />
 
