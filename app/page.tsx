@@ -232,36 +232,21 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
   ];
 
   const sauvegarderScoreSpirituel = async () => {
-    if (!tanoraId) {
-      alert("ID Tanora tsy hita.");
-      return;
-    }
-
     const { error: scoreError } = await supabase
       .from("scores")
       .update({ score_arapanahy: total })
       .eq("tanora_id", tanoraId);
 
     if (scoreError) {
-      alert("Erreur score ara-panahy : " + JSON.stringify(scoreError));
+      alert(JSON.stringify(scoreError));
       return;
     }
 
-    const { data: existingRow, error: findError } = await supabase
-      .from("reponses_spirituel_vti")
-      .select("id")
-      .eq("tanora_id", tanoraId)
-      .maybeSingle();
-
-    if (findError) {
-      alert("Erreur recherche ligne ara-panahy : " + JSON.stringify(findError));
-      return;
-    }
-
-    if (existingRow?.id) {
-      const { error: updateError } = await supabase
-        .from("reponses_spirituel_vti")
-        .update({
+    const { error: repError } = await supabase
+      .from("reponses_spirituel")
+      .insert([
+        {
+          tanora_id: tanoraId,
           spirituel_q1: reponses[0],
           spirituel_q2: reponses[1],
           spirituel_q3: reponses[2],
@@ -269,36 +254,15 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
           spirituel_q5: reponses[4],
           spirituel_q6: reponses[5],
           spirituel_q7: reponses[6],
-        })
-        .eq("id", existingRow.id);
+        },
+      ]);
 
-      if (updateError) {
-        alert("Erreur réponses ara-panahy update : " + JSON.stringify(updateError));
-        return;
-      }
-    } else {
-      const { error: insertError } = await supabase
-        .from("reponses_spirituel_vti")
-        .insert([
-          {
-            tanora_id: tanoraId,
-            spirituel_q1: reponses[0],
-            spirituel_q2: reponses[1],
-            spirituel_q3: reponses[2],
-            spirituel_q4: reponses[3],
-            spirituel_q5: reponses[4],
-            spirituel_q6: reponses[5],
-            spirituel_q7: reponses[6],
-          },
-        ]);
-
-      if (insertError) {
-        alert("Erreur réponses ara-panahy insert : " + JSON.stringify(insertError));
-        return;
-      }
+    if (repError) {
+      alert(JSON.stringify(repError));
+      return;
     }
 
-    alert("Score sy réponses ara-panahy voatahiry !");
+    alert("Réponses ara-panahy voatahiry !");
     onNext();
   };
 
@@ -307,17 +271,13 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
       <section style={styles.card}>
         <h1 style={styles.titleSmall}>Fizarana Voalohany Ara-panahy</h1>
 
-        <p style={styles.text}>
-          Fanabeazana mitohy ho “Mpianatry ny Tompo” — Totalibeny : 52 points
-        </p>
-
-        <OptionSelect label="1. Efa zatra nitokam-bavaka ve ?" options={q1} onChange={(v: number) => update(0, v, q1)} />
-        <OptionSelect label="2. Efa nanana fiainam-bavaka nitohy ve ?" options={q2} onChange={(v: number) => update(1, v, q2)} />
-        <OptionSelect label="3. Efa manao pratika ny Vavaka Betela ve ?" options={q3} onChange={(v: number) => update(2, v, q3)} />
-        <OptionSelect label="4. Fibebahana sy fiderana" options={q10} onChange={(v: number) => update(3, v, q10)} />
-        <OptionSelect label="5. Fo madio sy Fanaka dimy" options={q5} onChange={(v: number) => update(4, v, q5)} />
-        <OptionSelect label="6. Fandroahana devoly sy fandravana planina satanika isan’andro" options={q10} onChange={(v: number) => update(5, v, q10)} />
-        <OptionSelect label="7. Vavaka mamindra tendrombohitra" options={q10} onChange={(v: number) => update(6, v, q10)} />
+        <OptionSelect label="1. Efa zatra nitokam-bavaka ve ?" options={q1} onChange={(v:number)=>update(0,v,q1)} />
+        <OptionSelect label="2. Efa nanana fiainam-bavaka nitohy ve ?" options={q2} onChange={(v:number)=>update(1,v,q2)} />
+        <OptionSelect label="3. Efa manao pratika ny Vavaka Betela ve ?" options={q3} onChange={(v:number)=>update(2,v,q3)} />
+        <OptionSelect label="4. Fibebahana sy fiderana" options={q10} onChange={(v:number)=>update(3,v,q10)} />
+        <OptionSelect label="5. Fo madio sy Fanaka dimy" options={q5} onChange={(v:number)=>update(4,v,q5)} />
+        <OptionSelect label="6. Fandroahana devoly sy fandravana planina satanika isan’andro" options={q10} onChange={(v:number)=>update(5,v,q10)} />
+        <OptionSelect label="7. Vavaka mamindra tendrombohitra" options={q10} onChange={(v:number)=>update(6,v,q10)} />
 
         <h2 style={styles.score}>
           Total Score Ara-panahy : {total} / 52
