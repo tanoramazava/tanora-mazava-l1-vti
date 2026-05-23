@@ -217,11 +217,21 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
       return;
     }
 
-    const { error: repError } = await supabase
+    const { data: existingRow, error: findError } = await supabase
       .from("reponses_spirituel_vti")
-      .insert([
-        {
-          tanora_id: tanoraId,
+      .select("id")
+      .eq("tanora_id", tanoraId)
+      .maybeSingle();
+
+    if (findError) {
+      alert("Erreur recherche ligne ara-panahy : " + JSON.stringify(findError));
+      return;
+    }
+
+    if (existingRow?.id) {
+      const { error: updateError } = await supabase
+        .from("reponses_spirituel_vti")
+        .update({
           spirituel_q1: reponses[0],
           spirituel_q2: reponses[1],
           spirituel_q3: reponses[2],
@@ -229,12 +239,33 @@ function SpirituelForm({ tanoraId, onBack, onNext }: any) {
           spirituel_q5: reponses[4],
           spirituel_q6: reponses[5],
           spirituel_q7: reponses[6],
-        },
-      ]);
+        })
+        .eq("id", existingRow.id);
 
-    if (repError) {
-      alert("Erreur réponses ara-panahy : " + JSON.stringify(repError));
-      return;
+      if (updateError) {
+        alert("Erreur réponses ara-panahy update : " + JSON.stringify(updateError));
+        return;
+      }
+    } else {
+      const { error: insertError } = await supabase
+        .from("reponses_spirituel_vti")
+        .insert([
+          {
+            tanora_id: tanoraId,
+            spirituel_q1: reponses[0],
+            spirituel_q2: reponses[1],
+            spirituel_q3: reponses[2],
+            spirituel_q4: reponses[3],
+            spirituel_q5: reponses[4],
+            spirituel_q6: reponses[5],
+            spirituel_q7: reponses[6],
+          },
+        ]);
+
+      if (insertError) {
+        alert("Erreur réponses ara-panahy insert : " + JSON.stringify(insertError));
+        return;
+      }
     }
 
     alert("Score sy réponses ara-panahy voatahiry !");
