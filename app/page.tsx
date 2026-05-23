@@ -1070,167 +1070,117 @@ function OptionSelect({ label, options, onChange }: any) {
     </div>
   );
 }
-function FicheRemplie({ onBack }: any) {
-  const [id, setId] = useState("");
-  const [tanora, setTanora] = useState<any>(null);
-  const [scores, setScores] = useState<any>(null);
-  const [eco, setEco] = useState<any>(null);
-  const [rep, setRep] = useState<any>(null);
-  const [repSV, setRepSV] = useState<any>(null);
+function VtiForm({ tanoraId, onBack, onNext }: any) {
+  const [scores, setScores] = useState<number[]>(Array(7).fill(0));
+  const [reponses, setReponses] = useState<string[]>(Array(7).fill(""));
 
-  const chargerFiche = async () => {
-    const tanoraId = parseInt(id);
+  const update = (i: number, v: number, options: [string, number][]) => {
+    const scoreCopy = [...scores];
+    scoreCopy[i] = v;
+    setScores(scoreCopy);
 
-    const { data: tanoraData, error: tanoraError } = await supabase.from("tanora").select("*").eq("id", tanoraId).maybeSingle();
-    const { data: scoresData, error: scoresError } = await supabase.from("scores").select("*").eq("tanora_id", tanoraId).maybeSingle();
-    const { data: ecoData, error: ecoError } = await supabase.from("economies_taniketsa").select("*").eq("tanora_id", tanoraId).order("created_at", { ascending: false }).limit(1).maybeSingle();
-    const { data: repData, error: repError } = await supabase.from("reponses_taniketsa_detaillees").select("*").eq("tanora_id", tanoraId).order("created_at", { ascending: false }).limit(1).maybeSingle();
-    const { data: repSVData, error: repSVError } = await supabase.from("reponses_spirituel_vti").select("*").eq("tanora_id", tanoraId).order("created_at", { ascending: false }).limit(1).maybeSingle();
+    const repCopy = [...reponses];
+    repCopy[i] = options.find((o) => o[1] === v)?.[0] || "";
+    setReponses(repCopy);
+  };
 
-    if (tanoraError || scoresError || ecoError || repError || repSVError) {
-      alert(
-        "Erreur chargement fiche : " +
-          JSON.stringify({ tanoraError, scoresError, ecoError, repError, repSVError })
-      );
+  const total = scores.reduce((s, v) => s + v, 0);
+
+  const ouiNon: [string, number][] = [["Eny — 2 points", 2], ["Tsia — 0 point", 0]];
+  const q5: [string, number][] = [["Mazava tsara sy marina — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy voavaly — 0 point", 0]];
+  const q3: [string, number][] = [["Mivaingana sy mazava — 5 points", 5], ["Manjavozavo — 2 points", 2], ["Tsy nisy — 0 point", 0]];
+  const vaomiera: [string, number][] = [["Ao anaty Vaomiera mazava — 5 points", 5], ["Tsy ao anaty Vaomiera — 0 point", 0]];
+  const ora: [string, number][] = [["Adiny 4 na mihoatra — 5 points", 5], ["Mihoatra adiny 2 — 3 points", 3], ["Latsaky ny adiny 2 — 1 point", 1], ["Tsy misy — 0 point", 0]];
+
+  const sauvegarderScoreVti = async () => {
+    if (!tanoraId) {
+      alert("ID Tanora tsy hita.");
       return;
     }
 
-    alert("REP SV = " + JSON.stringify(repSVData));
+    const { error: scoreError } = await supabase
+      .from("scores")
+      .update({ score_vti: total })
+      .eq("tanora_id", tanoraId);
 
-    setTanora(tanoraData);
-    setScores(scoresData);
-    setEco(ecoData);
-    setRep(repData);
-    setRepSV(repSVData);
+    if (scoreError) {
+      alert("Erreur score VTI : " + JSON.stringify(scoreError));
+      return;
+    }
+
+    const { data: existingRow } = await supabase
+      .from("reponses_spirituel_vti")
+      .select("id")
+      .eq("tanora_id", tanoraId)
+      .maybeSingle();
+
+    if (existingRow?.id) {
+      const { error: updateError } = await supabase
+        .from("reponses_spirituel_vti")
+        .update({
+          vti_q1: reponses[0],
+          vti_q2: reponses[1],
+          vti_q3: reponses[2],
+          vti_q4: reponses[3],
+          vti_q5: reponses[4],
+          vti_q6: reponses[5],
+          vti_q7: reponses[6],
+        })
+        .eq("id", existingRow.id);
+
+      if (updateError) {
+        alert("Erreur réponses VTI update : " + JSON.stringify(updateError));
+        return;
+      }
+    } else {
+      const { error: insertError } = await supabase
+        .from("reponses_spirituel_vti")
+        .insert([
+          {
+            tanora_id: tanoraId,
+            vti_q1: reponses[0],
+            vti_q2: reponses[1],
+            vti_q3: reponses[2],
+            vti_q4: reponses[3],
+            vti_q5: reponses[4],
+            vti_q6: reponses[5],
+            vti_q7: reponses[6],
+          },
+        ]);
+
+      if (insertError) {
+        alert("Erreur réponses VTI insert : " + JSON.stringify(insertError));
+        return;
+      }
+    }
+
+    alert("Score sy réponses VTI voatahiry !");
+    onNext();
   };
-
-  const LigneQuestion = ({ numero, question, reponse }: any) => (
-    <div style={styles.miniBox}>
-      <h4>{numero}. {question}</h4>
-      <p><strong>Valiny nomena :</strong> {reponse || "—"}</p>
-    </div>
-  );
-
-  const FiliereSection = ({ title, score, ca, depenses, benefice, fananantany, fiofanana, ezaka, tohana, diagnostic }: any) => (
-    <div style={styles.block}>
-      <h3>{title}</h3>
-
-      <h4>A. Fananantany — 5 points</h4>
-      <p>An’iza ny tany/toerana ? Firy ny refiny ? Azo ampiasaina maharitra ve ?</p>
-      <p><strong>Valiny :</strong> {fananantany || "—"}</p>
-
-      <h4>B. Fiofanana — 15 points</h4>
-      <p>Efa nahazo fiofanana ve ? Inona no hainao ampiharina ?</p>
-      <p><strong>Valiny :</strong> {fiofanana || "—"}</p>
-
-      <h4>C. Ezaka sy anjara biriky — 20 points</h4>
-      <p>Tany, fitaovana, vola, asa tanana, akora, fanomanana efa natao.</p>
-      <p><strong>Valiny :</strong> {ezaka || "—"}</p>
-
-      <h4>D. Tohana ilaina — 5 points</h4>
-      <p>Inona no tohana tena ilaina izay tsy vitanao irery intsony ?</p>
-      <p><strong>Valiny :</strong> {tohana || "—"}</p>
-
-      <h4>E. Diagnostic ara-toekarena sy ara-pitantanana — 10 points</h4>
-      <p>Efa nivarotra zavatra ve ianao tao anatin’ny 3 taona farany ? Fantatrao ve ny dépenses sy tombom-barotra ? Inona ny fiofanana ilainao ?</p>
-      <p><strong>Valiny :</strong> {diagnostic || "—"}</p>
-
-      <h4>Synthèse économique 3 taona</h4>
-      <p>CA 3 taona : {ca?.toLocaleString?.() || 0} Ar</p>
-      <p>Dépenses 3 taona : {depenses?.toLocaleString?.() || 0} Ar</p>
-      <p>Bénéfice 3 taona : {benefice?.toLocaleString?.() || 0} Ar</p>
-
-      <h3>Total score {title} : {score || 0} / 55</h3>
-    </div>
-  );
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Fiche individuelle scientifique remplie</h1>
+        <h1 style={styles.titleSmall}>Fizarana 2 — Firotsahana ao anaty VTI</h1>
+        <p style={styles.text}>Totalibeny : 29 points</p>
 
-        <input
-          style={styles.input}
-          type="number"
-          placeholder="Ampidiro ny ID Tanora"
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-        />
+        <OptionSelect label="1. Efa tao anaty fikambanana ve ?" options={ouiNon} onChange={(v: number) => update(0, v, ouiNon)} />
+        <OptionSelect label="2. Efa tao anaty fikambanana tanora ve ?" options={ouiNon} onChange={(v: number) => update(1, v, ouiNon)} />
+        <OptionSelect label="3. Andraikitra teo anivon’ny vohitra na Fokontany" options={q3} onChange={(v: number) => update(2, v, q3)} />
+        <OptionSelect label="4. Fahalalana mikasika ny VTI misy anao" options={q5} onChange={(v: number) => update(3, v, q5)} />
+        <OptionSelect label="5. Ao anaty Vaomiera inona no misy anao ?" options={vaomiera} onChange={(v: number) => update(4, v, vaomiera)} />
+        <OptionSelect label="6. Inona no andraikitrao ao anatin’ny Vaomiera ?" options={q5} onChange={(v: number) => update(5, v, q5)} />
+        <OptionSelect label="7. Adiny firy isan-kerinandro no atokanao hiasa ao anaty Vaomiera ?" options={ora} onChange={(v: number) => update(6, v, ora)} />
 
-        <button style={styles.button} onClick={chargerFiche}>
-          Charger la fiche
-        </button>
-
-        {tanora && (
-          <>
-            <h2>1. Famantarana ny Tanora</h2>
-            <p>Anarana sy fanampiny : {tanora.anarana}</p>
-            <p>Taona : {tanora.taona}</p>
-            <p>Faritra : {tanora.faritra}</p>
-            <p>Distrika : {tanora.distrika}</p>
-            <p>Kaomina : {tanora.kaomina}</p>
-            <p>Karazana Kaomina : {tanora.type_kaomina}</p>
-            <p>Fokontany : {tanora.fokontany}</p>
-            <p>VTI misy azy : {tanora.vti}</p>
-
-            <hr />
-
-            <h2>2. Tombana ara-panahy — 52 points</h2>
-            <LigneQuestion numero="1" question="Efa zatra nitokam-bavaka ve ?" reponse={repSV?.spirituel_q1} />
-            <LigneQuestion numero="2" question="Efa nanana fiainam-bavaka nitohy ve ?" reponse={repSV?.spirituel_q2} />
-            <LigneQuestion numero="3" question="Efa manao pratika ny Vavaka Betela ve ?" reponse={repSV?.spirituel_q3} />
-            <LigneQuestion numero="4" question="Fibebahana sy fiderana" reponse={repSV?.spirituel_q4} />
-            <LigneQuestion numero="5" question="Fo madio sy Fanaka dimy" reponse={repSV?.spirituel_q5} />
-            <LigneQuestion numero="6" question="Fandroahana devoly sy fandravana planina satanika isan’andro" reponse={repSV?.spirituel_q6} />
-            <LigneQuestion numero="7" question="Vavaka mamindra tendrombohitra" reponse={repSV?.spirituel_q7} />
-            <h3>Total ara-panahy : {scores?.score_arapanahy || 0} / 52</h3>
-
-            <hr />
-
-            <h2>3. Tombana VTI — 29 points</h2>
-            <LigneQuestion numero="1" question="Efa tao anaty fikambanana ve ?" reponse={repSV?.vti_q1} />
-            <LigneQuestion numero="2" question="Efa tao anaty fikambanana tanora ve ?" reponse={repSV?.vti_q2} />
-            <LigneQuestion numero="3" question="Andraikitra teo anivon’ny vohitra na Fokontany" reponse={repSV?.vti_q3} />
-            <LigneQuestion numero="4" question="Fahalalana mikasika ny VTI misy azy" reponse={repSV?.vti_q4} />
-            <LigneQuestion numero="5" question="Ao anaty Vaomiera inona no misy azy ?" reponse={repSV?.vti_q5} />
-            <LigneQuestion numero="6" question="Inona no andraikiny ao anatin’ny Vaomiera ?" reponse={repSV?.vti_q6} />
-            <LigneQuestion numero="7" question="Adiny firy isan-kerinandro no atokany hiasa ao anaty Vaomiera ?" reponse={repSV?.vti_q7} />
-            <h3>Total VTI : {scores?.score_vti || 0} / 29</h3>
-
-            <hr />
-
-            <h2>4. Taniketsa Fandraharahana</h2>
-            <p>Nombre de Taniketsa choisis : {(scores?.score_taniketsa_max || 0) / 55} / 5</p>
-            <p>Total score Taniketsa : {scores?.score_taniketsa || 0} / {scores?.score_taniketsa_max || 0}</p>
-            <p>Score économie : {scores?.score_economie || 0}</p>
-
-            <FiliereSection title="Voly rakotra 500m²" score={scores?.score_voly_rakotra} ca={eco?.ca_voly_rakotra} depenses={eco?.depenses_voly_rakotra} benefice={eco?.benefice_voly_rakotra} fananantany={rep?.voly_rakotra_fananantany} fiofanana={rep?.voly_rakotra_fiofanana} ezaka={rep?.voly_rakotra_ezaka} tohana={rep?.voly_rakotra_tohana} diagnostic={rep?.voly_rakotra_diagnostic} />
-            <FiliereSection title="Voly vary 750m²" score={scores?.score_vary} ca={eco?.ca_vary} depenses={eco?.depenses_vary} benefice={eco?.benefice_vary} fananantany={rep?.vary_fananantany} fiofanana={rep?.vary_fiofanana} ezaka={rep?.vary_ezaka} tohana={rep?.vary_tohana} diagnostic={rep?.vary_diagnostic} />
-            <FiliereSection title="Akoho gasy" score={scores?.score_akoho_gasy} ca={eco?.ca_akoho_gasy} depenses={eco?.depenses_akoho_gasy} benefice={eco?.benefice_akoho_gasy} fananantany={rep?.akoho_gasy_fananantany} fiofanana={rep?.akoho_gasy_fiofanana} ezaka={rep?.akoho_gasy_ezaka} tohana={rep?.akoho_gasy_tohana} diagnostic={rep?.akoho_gasy_diagnostic} />
-            <FiliereSection title="Fanatavezana kisoa" score={scores?.score_kisoa} ca={eco?.ca_kisoa} depenses={eco?.depenses_kisoa} benefice={eco?.benefice_kisoa} fananantany={rep?.kisoa_fananantany} fiofanana={rep?.kisoa_fiofanana} ezaka={rep?.kisoa_ezaka} tohana={rep?.kisoa_tohana} diagnostic={rep?.kisoa_diagnostic} />
-            <FiliereSection title="Tantely" score={scores?.score_tantely} ca={eco?.ca_tantely} depenses={eco?.depenses_tantely} benefice={eco?.benefice_tantely} fananantany={rep?.tantely_fananantany} fiofanana={rep?.tantely_fiofanana} ezaka={rep?.tantely_ezaka} tohana={rep?.tantely_tohana} diagnostic={rep?.tantely_diagnostic} />
-
-            <hr />
-
-            <h2>5. Synthèse générale</h2>
-            <p>Total CA 3 ans : {eco?.ca_total?.toLocaleString?.() || 0} Ar</p>
-            <p>Total dépenses 3 ans : {eco?.depenses_total?.toLocaleString?.() || 0} Ar</p>
-            <p>Total bénéfice 3 ans : {eco?.benefice_total?.toLocaleString?.() || 0} Ar</p>
-
-            <div style={styles.actions}>
-              <button style={styles.button} onClick={() => window.print()}>
-                Imprimer
-              </button>
-              <button style={styles.secondaryButton} onClick={() => window.print()}>
-                Télécharger PDF
-              </button>
-            </div>
-          </>
-        )}
+        <h2 style={styles.score}>Total Score VTI : {total} / 29</h2>
 
         <div style={styles.actions}>
           <button style={styles.secondaryButton} onClick={onBack}>
             Miverina
+          </button>
+
+          <button style={styles.button} onClick={sauvegarderScoreVti}>
+            Enregistrer score VTI sy hanohy
           </button>
         </div>
       </section>
