@@ -450,252 +450,344 @@ function VtiForm({ tanoraId, onBack, onNext }: any) {
     </main>
   );
 }
-function TaniketsaForm({ tanoraId, onBack, onNext }: any) {
+function TaniketsaForm({ tanoraId, onBack }: any) {
   const filieres = [
-    {
-      type: "voly_rakotra",
-      name: "Voly rakotra 500m²",
-      unitQuestion: "Firy ny parcelles Voly rakotra ?",
-      unitName: "parcelle",
-      caRef: [7647200, 7647200, 7647200],
-      depRef: [1470000, 1470000, 1470000],
-    },
-
-    {
-      type: "vary",
-      name: "Voly vary 750m²",
-      unitQuestion: "Firy ny parcelles Voly vary ?",
-      unitName: "parcelle",
-      caRef: [3500000, 3500000, 3500000],
-      depRef: [1200000, 1200000, 1200000],
-    },
-
-    {
-      type: "akoho_gasy",
-      name: "Akoho gasy",
-      unitQuestion: "Firy ny Tokatranon’akoho ?",
-      unitName: "tokatranon’akoho",
-      caRef: [165120000, 165120000, 165120000],
-      depRef: [73100000, 73100000, 73100000],
-    },
-
-    {
-      type: "kisoa",
-      name: "Kisoa",
-      unitQuestion: "Firy ny sites kisoa ?",
-      unitName: "site",
-      caRef: [12000000, 12000000, 12000000],
-      depRef: [4500000, 4500000, 4500000],
-    },
-
-    // ===== TANTELY CORRIGÉ =====
-    {
-      type: "tantely",
-      name: "Tantely",
-      unitQuestion: "Tohon-tantely firy no hompianao ?",
-      unitName: "tohon-tantely",
-
-      // 42 litres × 9.000 Ar
-      caRef: [378000, 378000, 378000],
-
-      // année 1 = ruche vaovao
-      // année suivante = tsy mividy ruche intsony
-      depRef: [295000, 135000, 135000],
-    },
+    { type: "voly", name: "Voly rakotra 500m²", unitQuestion: "Parcelle 500m² firy no ho volenao ?", unitName: "parcelle", caRef: [754800, 876800, 876800], depRef: [230000, 110000, 170000] },
+    { type: "vary", name: "Voly vary 750m²", unitQuestion: "Parcelle 750m² firy no ho volenao ?", unitName: "parcelle", caRef: [450000, 600000, 600000], depRef: [350000, 350000, 350000] },
+    { type: "akoho", name: "Akoho gasy", unitQuestion: "Tranon’akoho firy no hanombohanao amin’ny Taona 1 ?", unitName: "tranon’akoho", caRef: [0, 0, 0], depRef: [0, 0, 0] },
+    { type: "kisoa", name: "Fanatavezana kisoa", unitQuestion: "Kisoa firy no hatavezinao ?", unitName: "kisoa", caRef: [1400000, 1400000, 1400000], depRef: [756440, 756440, 756440] },
+    { type: "tantely", name: "Tantely", unitQuestion: "Tohon-tantely firy no hompianao ?", unitName: "tohon-tantely", caRef: [378000, 378000, 378000], depRef: [295000, 135000, 135000] },
   ];
 
-  const [units, setUnits] = useState<number[][]>(
-    filieres.map(() => [0, 0, 0])
+  const [selected, setSelected] = useState<boolean[]>(Array(5).fill(false));
+  const [units, setUnits] = useState<number[][]>(filieres.map(() => [0, 0, 0]));
+
+  const [scores, setScores] = useState(
+    filieres.map(() => ({
+      tany: 0,
+      fiofanana: 0,
+      ezaka: 0,
+      tohana: 0,
+      economie: 0,
+    }))
   );
 
-  const handleUnits = (
-    filiereIndex: number,
-    year: number,
-    value: number
-  ) => {
-    const copy = [...units];
-    copy[filiereIndex][year] = value;
+  const [reponses, setReponses] = useState(
+    filieres.map(() => ({
+      fananantany: "",
+      fiofanana: "",
+      ezaka: "",
+      tohana: "",
+      diagnostic: "",
+    }))
+  );
+
+  const updateSelected = (i: number, checked: boolean) => {
+    const copy = [...selected];
+    copy[i] = checked;
+    setSelected(copy);
+  };
+
+  const updateUnit = (i: number, year: number, value: number) => {
+    const copy = units.map((row) => [...row]);
+    copy[i][year] = value;
     setUnits(copy);
   };
 
-  // ===============================
-  // CALCULS AUTOMATIQUES
-  // ===============================
+  const updateScore = (i: number, key: string, value: number) => {
+    const copy = scores.map((s) => ({ ...s }));
+    copy[i] = { ...copy[i], [key]: value };
+    setScores(copy);
+  };
 
-  const yearData = filieres.map((f, i) => {
-    const rows = [0, 1, 2].map((year) => {
-      const unitsCount = units[i][year];
+  const updateReponse = (i: number, key: string, value: string) => {
+    const copy = reponses.map((r) => ({ ...r }));
+    copy[i] = { ...copy[i], [key]: value };
+    setReponses(copy);
+  };
 
-      // =========================================
-      // FILIERE TANTELY — CALCUL SPÉCIAL
-      // =========================================
+  const scoreFiliere = (i: number) =>
+    scores[i].tany + scores[i].fiofanana + scores[i].ezaka + scores[i].tohana + scores[i].economie;
 
-      if (f.type === "tantely") {
-        const ruchesActives = unitsCount;
+  const yearData = (i: number, year: number) => {
+    const f = filieres[i];
 
-        const ruchesAvant =
-          year === 0 ? 0 : units[i][year - 1];
-
-        const ruchesNouvelles = Math.max(
-          ruchesActives - ruchesAvant,
-          0
-        );
-
-        const ruchesAnciennes =
-          ruchesActives - ruchesNouvelles;
-
-        // ======================
-        // CHIFFRE D’AFFAIRES
-        // ======================
-
-        // 42 litres × 9.000 Ar
-        const caParRuche = 378000;
-
-        const ca = ruchesActives * caParRuche;
-
-        // ======================
-        // DEPENSES
-        // ======================
-
-        // Ruche vaovao :
-        // 295.000 Ar
-        // (ruche + reine + charges)
-
-        // Ruche ancienne :
-        // 135.000 Ar
-        // (sans achat ruche)
-
-        const dep =
-          ruchesNouvelles * 295000 +
-          ruchesAnciennes * 135000;
-
-        const benefice = ca - dep;
-
-        const detail =
-          `Taona ${year + 1} : ` +
-          `${ruchesActives} tohontantely, ` +
-          `${ruchesNouvelles} vaovao, ` +
-          `${ruchesAnciennes} efa nisy. ` +
-          `CA = ${ca.toLocaleString()} Ar ; ` +
-          `Dépenses = ${dep.toLocaleString()} Ar ; ` +
-          `Bénéfice = ${benefice.toLocaleString()} Ar`;
-
-        return {
-          year: year + 1,
-          units: ruchesActives,
-          ca,
-          dep,
-          benefice,
-          detail,
-        };
-      }
-
-      // =========================================
-      // FILIERES HAFATRA
-      // =========================================
-
-      const ca = unitsCount * f.caRef[year];
-      const dep = unitsCount * f.depRef[year];
-      const benefice = ca - dep;
+    if (f.type === "akoho") {
+      const initialHouses = units[i][0];
+      const activeHouses = year === 0 ? initialHouses : year === 1 ? initialHouses * 6 : initialHouses * 36;
+      const totalPoussins = activeHouses * 160;
+      const reinvestis = totalPoussins * 0.25;
+      const vendus = totalPoussins * 0.75;
+      const ca = vendus * 16000;
+      const dep = vendus * 7000 + (year === 0 ? initialHouses * 430000 : 0);
 
       return {
-        year: year + 1,
-        units: unitsCount,
         ca,
         dep,
-        benefice,
-        detail:
-          `CA ${ca.toLocaleString()} Ar ; ` +
-          `Dépenses ${dep.toLocaleString()} Ar ; ` +
-          `Bénéfice ${benefice.toLocaleString()} Ar`,
+        benefice: ca - dep,
+        detail: `${activeHouses.toLocaleString()} tranon’akoho actifs ; ${totalPoussins.toLocaleString()} poussins ; ${reinvestis.toLocaleString()} réinvestis ; ${vendus.toLocaleString()} amidy ; charges 7 000 Ar/poussin vendu`,
       };
-    });
+    }
 
-    return {
-      type: f.type,
-      name: f.name,
-      rows,
-    };
-  });
+    if (f.type === "tantely") {
+      const ruchesActives = units[i][year];
+      const ruchesAvant = year === 0 ? 0 : units[i][year - 1];
+      const ruchesNouvelles = Math.max(ruchesActives - ruchesAvant, 0);
+      const ruchesAnciennes = ruchesActives - ruchesNouvelles;
+
+      const caParRuche = 42 * 9000;
+      const dep = ruchesNouvelles * 295000 + ruchesAnciennes * 135000;
+      const ca = ruchesActives * caParRuche;
+
+      return {
+        ca,
+        dep,
+        benefice: ca - dep,
+        detail: `${ruchesActives} tohontantely actifs ; ${ruchesNouvelles} vaovao ; ${ruchesAnciennes} efa nisy ; 42 L/an/tohontantely × 9 000 Ar/L ; dépenses vaovao 295 000 Ar, dépenses manaraka 135 000 Ar`,
+      };
+    }
+
+    const n = units[i][year];
+    const ca = n * f.caRef[year];
+    const dep = n * f.depRef[year];
+
+    return { ca, dep, benefice: ca - dep, detail: `${n} ${f.unitName} × référence Taona ${year + 1}` };
+  };
+
+  const filiereTotal = (i: number) => {
+    if (!selected[i]) return { ca: 0, dep: 0, benefice: 0 };
+
+    return [0, 1, 2].reduce(
+      (acc, year) => {
+        const d = yearData(i, year);
+        acc.ca += d.ca;
+        acc.dep += d.dep;
+        acc.benefice += d.benefice;
+        return acc;
+      },
+      { ca: 0, dep: 0, benefice: 0 }
+    );
+  };
+
+  const selectedCount = selected.filter(Boolean).length;
+  const maxScore = selectedCount * 55;
+
+  const voly = filiereTotal(0);
+  const vary = filiereTotal(1);
+  const akoho = filiereTotal(2);
+  const kisoa = filiereTotal(3);
+  const tantely = filiereTotal(4);
+
+  const totals = {
+    ca: voly.ca + vary.ca + akoho.ca + kisoa.ca + tantely.ca,
+    dep: voly.dep + vary.dep + akoho.dep + kisoa.dep + tantely.dep,
+    benefice: voly.benefice + vary.benefice + akoho.benefice + kisoa.benefice + tantely.benefice,
+  };
+
+  const totalScore = scores.reduce((sum, _s, i) => {
+    if (!selected[i]) return sum;
+    return sum + scoreFiliere(i);
+  }, 0);
+
+  const totalEconomie = scores.reduce((sum, s, i) => {
+    if (!selected[i]) return sum;
+    return sum + s.economie;
+  }, 0);
+
+  const sauvegarderScoresTaniketsa = async () => {
+    if (!tanoraId) {
+      alert("ID Tanora tsy hita.");
+      return;
+    }
+
+    const { error: scoreError } = await supabase
+      .from("scores")
+      .update({
+        score_taniketsa: totalScore,
+        score_economie: totalEconomie,
+        score_taniketsa_max: maxScore,
+        score_voly_rakotra: selected[0] ? scoreFiliere(0) : 0,
+        score_vary: selected[1] ? scoreFiliere(1) : 0,
+        score_akoho_gasy: selected[2] ? scoreFiliere(2) : 0,
+        score_kisoa: selected[3] ? scoreFiliere(3) : 0,
+        score_tantely: selected[4] ? scoreFiliere(4) : 0,
+      })
+      .eq("tanora_id", tanoraId);
+
+    if (scoreError) {
+      alert("Erreur Scores : " + JSON.stringify(scoreError));
+      return;
+    }
+
+    const { error: ecoError } = await supabase.from("economies_taniketsa").insert([
+      {
+        tanora_id: tanoraId,
+
+        ca_voly_rakotra: voly.ca,
+        depenses_voly_rakotra: voly.dep,
+        benefice_voly_rakotra: voly.benefice,
+
+        ca_vary: vary.ca,
+        depenses_vary: vary.dep,
+        benefice_vary: vary.benefice,
+
+        ca_akoho_gasy: akoho.ca,
+        depenses_akoho_gasy: akoho.dep,
+        benefice_akoho_gasy: akoho.benefice,
+
+        ca_kisoa: kisoa.ca,
+        depenses_kisoa: kisoa.dep,
+        benefice_kisoa: kisoa.benefice,
+
+        ca_tantely: tantely.ca,
+        depenses_tantely: tantely.dep,
+        benefice_tantely: tantely.benefice,
+
+        ca_total: totals.ca,
+        depenses_total: totals.dep,
+        benefice_total: totals.benefice,
+      },
+    ]);
+
+    if (ecoError) {
+      alert("Erreur Économie : " + JSON.stringify(ecoError));
+      return;
+    }
+
+    const { error: repError } = await supabase.from("reponses_taniketsa_detaillees").insert([
+      {
+        tanora_id: tanoraId,
+
+        voly_rakotra_fananantany: reponses[0].fananantany,
+        voly_rakotra_fiofanana: reponses[0].fiofanana,
+        voly_rakotra_ezaka: reponses[0].ezaka,
+        voly_rakotra_tohana: reponses[0].tohana,
+        voly_rakotra_diagnostic: reponses[0].diagnostic,
+
+        vary_fananantany: reponses[1].fananantany,
+        vary_fiofanana: reponses[1].fiofanana,
+        vary_ezaka: reponses[1].ezaka,
+        vary_tohana: reponses[1].tohana,
+        vary_diagnostic: reponses[1].diagnostic,
+
+        akoho_gasy_fananantany: reponses[2].fananantany,
+        akoho_gasy_fiofanana: reponses[2].fiofanana,
+        akoho_gasy_ezaka: reponses[2].ezaka,
+        akoho_gasy_tohana: reponses[2].tohana,
+        akoho_gasy_diagnostic: reponses[2].diagnostic,
+
+        kisoa_fananantany: reponses[3].fananantany,
+        kisoa_fiofanana: reponses[3].fiofanana,
+        kisoa_ezaka: reponses[3].ezaka,
+        kisoa_tohana: reponses[3].tohana,
+        kisoa_diagnostic: reponses[3].diagnostic,
+
+        tantely_fananantany: reponses[4].fananantany,
+        tantely_fiofanana: reponses[4].fiofanana,
+        tantely_ezaka: reponses[4].ezaka,
+        tantely_tohana: reponses[4].tohana,
+        tantely_diagnostic: reponses[4].diagnostic,
+      },
+    ]);
+
+    if (repError) {
+      alert("Erreur Réponses détaillées : " + JSON.stringify(repError));
+      return;
+    }
+
+    alert("Tombana feno voatahiry : scores, économies ary réponses détaillées !");
+  };
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Taniketsa Fandraharahana
-        </h1>
+        <h1 style={styles.titleSmall}>Taniketsa Fandraharahana</h1>
 
-        {filieres.map((f, i) => (
-          <div key={f.type} style={styles.block}>
-            <h2>{f.name}</h2>
+        <div style={styles.scoreBox}>
+          <strong>Taniketsa voafidy : </strong>{selectedCount} / 5<br />
+          <strong>Total CA 3 taona : </strong>{totals.ca.toLocaleString()} Ar<br />
+          <strong>Total dépenses 3 taona : </strong>{totals.dep.toLocaleString()} Ar<br />
+          <strong>Bénéfice prévisionnel : </strong>{totals.benefice.toLocaleString()} Ar<br />
+          <strong>Total Score : </strong>{totalScore} / {maxScore}
+        </div>
 
-            {[0, 1, 2].map((year) => (
-              <div key={year}>
-                <label style={styles.label}>
-                  Taona {year + 1} — {f.unitQuestion}
-                </label>
+        {filieres.map((f, i) => {
+          const score = scoreFiliere(i);
 
-                <input
-                  style={styles.input}
-                  type="number"
-                  min={0}
-                  value={units[i][year]}
-                  onChange={(e) =>
-                    handleUnits(
-                      i,
-                      year,
-                      parseInt(e.target.value || "0")
-                    )
-                  }
-                />
-              </div>
-            ))}
+          return (
+            <div key={f.name} style={styles.block}>
+              <label style={styles.checkboxLabel}>
+                <input type="checkbox" checked={selected[i]} onChange={(e) => updateSelected(i, e.target.checked)} />
+                Safidio ity Taniketsa ity : {f.name}
+              </label>
 
-            <div style={styles.scoreBox}>
-              {yearData[i].rows.map((r) => (
-                <div key={r.year}>
-                  <p>
-                    <strong>Taona {r.year}</strong>
-                  </p>
+              {selected[i] && (
+                <>
+                  <h3 style={styles.sectionTitle}>{i + 1}. {f.name}</h3>
 
-                  <p>
-                    Unités : {r.units}
-                  </p>
+                  {f.type === "akoho" && (
+                    <>
+                      <label style={styles.label}>{f.unitQuestion}</label>
+                      <input style={styles.input} type="number" min="0" placeholder="Ohatra : 1 na 2" onChange={(e) => updateUnit(i, 0, Number(e.target.value))} />
+                    </>
+                  )}
 
-                  <p>
-                    CA : {r.ca.toLocaleString()} Ar
-                  </p>
+                  {[0, 1, 2].map((year) => {
+                    const d = yearData(i, year);
 
-                  <p>
-                    Dépenses : {r.dep.toLocaleString()} Ar
-                  </p>
+                    return (
+                      <div key={year} style={styles.miniBox}>
+                        <h4>Taona {year + 1}</h4>
 
-                  <p>
-                    Bénéfice : {r.benefice.toLocaleString()} Ar
-                  </p>
+                        {f.type !== "akoho" && (
+                          <>
+                            <label style={styles.label}>{f.unitQuestion}</label>
+                            <input style={styles.input} type="number" min="0" placeholder={`Isan’ny ${f.unitName}`} onChange={(e) => updateUnit(i, year, Number(e.target.value))} />
+                          </>
+                        )}
 
-                  <p>{r.detail}</p>
+                        <p>{d.detail}</p>
+                        <strong>CA calculé : </strong>{d.ca.toLocaleString()} Ar<br />
+                        <strong>Dépenses calculées : </strong>{d.dep.toLocaleString()} Ar<br />
+                        <strong>Bénéfice calculé : </strong>{d.benefice.toLocaleString()} Ar
+                      </div>
+                    );
+                  })}
 
-                  <hr />
-                </div>
-              ))}
+                  <h4 style={styles.sectionTitle}>A. Fananantany — 5 points</h4>
+                  <textarea style={styles.textarea} placeholder="An’iza ny tany ? Fanananao ve, an’ny ray aman-dreny, hofaina, sa hafa ? Firy ny refiny ?" value={reponses[i].fananantany} onChange={(e) => updateReponse(i, "fananantany", e.target.value)} />
+                  <ScoreSelect label="Score fananantany" max={5} onChange={(v: number) => updateScore(i, "tany", v)} />
+
+                  <h4 style={styles.sectionTitle}>B. Fiofanana — 15 points</h4>
+                  <textarea style={styles.textarea} placeholder="Efa nahazo fiofanana ve ? Hazavao ny votoatin’ny fiofanana sy izay hainao ampiharina." value={reponses[i].fiofanana} onChange={(e) => updateReponse(i, "fiofanana", e.target.value)} />
+                  <ScoreSelect label="Score fiofanana" max={15} onChange={(v: number) => updateScore(i, "fiofanana", v)} />
+
+                  <h4 style={styles.sectionTitle}>C. Ezaka sy anjara biriky — 20 points</h4>
+                  <textarea style={styles.textarea} placeholder="Sorito ny ezaka sy anjara biriky: tany, fitaovana, vola, asa tanana, akora, sary, taratasy fanekena." value={reponses[i].ezaka} onChange={(e) => updateReponse(i, "ezaka", e.target.value)} />
+                  <ScoreSelect label="Score ezaka sy anjara biriky" max={20} onChange={(v: number) => updateScore(i, "ezaka", v)} />
+
+                  <h4 style={styles.sectionTitle}>D. Tohana ilaina — 5 points</h4>
+                  <textarea style={styles.textarea} placeholder="Inona no tohana tena ilaina izay tsy vitanao irery intsony ?" value={reponses[i].tohana} onChange={(e) => updateReponse(i, "tohana", e.target.value)} />
+                  <ScoreSelect label="Score tohana ilaina" max={5} onChange={(v: number) => updateScore(i, "tohana", v)} />
+
+                  <h4 style={styles.sectionTitle}>E. Diagnostic ara-toekarena sy ara-pitantanana — 10 points</h4>
+                  <textarea style={styles.textarea} placeholder="Efa nivarotra zavatra ve ianao tao anatin’ny 3 taona farany ? Fantatrao ve ny dépenses sy tombom-barotra ? Inona ny fiofanana ilainao ?" value={reponses[i].diagnostic} onChange={(e) => updateReponse(i, "diagnostic", e.target.value)} />
+                  <ScoreSelect label="Score diagnostic ara-toekarena sy ara-pitantanana" max={10} onChange={(v: number) => updateScore(i, "economie", v)} />
+
+                  <h2 style={styles.score}>Score {f.name} : {score} / 55</h2>
+                </>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         <div style={styles.actions}>
-          <button
-            style={styles.secondaryButton}
-            onClick={onBack}
-          >
+          <button style={styles.secondaryButton} onClick={onBack}>
             Miverina
           </button>
 
-          <button
-            style={styles.button}
-            onClick={onNext}
-          >
-            Hanohy
+          <button style={styles.button} onClick={sauvegarderScoresTaniketsa}>
+            Vita ny Tombana
           </button>
         </div>
       </section>
