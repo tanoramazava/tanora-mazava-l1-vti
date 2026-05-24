@@ -886,6 +886,9 @@ function FicheRemplie({ onBack }: any) {
       .limit(1)
       .maybeSingle();
 
+    alert("SPIRITUEL = " + JSON.stringify(spirituelData));
+    alert("VTI = " + JSON.stringify(vtiData));
+
     setTanora(tanoraData);
     setScores(scoresData);
     setEco(ecoData);
@@ -925,7 +928,6 @@ function FicheRemplie({ onBack }: any) {
         {tanora && (
           <>
             <h2>1. Famantarana ny Tanora</h2>
-
             <p>Anarana sy fanampiny : {tanora.anarana}</p>
             <p>Taona : {tanora.taona}</p>
             <p>Faritra : {tanora.faritra}</p>
@@ -1043,21 +1045,80 @@ function FicheRemplie({ onBack }: any) {
               {scores?.score_taniketsa_max || 0}
             </p>
 
+            <p>Score économie : {scores?.score_economie || 0}</p>
+
+            <h3>Voly rakotra 500m²</h3>
+            <p>Fananantany : {rep?.voly_rakotra_fananantany || "—"}</p>
+            <p>Fiofanana : {rep?.voly_rakotra_fiofanana || "—"}</p>
+            <p>Ezaka : {rep?.voly_rakotra_ezaka || "—"}</p>
+            <p>Tohana : {rep?.voly_rakotra_tohana || "—"}</p>
+            <p>Diagnostic : {rep?.voly_rakotra_diagnostic || "—"}</p>
+            <p>Score : {scores?.score_voly_rakotra || 0} / 55</p>
             <p>
-              Score économie : {scores?.score_economie || 0}
+              CA : {eco?.ca_voly_rakotra || 0} Ar — Dépenses :{" "}
+              {eco?.depenses_voly_rakotra || 0} Ar — Bénéfice :{" "}
+              {eco?.benefice_voly_rakotra || 0} Ar
+            </p>
+
+            <h3>Voly vary 750m²</h3>
+            <p>Fananantany : {rep?.vary_fananantany || "—"}</p>
+            <p>Fiofanana : {rep?.vary_fiofanana || "—"}</p>
+            <p>Ezaka : {rep?.vary_ezaka || "—"}</p>
+            <p>Tohana : {rep?.vary_tohana || "—"}</p>
+            <p>Diagnostic : {rep?.vary_diagnostic || "—"}</p>
+            <p>Score : {scores?.score_vary || 0} / 55</p>
+            <p>
+              CA : {eco?.ca_vary || 0} Ar — Dépenses :{" "}
+              {eco?.depenses_vary || 0} Ar — Bénéfice :{" "}
+              {eco?.benefice_vary || 0} Ar
+            </p>
+
+            <h3>Akoho gasy</h3>
+            <p>Fananantany : {rep?.akoho_gasy_fananantany || "—"}</p>
+            <p>Fiofanana : {rep?.akoho_gasy_fiofanana || "—"}</p>
+            <p>Ezaka : {rep?.akoho_gasy_ezaka || "—"}</p>
+            <p>Tohana : {rep?.akoho_gasy_tohana || "—"}</p>
+            <p>Diagnostic : {rep?.akoho_gasy_diagnostic || "—"}</p>
+            <p>Score : {scores?.score_akoho_gasy || 0} / 55</p>
+            <p>
+              CA : {eco?.ca_akoho_gasy || 0} Ar — Dépenses :{" "}
+              {eco?.depenses_akoho_gasy || 0} Ar — Bénéfice :{" "}
+              {eco?.benefice_akoho_gasy || 0} Ar
+            </p>
+
+            <h3>Kisoa</h3>
+            <p>Fananantany : {rep?.kisoa_fananantany || "—"}</p>
+            <p>Fiofanana : {rep?.kisoa_fiofanana || "—"}</p>
+            <p>Ezaka : {rep?.kisoa_ezaka || "—"}</p>
+            <p>Tohana : {rep?.kisoa_tohana || "—"}</p>
+            <p>Diagnostic : {rep?.kisoa_diagnostic || "—"}</p>
+            <p>Score : {scores?.score_kisoa || 0} / 55</p>
+            <p>
+              CA : {eco?.ca_kisoa || 0} Ar — Dépenses :{" "}
+              {eco?.depenses_kisoa || 0} Ar — Bénéfice :{" "}
+              {eco?.benefice_kisoa || 0} Ar
+            </p>
+
+            <h3>Tantely</h3>
+            <p>Fananantany : {rep?.tantely_fananantany || "—"}</p>
+            <p>Fiofanana : {rep?.tantely_fiofanana || "—"}</p>
+            <p>Ezaka : {rep?.tantely_ezaka || "—"}</p>
+            <p>Tohana : {rep?.tantely_tohana || "—"}</p>
+            <p>Diagnostic : {rep?.tantely_diagnostic || "—"}</p>
+            <p>Score : {scores?.score_tantely || 0} / 55</p>
+            <p>
+              CA : {eco?.ca_tantely || 0} Ar — Dépenses :{" "}
+              {eco?.depenses_tantely || 0} Ar — Bénéfice :{" "}
+              {eco?.benefice_tantely || 0} Ar
             </p>
 
             <h2>5. Synthèse générale</h2>
-
             <p>Total CA 3 ans : {eco?.ca_total || 0} Ar</p>
             <p>Total dépenses 3 ans : {eco?.depenses_total || 0} Ar</p>
             <p>Total bénéfice 3 ans : {eco?.benefice_total || 0} Ar</p>
 
             <div style={styles.actions}>
-              <button
-                style={styles.button}
-                onClick={() => window.print()}
-              >
+              <button style={styles.button} onClick={() => window.print()}>
                 Imprimer
               </button>
 
@@ -1072,10 +1133,7 @@ function FicheRemplie({ onBack }: any) {
         )}
 
         <div style={styles.actions}>
-          <button
-            style={styles.secondaryButton}
-            onClick={onBack}
-          >
+          <button style={styles.secondaryButton} onClick={onBack}>
             Miverina
           </button>
         </div>
