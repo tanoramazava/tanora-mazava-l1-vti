@@ -886,9 +886,6 @@ function FicheRemplie({ onBack }: any) {
       .limit(1)
       .maybeSingle();
 
-    alert("SPIRITUEL = " + JSON.stringify(spirituelData));
-    alert("VTI = " + JSON.stringify(vtiData));
-
     setTanora(tanoraData);
     setScores(scoresData);
     setEco(ecoData);
@@ -941,97 +938,27 @@ function FicheRemplie({ onBack }: any) {
 
             <h2>2. Tombana ara-panahy — 52 points</h2>
 
-            <LigneQuestion
-              numero="1"
-              question="Efa zatra nitokam-bavaka ve ?"
-              reponse={repSpirituel?.spirituel_q1}
-            />
+            <LigneQuestion numero="1" question="Efa zatra nitokam-bavaka ve ?" reponse={repSpirituel?.spirituel_q1} />
+            <LigneQuestion numero="2" question="Efa nanana fiainam-bavaka nitohy ve ?" reponse={repSpirituel?.spirituel_q2} />
+            <LigneQuestion numero="3" question="Efa manao pratika ny Vavaka Betela ve ?" reponse={repSpirituel?.spirituel_q3} />
+            <LigneQuestion numero="4" question="Fibebahana sy fiderana" reponse={repSpirituel?.spirituel_q4} />
+            <LigneQuestion numero="5" question="Fo madio sy Fanaka dimy" reponse={repSpirituel?.spirituel_q5} />
+            <LigneQuestion numero="6" question="Fandroahana devoly sy fandravana planina satanika isan’andro" reponse={repSpirituel?.spirituel_q6} />
+            <LigneQuestion numero="7" question="Vavaka mamindra tendrombohitra" reponse={repSpirituel?.spirituel_q7} />
 
-            <LigneQuestion
-              numero="2"
-              question="Efa nanana fiainam-bavaka nitohy ve ?"
-              reponse={repSpirituel?.spirituel_q2}
-            />
-
-            <LigneQuestion
-              numero="3"
-              question="Efa manao pratika ny Vavaka Betela ve ?"
-              reponse={repSpirituel?.spirituel_q3}
-            />
-
-            <LigneQuestion
-              numero="4"
-              question="Fibebahana sy fiderana"
-              reponse={repSpirituel?.spirituel_q4}
-            />
-
-            <LigneQuestion
-              numero="5"
-              question="Fo madio sy Fanaka dimy"
-              reponse={repSpirituel?.spirituel_q5}
-            />
-
-            <LigneQuestion
-              numero="6"
-              question="Fandroahana devoly sy fandravana planina satanika isan’andro"
-              reponse={repSpirituel?.spirituel_q6}
-            />
-
-            <LigneQuestion
-              numero="7"
-              question="Vavaka mamindra tendrombohitra"
-              reponse={repSpirituel?.spirituel_q7}
-            />
-
-            <h3>
-              Total ara-panahy : {scores?.score_arapanahy || 0} / 52
-            </h3>
+            <h3>Total ara-panahy : {scores?.score_arapanahy || 0} / 52</h3>
 
             <hr />
 
             <h2>3. Tombana VTI — 29 points</h2>
 
-            <LigneQuestion
-              numero="1"
-              question="Efa tao anaty fikambanana ve ?"
-              reponse={repVti?.vti_q1}
-            />
-
-            <LigneQuestion
-              numero="2"
-              question="Efa tao anaty fikambanana tanora ve ?"
-              reponse={repVti?.vti_q2}
-            />
-
-            <LigneQuestion
-              numero="3"
-              question="Andraikitra teo anivon’ny vohitra na Fokontany"
-              reponse={repVti?.vti_q3}
-            />
-
-            <LigneQuestion
-              numero="4"
-              question="Fahalalana mikasika ny VTI misy azy"
-              reponse={repVti?.vti_q4}
-            />
-
-            <LigneQuestion
-              numero="5"
-              question="Ao anaty Vaomiera inona no misy azy ?"
-              reponse={repVti?.vti_q5}
-            />
-
-            <LigneQuestion
-              numero="6"
-              question="Inona no andraikiny ao anatin’ny Vaomiera ?"
-              reponse={repVti?.vti_q6}
-            />
-
-            <LigneQuestion
-              numero="7"
-              question="Adiny firy isan-kerinandro no atokany hiasa ao anaty Vaomiera ?"
-              reponse={repVti?.vti_q7}
-            />
+            <LigneQuestion numero="1" question="Efa tao anaty fikambanana ve ?" reponse={repVti?.vti_q1} />
+            <LigneQuestion numero="2" question="Efa tao anaty fikambanana tanora ve ?" reponse={repVti?.vti_q2} />
+            <LigneQuestion numero="3" question="Andraikitra teo anivon’ny vohitra na Fokontany" reponse={repVti?.vti_q3} />
+            <LigneQuestion numero="4" question="Fahalalana mikasika ny VTI misy azy" reponse={repVti?.vti_q4} />
+            <LigneQuestion numero="5" question="Ao anaty Vaomiera inona no misy azy ?" reponse={repVti?.vti_q5} />
+            <LigneQuestion numero="6" question="Inona no andraikiny ao anatin’ny Vaomiera ?" reponse={repVti?.vti_q6} />
+            <LigneQuestion numero="7" question="Adiny firy isan-kerinandro no atokany hiasa ao anaty Vaomiera ?" reponse={repVti?.vti_q7} />
 
             <h3>Total VTI : {scores?.score_vti || 0} / 29</h3>
 
@@ -1040,11 +967,9 @@ function FicheRemplie({ onBack }: any) {
             <h2>4. Taniketsa Fandraharahana</h2>
 
             <p>
-              Total score Taniketsa :{" "}
-              {scores?.score_taniketsa || 0} /{" "}
+              Total score Taniketsa : {scores?.score_taniketsa || 0} /{" "}
               {scores?.score_taniketsa_max || 0}
             </p>
-
             <p>Score économie : {scores?.score_economie || 0}</p>
 
             <h3>Voly rakotra 500m²</h3>
@@ -1112,6 +1037,8 @@ function FicheRemplie({ onBack }: any) {
               {eco?.benefice_tantely || 0} Ar
             </p>
 
+            <hr />
+
             <h2>5. Synthèse générale</h2>
             <p>Total CA 3 ans : {eco?.ca_total || 0} Ar</p>
             <p>Total dépenses 3 ans : {eco?.depenses_total || 0} Ar</p>
@@ -1122,10 +1049,7 @@ function FicheRemplie({ onBack }: any) {
                 Imprimer
               </button>
 
-              <button
-                style={styles.secondaryButton}
-                onClick={() => window.print()}
-              >
+              <button style={styles.secondaryButton} onClick={() => window.print()}>
                 Télécharger PDF
               </button>
             </div>
