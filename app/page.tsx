@@ -330,7 +330,13 @@ function VtiForm({ tanoraId, onBack, onNext }: any) {
   ];
 
   const vaomiera: [string, number][] = [
-    ["Ao anaty Vaomiera mazava — 5 points", 5],
+    ['Vaomiera "Ara-panahy sy fanabeazana" — 5 points', 5],
+    ['Vaomiera "Fandraharahana sy Toekarena" — 5 points', 5],
+    ['Vaomiera "Fahasalamana sy fiarovana ny tanora" — 5 points', 5],
+    [
+      'Vaomiera "Etika Fampandrosoana maharitra" (Fandriampahalemana, Ady amin’ny kolikoly, Tontolo iainana) — 5 points',
+      5,
+    ],
     ["Tsy ao anaty Vaomiera — 0 point", 0],
   ];
 
@@ -410,7 +416,7 @@ function VtiForm({ tanoraId, onBack, onNext }: any) {
         />
 
         <OptionSelect
-          label="5. Ao anaty Vaomiera inona no misy anao ?"
+          label="5. Safidio ny Vaomiera misy anao"
           options={vaomiera}
           onChange={(v: number) => update(4, v, vaomiera)}
         />
