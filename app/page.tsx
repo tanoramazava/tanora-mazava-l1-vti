@@ -10,7 +10,10 @@ type Screen =
   | "vti"
   | "taniketsa"
   | "imprimable"
-  | "fiche";
+  | "fiche"
+  | "vti_iombonana"
+  | "vti_imprimable"
+  | "vti_fiche";
 
 export default function HomePage() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -63,6 +66,18 @@ export default function HomePage() {
     return <FicheRemplie onBack={() => setScreen("home")} />;
   }
 
+  if (screen === "vti_iombonana") {
+    return <TombanaIombonanaVtiForm onBack={() => setScreen("home")} />;
+  }
+
+  if (screen === "vti_imprimable") {
+    return <FormulaireViergeVti onBack={() => setScreen("home")} />;
+  }
+
+  if (screen === "vti_fiche") {
+    return <FicheRemplieVti onBack={() => setScreen("home")} />;
+  }
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
@@ -73,15 +88,110 @@ export default function HomePage() {
         </h2>
 
         <button style={styles.button} onClick={() => setScreen("identite")}>
-          Hanomboka ny Tombana
+          Hanomboka ny Tombana ID Tanora
         </button>
 
         <button style={styles.secondaryButton} onClick={() => setScreen("imprimable")}>
-          Version imprimable vierge
+          Version imprimable vierge ID Tanora
         </button>
 
         <button style={styles.secondaryButton} onClick={() => setScreen("fiche")}>
           Fiche remplie par ID Tanora
+        </button>
+
+        <hr />
+
+        <h2 style={styles.subtitle}>
+          TOMBANA IOMBONANA AO ANATY VTI
+        </h2>
+
+        <button style={styles.button} onClick={() => setScreen("vti_iombonana")}>
+          Hanomboka Tombana iombonana VTI
+        </button>
+
+        <button style={styles.secondaryButton} onClick={() => setScreen("vti_imprimable")}>
+          Formulaire vierge VTI
+        </button>
+
+        <button style={styles.secondaryButton} onClick={() => setScreen("vti_fiche")}>
+          Fiche remplie VTI par ID VTI
+        </button>
+      </section>
+    </main>
+  );
+}
+function TombanaIombonanaVtiForm({ onBack }: any) {
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>
+          Tombana iombonana VTI
+        </h1>
+
+        <p style={styles.text}>
+          Module VTI mbola eo am-panamboarana.
+        </p>
+
+        <button
+          style={styles.secondaryButton}
+          onClick={onBack}
+        >
+          Miverina
+        </button>
+      </section>
+    </main>
+  );
+}
+
+function FormulaireViergeVti({ onBack }: any) {
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>
+          Formulaire vierge VTI
+        </h1>
+
+        <p style={styles.text}>
+          Version imprimable VTI mbola eo am-panamboarana.
+        </p>
+
+        <div style={styles.actions}>
+          <button
+            style={styles.button}
+            onClick={() => window.print()}
+          >
+            Imprimer
+          </button>
+
+          <button
+            style={styles.secondaryButton}
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+}
+
+function FicheRemplieVti({ onBack }: any) {
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>
+          Fiche remplie VTI
+        </h1>
+
+        <p style={styles.text}>
+          Fiche remplie VTI mbola eo am-panamboarana.
+        </p>
+
+        <button
+          style={styles.secondaryButton}
+          onClick={onBack}
+        >
+          Miverina
         </button>
       </section>
     </main>
