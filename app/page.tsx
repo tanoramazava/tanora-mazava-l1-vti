@@ -338,12 +338,14 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
         onChange={(v: number) => setOraScore(v)}
       />
 
-      <h4>2. Efa natombokareo ve ny Herinandro 5 ho an’ny Mpianatry ny Tompo ?</h4>
+      <h4>
+        2. Efa natombokareo ve ny Herinandro 5 ho an’ny Mpianatry ny Tompo ?
+      </h4>
 
-      <p>
-        Herinandro 1: Fahamasinana; Herinandro 2: Fanetre-tena; Herinandro 3:
-        Fandeferana; Herinandro 4: Fahaizana mamela heloka; Herinandro 5:
-        Fiantrana ny madiniky ny Tompo.
+      <p style={styles.text}>
+        Référence : Herinandro 1 — Fahamasinana; Herinandro 2 — Fanetre-tena;
+        Herinandro 3 — Fandeferana; Herinandro 4 — Fahaizana mamela heloka;
+        Herinandro 5 — Fiantrana ny madiniky ny Tompo.
       </p>
 
       <OptionSelect
@@ -357,9 +359,14 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
         ampiharina ?
       </h4>
 
+      <p style={styles.text}>
+        Référence : 1-Fahamasinana, 2-Fanetre-tena, 3-Fandeferana,
+        4-Fahaizana mamela heloka, 5-Fiantrana ny madiniky ny Tompo.
+        Hazavao izay tena sarotra ampiharina sy ny antony.
+      </p>
+
       <textarea
         style={styles.textarea}
-        placeholder="Kilasio 1 hatramin’ny 5: Fahamasinana, Fanetre-tena, Fandeferana, Fahaizana mamela heloka, Fiantrana ny madiniky ny Tompo. Hazavao amin’ny antsipiriany."
         value={fanakaDimy}
         onChange={(e) => setFanakaDimy(e.target.value)}
       />
@@ -368,9 +375,13 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
         4. Inona no fanamby lehibe tianareo ho tratrarina ao anatin’ny 140 andro ?
       </h4>
 
+      <p style={styles.text}>
+        Référence : soraty mazava ny fanamby 1, 2, 3, 4, 5 sy ny fomba
+        hahatratrarana azy ao anatin’ny 140 andro.
+      </p>
+
       <textarea
         style={styles.textarea}
-        placeholder="Soraty mazava ny fanamby 1, 2, 3, 4, 5 sy ny fomba ahatratrarana azy ao anatin’ny 140 andro."
         value={fanamby140}
         onChange={(e) => setFanamby140(e.target.value)}
       />
@@ -387,9 +398,13 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
         5. Sokajio araka ny laharam-pahamehana ireo olana ara-panabeazana
       </h4>
 
+      <p style={styles.text}>
+        Référence : 1-Fahabadoana, 2-Fahatrana ara-panabeazana,
+        3-Fitsoahana na fialana an-tsekoly. Sokajio araka ny laharam-pahamehana.
+      </p>
+
       <textarea
         style={styles.textarea}
-        placeholder="Soraty sy sokajio: 1-Fahabadoana, 2-Fahatrana ara-panabeazana, 3-Fitsoahana/fialana an-tsekoly. Azo ampiana fanazavana hafa."
         value={olanaFanabeazana}
         onChange={(e) => setOlanaFanabeazana(e.target.value)}
       />
@@ -404,9 +419,15 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
         6. Inona no paikady harindra sy hatomboka ao anatin’ny 140 andro ?
       </h4>
 
+      <p style={styles.text}>
+        Référence : 1-Paikady fampianarana mamaky teny sy manoratra,
+        2-Tohana pedagojika ho an’ny tanora niala an-tsekoly,
+        3-Sekoly Tsara Kalitao miaraka amin’ny Kaomina, ZAP, Raiamandreny,
+        Fokonolona ary VTI. Hazavao koa ny anjara birikin’ny Vaomiera.
+      </p>
+
       <textarea
         style={styles.textarea}
-        placeholder="Hazavao: 1-Paikady fampianarana mamaky teny sy manoratra; 2-Tohana pedagojika ho an’ny tanora niala an-tsekoly; 3-Sekoly Tsara Kalitao miaraka amin’ny Kaomina, ZAP, Raiamandreny, Fokonolona ary Vaomiera/VTI. Soraty koa raha eny/tsia ny fanombohana sy ny fanapahan-kevitry ny Vaomiera hitondra anjara biriky."
         value={paikady140}
         onChange={(e) => setPaikady140(e.target.value)}
       />
