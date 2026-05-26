@@ -241,7 +241,195 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
     </main>
   );
 }
+function VaomieraAraPanahyForm({
+  vtiId,
+  onBack,
+}: any) {
+  const [mivory, setMivory] = useState(0);
+  const [herinandro140, setHerinandro140] = useState(0);
+  const [fanamby140, setFanamby140] = useState(0);
+  const [ora, setOra] = useState(0);
+  const [diagnostic, setDiagnostic] = useState(0);
+  const [paikady, setPaikady] = useState(0);
 
+  const [fanakaDimy, setFanakaDimy] = useState("");
+  const [fanambyText, setFanambyText] = useState("");
+  const [olana, setOlana] = useState("");
+  const [paikadyText, setPaikadyText] = useState("");
+
+  const total =
+    mivory +
+    herinandro140 +
+    fanamby140 +
+    ora +
+    diagnostic +
+    paikady;
+
+  const enregistrerVaomiera = async () => {
+    if (!vtiId) {
+      alert("ID VTI tsy hita.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("vti_vaomiera_arapanahy_fanabeazana")
+      .insert([
+        {
+          vti_id: vtiId,
+
+          mivory_score: mivory,
+          herinandro_140_score: herinandro140,
+          fanamby_140_score: fanamby140,
+          ora_score: ora,
+          diagnostic_score: diagnostic,
+          paikady_score: paikady,
+
+          total_score: total,
+
+          fanaka_dimy: fanakaDimy,
+          fanamby_140_andro: fanambyText,
+          olana_fanabeazana: olana,
+          paikady_140_andro: paikadyText,
+        },
+      ]);
+
+    if (error) {
+      alert(
+        "Erreur Vaomiera Ara-panahy : " +
+          JSON.stringify(error)
+      );
+      return;
+    }
+
+    alert(
+      "Voatahiry ny Vaomiera Ara-panahy sy fanabeazana !"
+    );
+  };
+
+  return (
+    <section style={styles.block}>
+      <h2 style={styles.sectionTitle}>
+        Vaomiera Ara-panahy sy fanabeazana
+      </h2>
+
+      <p style={styles.text}>
+        Total maximum : 50 points
+      </p>
+
+      <ScoreSelect
+        label="1. Fivoriana sy fanentanana ara-panahy"
+        max={10}
+        onChange={(v: number) => setMivory(v)}
+      />
+
+      <ScoreSelect
+        label="2. Fanatanterahana Herinandro 140"
+        max={10}
+        onChange={(v: number) =>
+          setHerinandro140(v)
+        }
+      />
+
+      <ScoreSelect
+        label="3. Fanamby 140 andro"
+        max={10}
+        onChange={(v: number) => setFanamby140(v)}
+      />
+
+      <ScoreSelect
+        label="4. Ora laniana isan-kerinandro"
+        max={5}
+        onChange={(v: number) => setOra(v)}
+      />
+
+      <ScoreSelect
+        label="5. Diagnostic ara-panahy sy fanabeazana"
+        max={10}
+        onChange={(v: number) =>
+          setDiagnostic(v)
+        }
+      />
+
+      <ScoreSelect
+        label="6. Paikady sy vina"
+        max={5}
+        onChange={(v: number) => setPaikady(v)}
+      />
+
+      <h3 style={styles.sectionTitle}>
+        Réponses détaillées
+      </h3>
+
+      <label style={styles.label}>
+        Fanaka dimy sy olana ara-panahy
+      </label>
+
+      <textarea
+        style={styles.textarea}
+        value={fanakaDimy}
+        onChange={(e) =>
+          setFanakaDimy(e.target.value)
+        }
+      />
+
+      <label style={styles.label}>
+        Fanamby 140 andro
+      </label>
+
+      <textarea
+        style={styles.textarea}
+        value={fanambyText}
+        onChange={(e) =>
+          setFanambyText(e.target.value)
+        }
+      />
+
+      <label style={styles.label}>
+        Olana ara-panabeazana sy tanora
+      </label>
+
+      <textarea
+        style={styles.textarea}
+        value={olana}
+        onChange={(e) =>
+          setOlana(e.target.value)
+        }
+      />
+
+      <label style={styles.label}>
+        Paikady sy vina
+      </label>
+
+      <textarea
+        style={styles.textarea}
+        value={paikadyText}
+        onChange={(e) =>
+          setPaikadyText(e.target.value)
+        }
+      />
+
+      <h2 style={styles.score}>
+        Total score : {total} / 50
+      </h2>
+
+      <div style={styles.actions}>
+        <button
+          style={styles.secondaryButton}
+          onClick={onBack}
+        >
+          Miverina
+        </button>
+
+        <button
+          style={styles.button}
+          onClick={enregistrerVaomiera}
+        >
+          Enregistrer Vaomiera
+        </button>
+      </div>
+    </section>
+  );
+}
 function FormulaireViergeVti({ onBack }: any) {
   return (
     <main style={styles.main}>
