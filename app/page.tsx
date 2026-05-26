@@ -133,7 +133,7 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
 
   const enregistrerIdentiteVti = async () => {
     const { data, error } = await supabase
-      .from("evaluation_collective_vti_l1")
+      .from("vti")
       .insert([
         {
           nom_vti: nomVti,
