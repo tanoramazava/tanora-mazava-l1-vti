@@ -121,23 +121,167 @@ export default function HomePage() {
   );
 }
 function TombanaIombonanaVtiForm({ onBack }: any) {
+  const [nomVti, setNomVti] = useState("");
+  const [faritra, setFaritra] = useState("");
+  const [distrika, setDistrika] = useState("");
+  const [kaomina, setKaomina] = useState("");
+  const [typeKaomina, setTypeKaomina] = useState("");
+  const [fokontany, setFokontany] = useState("");
+  const [isanMponina, setIsanMponina] = useState("");
+
+  const [vtiId, setVtiId] = useState<number | null>(null);
+
+  const enregistrerIdentiteVti = async () => {
+    const { data, error } = await supabase
+      .from("vti")
+      .insert([
+        {
+          nom_vti: nomVti,
+          faritra,
+          distrika,
+          kaomina,
+          type_kaomina: typeKaomina,
+          fokontany,
+          isan_mponina: Number(isanMponina),
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      alert("Erreur VTI : " + JSON.stringify(error));
+      return;
+    }
+
+    setVtiId(data.id);
+
+    alert(
+      "VTI voatahiry tsara. ID VTI : " + data.id
+    );
+  };
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
         <h1 style={styles.titleSmall}>
-          Tombana iombonana VTI
+          Tombana iombonana ao anaty VTI
         </h1>
 
-        <p style={styles.text}>
-          Module VTI mbola eo am-panamboarana.
-        </p>
+        <h2 style={styles.sectionTitle}>
+          A. Famantarana ny VTI
+        </h2>
 
-        <button
-          style={styles.secondaryButton}
-          onClick={onBack}
+        <label style={styles.label}>
+          VTI Anarany
+        </label>
+
+        <input
+          style={styles.input}
+          value={nomVti}
+          onChange={(e) => setNomVti(e.target.value)}
+        />
+
+        <label style={styles.label}>
+          Faritra
+        </label>
+
+        <input
+          style={styles.input}
+          value={faritra}
+          onChange={(e) => setFaritra(e.target.value)}
+        />
+
+        <label style={styles.label}>
+          Distrika
+        </label>
+
+        <input
+          style={styles.input}
+          value={distrika}
+          onChange={(e) => setDistrika(e.target.value)}
+        />
+
+        <label style={styles.label}>
+          Kaomina
+        </label>
+
+        <input
+          style={styles.input}
+          value={kaomina}
+          onChange={(e) => setKaomina(e.target.value)}
+        />
+
+        <label style={styles.label}>
+          Karazana Kaomina
+        </label>
+
+        <select
+          style={styles.select}
+          value={typeKaomina}
+          onChange={(e) =>
+            setTypeKaomina(e.target.value)
+          }
         >
-          Miverina
-        </button>
+          <option value="">
+            Safidio
+          </option>
+
+          <option value="Ambanivohitra">
+            Ambanivohitra
+          </option>
+
+          <option value="Andrenivohitra">
+            Andrenivohitra
+          </option>
+        </select>
+
+        <label style={styles.label}>
+          Fokontany
+        </label>
+
+        <input
+          style={styles.input}
+          value={fokontany}
+          onChange={(e) => setFokontany(e.target.value)}
+        />
+
+        <label style={styles.label}>
+          Isan’ny Mponina
+        </label>
+
+        <input
+          style={styles.input}
+          type="number"
+          value={isanMponina}
+          onChange={(e) =>
+            setIsanMponina(e.target.value)
+          }
+        />
+
+        {vtiId && (
+          <div style={styles.scoreBox}>
+            <strong>
+              ID VTI :
+            </strong>{" "}
+            {vtiId}
+          </div>
+        )}
+
+        <div style={styles.actions}>
+          <button
+            style={styles.secondaryButton}
+            onClick={onBack}
+          >
+            Miverina
+          </button>
+
+          <button
+            style={styles.button}
+            onClick={enregistrerIdentiteVti}
+          >
+            Enregistrer Identité VTI
+          </button>
+        </div>
       </section>
     </main>
   );
