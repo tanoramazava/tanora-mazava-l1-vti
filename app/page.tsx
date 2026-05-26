@@ -121,6 +121,8 @@ export default function HomePage() {
   );
 }
 function TombanaIombonanaVtiForm({ onBack }: any) {
+  const [step, setStep] = useState<"identite" | "arapanahy">("identite");
+
   const [nomVti, setNomVti] = useState("");
   const [faritra, setFaritra] = useState("");
   const [distrika, setDistrika] = useState("");
@@ -155,7 +157,25 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
 
     setVtiId(data.id);
     alert("VTI voatahiry tsara. ID VTI : " + data.id);
+    setStep("arapanahy");
   };
+
+  if (step === "arapanahy") {
+    return (
+      <main style={styles.main}>
+        <section style={styles.card}>
+          <div style={styles.scoreBox}>
+            <strong>ID VTI :</strong> {vtiId}
+          </div>
+
+          <VaomieraAraPanahyForm
+            vtiId={vtiId}
+            onBack={() => setStep("identite")}
+          />
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main style={styles.main}>
@@ -169,64 +189,29 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
         </h2>
 
         <label style={styles.label}>VTI Anarany</label>
-        <input
-          style={styles.input}
-          value={nomVti}
-          onChange={(e) => setNomVti(e.target.value)}
-        />
+        <input style={styles.input} value={nomVti} onChange={(e) => setNomVti(e.target.value)} />
 
         <label style={styles.label}>Faritra</label>
-        <input
-          style={styles.input}
-          value={faritra}
-          onChange={(e) => setFaritra(e.target.value)}
-        />
+        <input style={styles.input} value={faritra} onChange={(e) => setFaritra(e.target.value)} />
 
         <label style={styles.label}>Distrika</label>
-        <input
-          style={styles.input}
-          value={distrika}
-          onChange={(e) => setDistrika(e.target.value)}
-        />
+        <input style={styles.input} value={distrika} onChange={(e) => setDistrika(e.target.value)} />
 
         <label style={styles.label}>Kaomina</label>
-        <input
-          style={styles.input}
-          value={kaomina}
-          onChange={(e) => setKaomina(e.target.value)}
-        />
+        <input style={styles.input} value={kaomina} onChange={(e) => setKaomina(e.target.value)} />
 
         <label style={styles.label}>Karazana Kaomina</label>
-        <select
-          style={styles.input}
-          value={typeKaomina}
-          onChange={(e) => setTypeKaomina(e.target.value)}
-        >
+        <select style={styles.input} value={typeKaomina} onChange={(e) => setTypeKaomina(e.target.value)}>
           <option value="">Safidio</option>
           <option value="Ambanivohitra">Ambanivohitra</option>
           <option value="Andrenivohitra">Andrenivohitra</option>
         </select>
 
         <label style={styles.label}>Fokontany</label>
-        <input
-          style={styles.input}
-          value={fokontany}
-          onChange={(e) => setFokontany(e.target.value)}
-        />
+        <input style={styles.input} value={fokontany} onChange={(e) => setFokontany(e.target.value)} />
 
         <label style={styles.label}>Isan’ny Mponina</label>
-        <input
-          style={styles.input}
-          type="number"
-          value={isanMponina}
-          onChange={(e) => setIsanMponina(e.target.value)}
-        />
-
-        {vtiId && (
-          <div style={styles.scoreBox}>
-            <strong>ID VTI :</strong> {vtiId}
-          </div>
-        )}
+        <input style={styles.input} type="number" value={isanMponina} onChange={(e) => setIsanMponina(e.target.value)} />
 
         <div style={styles.actions}>
           <button style={styles.secondaryButton} onClick={onBack}>
@@ -234,7 +219,7 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
           </button>
 
           <button style={styles.button} onClick={enregistrerIdentiteVti}>
-            Enregistrer Identité VTI
+            Enregistrer Identité VTI sy hanohy
           </button>
         </div>
       </section>
