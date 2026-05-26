@@ -133,7 +133,7 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
 
   const enregistrerIdentiteVti = async () => {
     const { data, error } = await supabase
-      .from("vti")
+      .from("evaluation_collective_vti_l1")
       .insert([
         {
           nom_vti: nomVti,
@@ -154,10 +154,7 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
     }
 
     setVtiId(data.id);
-
-    alert(
-      "VTI voatahiry tsara. ID VTI : " + data.id
-    );
+    alert("VTI voatahiry tsara. ID VTI : " + data.id);
   };
 
   return (
@@ -171,114 +168,72 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
           A. Famantarana ny VTI
         </h2>
 
-        <label style={styles.label}>
-          VTI Anarany
-        </label>
-
+        <label style={styles.label}>VTI Anarany</label>
         <input
           style={styles.input}
           value={nomVti}
           onChange={(e) => setNomVti(e.target.value)}
         />
 
-        <label style={styles.label}>
-          Faritra
-        </label>
-
+        <label style={styles.label}>Faritra</label>
         <input
           style={styles.input}
           value={faritra}
           onChange={(e) => setFaritra(e.target.value)}
         />
 
-        <label style={styles.label}>
-          Distrika
-        </label>
-
+        <label style={styles.label}>Distrika</label>
         <input
           style={styles.input}
           value={distrika}
           onChange={(e) => setDistrika(e.target.value)}
         />
 
-        <label style={styles.label}>
-          Kaomina
-        </label>
-
+        <label style={styles.label}>Kaomina</label>
         <input
           style={styles.input}
           value={kaomina}
           onChange={(e) => setKaomina(e.target.value)}
         />
 
-        <label style={styles.label}>
-          Karazana Kaomina
-        </label>
-
+        <label style={styles.label}>Karazana Kaomina</label>
         <select
-          style={styles.select}
+          style={styles.input}
           value={typeKaomina}
-          onChange={(e) =>
-            setTypeKaomina(e.target.value)
-          }
+          onChange={(e) => setTypeKaomina(e.target.value)}
         >
-          <option value="">
-            Safidio
-          </option>
-
-          <option value="Ambanivohitra">
-            Ambanivohitra
-          </option>
-
-          <option value="Andrenivohitra">
-            Andrenivohitra
-          </option>
+          <option value="">Safidio</option>
+          <option value="Ambanivohitra">Ambanivohitra</option>
+          <option value="Andrenivohitra">Andrenivohitra</option>
         </select>
 
-        <label style={styles.label}>
-          Fokontany
-        </label>
-
+        <label style={styles.label}>Fokontany</label>
         <input
           style={styles.input}
           value={fokontany}
           onChange={(e) => setFokontany(e.target.value)}
         />
 
-        <label style={styles.label}>
-          Isan’ny Mponina
-        </label>
-
+        <label style={styles.label}>Isan’ny Mponina</label>
         <input
           style={styles.input}
           type="number"
           value={isanMponina}
-          onChange={(e) =>
-            setIsanMponina(e.target.value)
-          }
+          onChange={(e) => setIsanMponina(e.target.value)}
         />
 
         {vtiId && (
           <div style={styles.scoreBox}>
-            <strong>
-              ID VTI :
-            </strong>{" "}
-            {vtiId}
+            <strong>ID VTI :</strong> {vtiId}
           </div>
         )}
 
         <div style={styles.actions}>
-          <button
-            style={styles.secondaryButton}
-            onClick={onBack}
-          >
+          <button style={styles.secondaryButton} onClick={onBack}>
             Miverina
           </button>
 
-          <button
-            style={styles.button}
-            onClick={enregistrerIdentiteVti}
-          >
+          <button style={styles.button} onClick={enregistrerIdentiteVti}>
             Enregistrer Identité VTI
           </button>
         </div>
