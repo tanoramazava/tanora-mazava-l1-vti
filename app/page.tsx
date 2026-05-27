@@ -121,7 +121,13 @@ export default function HomePage() {
   );
 }
 function TombanaIombonanaVtiForm({ onBack }: any) {
-  const [step, setStep] = useState<"identite" | "arapanahy" | "toekarena">("identite");
+  const [step, setStep] = useState<
+    | "identite"
+    | "arapanahy"
+    | "toekarena"
+    | "fahasalamana"
+    | "etika"
+  >("identite");
 
   const [nomVti, setNomVti] = useState("");
   const [faritra, setFaritra] = useState("");
@@ -144,7 +150,7 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
           kaomina,
           type_kaomina: typeKaomina,
           fokontany,
-          isan_mponina: Number(isanMponina),
+          isan_mponina: Number(isanMponina || 0),
         },
       ])
       .select()
@@ -156,7 +162,7 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
     }
 
     setVtiId(data.id);
-    alert("VTI voatahiry tsara. ID VTI : " + data.id);
+    alert("VTI voatahiry tsara !");
     setStep("arapanahy");
   };
 
@@ -164,10 +170,6 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
     return (
       <main style={styles.main}>
         <section style={styles.card}>
-          <div style={styles.scoreBox}>
-            <strong>ID VTI :</strong> {vtiId}
-          </div>
-
           <VaomieraAraPanahyForm
             vtiId={vtiId}
             onBack={() => setStep("identite")}
@@ -182,13 +184,37 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
     return (
       <main style={styles.main}>
         <section style={styles.card}>
-          <div style={styles.scoreBox}>
-            <strong>ID VTI :</strong> {vtiId}
-          </div>
-
           <VaomieraToekarenaForm
             vtiId={vtiId}
             onBack={() => setStep("arapanahy")}
+            onNext={() => setStep("fahasalamana")}
+          />
+        </section>
+      </main>
+    );
+  }
+
+  if (step === "fahasalamana") {
+    return (
+      <main style={styles.main}>
+        <section style={styles.card}>
+          <VaomieraFahasalamanaForm
+            vtiId={vtiId}
+            onBack={() => setStep("toekarena")}
+            onNext={() => setStep("etika")}
+          />
+        </section>
+      </main>
+    );
+  }
+
+  if (step === "etika") {
+    return (
+      <main style={styles.main}>
+        <section style={styles.card}>
+          <VaomieraEtikaForm
+            vtiId={vtiId}
+            onBack={() => setStep("fahasalamana")}
           />
         </section>
       </main>
@@ -198,41 +224,91 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Tombana iombonana ao anaty VTI</h1>
+        <h1 style={styles.titleSmall}>
+          Tombana iombonana ao anaty VTI
+        </h1>
 
-        <h2 style={styles.sectionTitle}>A. Famantarana ny VTI</h2>
+        <h2 style={styles.sectionTitle}>
+          A. Famantarana ny VTI
+        </h2>
 
         <label style={styles.label}>VTI Anarany</label>
-        <input style={styles.input} value={nomVti} onChange={(e) => setNomVti(e.target.value)} />
+        <input
+          style={styles.input}
+          value={nomVti}
+          onChange={(e) => setNomVti(e.target.value)}
+        />
 
         <label style={styles.label}>Faritra</label>
-        <input style={styles.input} value={faritra} onChange={(e) => setFaritra(e.target.value)} />
+        <input
+          style={styles.input}
+          value={faritra}
+          onChange={(e) => setFaritra(e.target.value)}
+        />
 
         <label style={styles.label}>Distrika</label>
-        <input style={styles.input} value={distrika} onChange={(e) => setDistrika(e.target.value)} />
+        <input
+          style={styles.input}
+          value={distrika}
+          onChange={(e) => setDistrika(e.target.value)}
+        />
 
         <label style={styles.label}>Kaomina</label>
-        <input style={styles.input} value={kaomina} onChange={(e) => setKaomina(e.target.value)} />
+        <input
+          style={styles.input}
+          value={kaomina}
+          onChange={(e) => setKaomina(e.target.value)}
+        />
 
         <label style={styles.label}>Karazana Kaomina</label>
-        <select style={styles.input} value={typeKaomina} onChange={(e) => setTypeKaomina(e.target.value)}>
+
+        <select
+          style={styles.input}
+          value={typeKaomina}
+          onChange={(e) => setTypeKaomina(e.target.value)}
+        >
           <option value="">Safidio</option>
-          <option value="Ambanivohitra">Ambanivohitra</option>
-          <option value="Andrenivohitra">Andrenivohitra</option>
+          <option value="Ambanivohitra">
+            Ambanivohitra
+          </option>
+          <option value="Andrenivohitra">
+            Andrenivohitra
+          </option>
         </select>
 
         <label style={styles.label}>Fokontany</label>
-        <input style={styles.input} value={fokontany} onChange={(e) => setFokontany(e.target.value)} />
 
-        <label style={styles.label}>Isan’ny Mponina</label>
-        <input style={styles.input} type="number" value={isanMponina} onChange={(e) => setIsanMponina(e.target.value)} />
+        <input
+          style={styles.input}
+          value={fokontany}
+          onChange={(e) => setFokontany(e.target.value)}
+        />
+
+        <label style={styles.label}>
+          Isan’ny Mponina
+        </label>
+
+        <input
+          style={styles.input}
+          type="number"
+          value={isanMponina}
+          onChange={(e) =>
+            setIsanMponina(e.target.value)
+          }
+        />
 
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>
+          <button
+            style={styles.secondaryButton}
+            onClick={onBack}
+          >
             Miverina
           </button>
 
-          <button style={styles.button} onClick={enregistrerIdentiteVti}>
+          <button
+            style={styles.button}
+            onClick={enregistrerIdentiteVti}
+          >
             Enregistrer Identité VTI sy hanohy
           </button>
         </div>
@@ -538,6 +614,197 @@ function VaomieraToekarenaForm({ vtiId, onBack, onNext }: any) {
 
       <h2 style={styles.score}>
         Total Vaomiera Fandraharahana sy Toekarena : {totalScore} / 40
+      </h2>
+
+      <div style={styles.actions}>
+        <button style={styles.secondaryButton} onClick={onBack}>
+          Miverina
+        </button>
+
+        <button style={styles.button} onClick={enregistrerVaomiera}>
+          Enregistrer sy hanohy
+        </button>
+      </div>
+    </section>
+  );
+}
+function VaomieraFahasalamanaForm({ vtiId, onBack, onNext }: any) {
+  const [mivoryScore, setMivoryScore] = useState(0);
+  const [oraScore, setOraScore] = useState(0);
+  const [olanaFahasalamanaScore, setOlanaFahasalamanaScore] = useState(0);
+  const [voinaScore, setVoinaScore] = useState(0);
+  const [paikadyScore, setPaikadyScore] = useState(0);
+
+  const [olanaFahasalamana, setOlanaFahasalamana] = useState("");
+  const [voinaTanora, setVoinaTanora] = useState("");
+  const [paikadyFahasalamana, setPaikadyFahasalamana] = useState("");
+
+  const totalScore =
+    Number(mivoryScore || 0) +
+    Number(oraScore || 0) +
+    Number(olanaFahasalamanaScore || 0) +
+    Number(voinaScore || 0) +
+    Number(paikadyScore || 0);
+
+  const refStyle = {
+    fontSize: "12px",
+    fontStyle: "italic" as const,
+    color: "#555",
+    lineHeight: "1.6",
+    marginBottom: 10,
+  };
+
+  const mivoryOptions: [string, number][] = [
+    ["In-2 isan-kerinandro — 10 points", 10],
+    ["In-1 isan-kerinandro — 5 points", 5],
+    ["Tsy misy — 0 point", 0],
+  ];
+
+  const oraOptions: [string, number][] = [
+    ["Mihoatra ny adiny 4 — 10 points", 10],
+    ["Adiny 2-3 — 5 points", 5],
+    ["Latsaky ny adiny 2 — 2 points", 2],
+    ["Tsy voafaritra — 0 point", 0],
+  ];
+
+  const standard10: [string, number][] = [
+    ["Valiny mazava sy feno — 10 points", 10],
+    ["Valiny antonony — 5 points", 5],
+    ["Valiny manjavozavo — 2 points", 2],
+    ["Tsy misy valiny — 0 point", 0],
+  ];
+
+  const enregistrerVaomiera = async () => {
+    if (!vtiId) {
+      alert("ID VTI tsy hita.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("vti_vaomiera_fahasalamana_fiarovana")
+      .insert([
+        {
+          vti_id: Number(vtiId),
+
+          mivory_score: Number(mivoryScore || 0),
+          ora_score: Number(oraScore || 0),
+
+          olana_fahasalamana: olanaFahasalamana || "",
+          olana_fahasalamana_score: Number(olanaFahasalamanaScore || 0),
+
+          voina_tanora: voinaTanora || "",
+          voina_score: Number(voinaScore || 0),
+
+          paikady_fahasalamana: paikadyFahasalamana || "",
+          paikady_score: Number(paikadyScore || 0),
+
+          total_score: Number(totalScore || 0),
+        },
+      ]);
+
+    if (error) {
+      alert("Erreur Vaomiera Fahasalamana : " + JSON.stringify(error));
+      return;
+    }
+
+    alert("Vaomiera Fahasalamana sy fiarovana ny tanora voatahiry tsara !");
+    onNext();
+  };
+
+  return (
+    <section style={styles.block}>
+      <h2 style={styles.sectionTitle}>
+        Vaomiera “Fahasalamana sy Fiarovana ny tanora”
+      </h2>
+
+      <h4>1. Efa miodina tsara ve ny Vaomiera misy anareo ?</h4>
+
+      <OptionSelect
+        label="11. Mivory na manao asa iombonana impiry isan-kerinandro ?"
+        options={mivoryOptions}
+        onChange={(v: number) => setMivoryScore(v)}
+      />
+
+      <OptionSelect
+        label="12. Adiny firy isan-kerinandro no atokan’ny mpikambana hiasa ao anaty Vaomiera ?"
+        options={oraOptions}
+        onChange={(v: number) => setOraScore(v)}
+      />
+
+      <h4>
+        2. Inona amin’ireto no tena olana ara-pahasalamana sarotra mianjady amin’ny tanora ?
+      </h4>
+
+      <p style={refStyle}>
+        Référence : kilasio 1 raha tena olana mafy mianjady amin’ny tanora,
+        2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana ho an’ny tanora.
+        Diniho indrindra : tazo moka, aretim-pivalanana, aretina azo amin’ny firaisana
+        ara-nofo ao anatin’izany ny VIH-SIDA, areti-mifindra hafa, areti-mandoza
+        mandripaka toy ny tosidra, diabeta, homamiadana, ary aretina hafa.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={olanaFahasalamana}
+        onChange={(e) => setOlanaFahasalamana(e.target.value)}
+      />
+
+      <OptionSelect
+        label="3. Score olana ara-pahasalamana"
+        options={standard10}
+        onChange={(v: number) => setOlanaFahasalamanaScore(v)}
+      />
+
+      <h4>
+        3. Inona amin’ireto voina manimba taranaka no tena mianjady amin’ny tanora ?
+      </h4>
+
+      <p style={refStyle}>
+        Référence : diniho sy sokajio ireo voina manimba taranaka eo amin’ny tanora,
+        toy ny vohoka aloha loatra, mariazin’ny ankizy, fidorohana zava-mahadomelina,
+        herisetra, fitondran-tena mampidi-doza, fahaverezan’ny fanantenana,
+        ary olana hafa manimba ny hoavin’ny tanora.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={voinaTanora}
+        onChange={(e) => setVoinaTanora(e.target.value)}
+      />
+
+      <OptionSelect
+        label="4. Score voina manimba taranaka"
+        options={standard10}
+        onChange={(v: number) => setVoinaScore(v)}
+      />
+
+      <h4>
+        4. Inona no paikady harindra sy hatomboka ao anatin’ny 140 andro ?
+      </h4>
+
+      <p style={refStyle}>
+        Référence : paikady fanatsarana ny fahasalamam-bahoaka eny ifotony
+        toy ny ady amin’ny tazo moka, aretim-pivalanana, vaksiny, fanjarian-tsakafo;
+        paikady fampiroboroboana fanatanjahantena sy fialamboly ho an’ny fahasalamana
+        ara-batana sy ara-tsaina; fisorohana vohoka aloha loatra sy mariazin’ny ankizy;
+        fisorohana fidorohana zava-mahadomelina sy herisetra; ary paikady hafa azo
+        atomboka ao anatin’ny 140 andro. Farito koa ny anjara birikin’ny Vaomiera/VTI.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={paikadyFahasalamana}
+        onChange={(e) => setPaikadyFahasalamana(e.target.value)}
+      />
+
+      <OptionSelect
+        label="5. Score paikady ara-pahasalamana sy fiarovana"
+        options={standard10}
+        onChange={(v: number) => setPaikadyScore(v)}
+      />
+
+      <h2 style={styles.score}>
+        Total Vaomiera Fahasalamana sy Fiarovana : {totalScore} / 50
       </h2>
 
       <div style={styles.actions}>
