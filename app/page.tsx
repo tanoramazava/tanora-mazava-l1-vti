@@ -387,7 +387,10 @@ function VaomieraToekarenaForm({ vtiId, onBack, onNext }: any) {
   const [paikadyToekarena, setPaikadyToekarena] = useState("");
 
   const totalScore =
-    mivoryScore + oraScore + olanaScore + paikadyScore;
+    Number(mivoryScore || 0) +
+    Number(oraScore || 0) +
+    Number(olanaScore || 0) +
+    Number(paikadyScore || 0);
 
   const refStyle = {
     fontSize: "12px",
@@ -427,24 +430,34 @@ function VaomieraToekarenaForm({ vtiId, onBack, onNext }: any) {
       .from("vti_vaomiera_fandraharahana_toekarena")
       .insert([
         {
-          vti_id: vtiId,
-          mivory_score: mivoryScore,
-          ora_score: oraScore,
-          olana_toekarena: olanaToekarena,
-          olana_score: olanaScore,
-          paikady_toekarena: paikadyToekarena,
-          paikady_score: paikadyScore,
-          total_score: totalScore,
+          vti_id: Number(vtiId),
+
+          mivory_score: Number(mivoryScore || 0),
+          ora_score: Number(oraScore || 0),
+
+          olana_toekarena: olanaToekarena || "",
+          olana_score: Number(olanaScore || 0),
+
+          paikady_toekarena: paikadyToekarena || "",
+          paikady_score: Number(paikadyScore || 0),
+
+          total_score: Number(totalScore || 0),
         },
       ]);
 
     if (error) {
-      alert("Erreur Vaomiera Fandraharahana sy Toekarena : " + JSON.stringify(error));
+      alert(
+        "Erreur Vaomiera Fandraharahana sy Toekarena : " +
+          JSON.stringify(error)
+      );
       return;
     }
 
     alert("Vaomiera Fandraharahana sy Toekarena voatahiry tsara !");
-    if (onNext) onNext();
+
+    if (onNext) {
+      onNext();
+    }
   };
 
   return (
