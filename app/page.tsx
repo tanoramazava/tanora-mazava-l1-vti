@@ -819,6 +819,178 @@ function VaomieraFahasalamanaForm({ vtiId, onBack, onNext }: any) {
     </section>
   );
 }
+function VaomieraEtikaForm({ vtiId, onBack }: any) {
+  const [mivoryScore, setMivoryScore] = useState(0);
+  const [oraScore, setOraScore] = useState(0);
+  const [olanaScore, setOlanaScore] = useState(0);
+  const [paikadyScore, setPaikadyScore] = useState(0);
+
+  const [olanaEtika, setOlanaEtika] = useState("");
+  const [paikadyEtika, setPaikadyEtika] = useState("");
+
+  const totalScore =
+    Number(mivoryScore || 0) +
+    Number(oraScore || 0) +
+    Number(olanaScore || 0) +
+    Number(paikadyScore || 0);
+
+  const refStyle = {
+    fontSize: "12px",
+    fontStyle: "italic" as const,
+    color: "#555",
+    lineHeight: "1.6",
+    marginBottom: 10,
+  };
+
+  const mivoryOptions: [string, number][] = [
+    ["In-2 isan-kerinandro — 10 points", 10],
+    ["In-1 isan-kerinandro — 5 points", 5],
+    ["Tsy misy — 0 point", 0],
+  ];
+
+  const oraOptions: [string, number][] = [
+    ["Mihoatra ny adiny 4 — 10 points", 10],
+    ["Adiny 2-3 — 5 points", 5],
+    ["Latsaky ny adiny 2 — 2 points", 2],
+    ["Tsy voafaritra — 0 point", 0],
+  ];
+
+  const standard10: [string, number][] = [
+    ["Valiny mazava sy feno — 10 points", 10],
+    ["Valiny antonony — 5 points", 5],
+    ["Valiny manjavozavo — 2 points", 2],
+    ["Tsy misy valiny — 0 point", 0],
+  ];
+
+  const enregistrerVaomiera = async () => {
+    if (!vtiId) {
+      alert("ID VTI tsy hita.");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("vti_vaomiera_etika_fampandrosoana")
+      .insert([
+        {
+          vti_id: Number(vtiId),
+
+          mivory_score: Number(mivoryScore || 0),
+          ora_score: Number(oraScore || 0),
+
+          olana_etika: olanaEtika || "",
+          olana_score: Number(olanaScore || 0),
+
+          paikady_etika: paikadyEtika || "",
+          paikady_score: Number(paikadyScore || 0),
+
+          total_score: Number(totalScore || 0),
+        },
+      ]);
+
+    if (error) {
+      alert("Erreur Vaomiera Etika : " + JSON.stringify(error));
+      return;
+    }
+
+    alert("Vaomiera Etika Fampandrosoana maharitra voatahiry tsara !");
+  };
+
+  return (
+    <section style={styles.block}>
+      <h2 style={styles.sectionTitle}>
+        Vaomiera “Etika Fampandrosoana maharitra”
+      </h2>
+
+      <h4>1. Efa miodina tsara ve ny Vaomiera misy anareo ?</h4>
+
+      <OptionSelect
+        label="11. Mivory na manao asa iombonana impiry isan-kerinandro ?"
+        options={mivoryOptions}
+        onChange={(v: number) => setMivoryScore(v)}
+      />
+
+      <OptionSelect
+        label="12. Adiny firy isan-kerinandro no atokan’ny mpikambana hiasa ao anaty Vaomiera ?"
+        options={oraOptions}
+        onChange={(v: number) => setOraScore(v)}
+      />
+
+      <h4>
+        2. Inona amin’ireto no tena olana etika sy fandriampahalemana
+        sarotra mianjady amin’ny tanora sy ny fiaraha-monina ?
+      </h4>
+
+      <p style={refStyle}>
+        Référence : kilasio 1 raha tena olana mafy mianjady amin’ny tanora,
+        2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana lehibe.
+        Diniho indrindra : kolikoly, tsy fandriampahalemana, herisetra,
+        fanararaotana sy tsy fanajana lalàna, fanimbana ny tontolo iainana,
+        fandoroana ala sy afo tanety, fanapotehana harena voajanahary,
+        fangalarana sy tsy fananan’asa, fahalemen’ny firaisankina,
+        ary olana hafa manimba ny fiaraha-monina.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={olanaEtika}
+        onChange={(e) => setOlanaEtika(e.target.value)}
+      />
+
+      <OptionSelect
+        label="3. Score olana etika sy fandriampahalemana"
+        options={standard10}
+        onChange={(v: number) => setOlanaScore(v)}
+      />
+
+      <h4>
+        3. Inona no paikady harindra sy hatomboka ao anatin’ny 140 andro ?
+      </h4>
+
+      <p style={refStyle}>
+        Référence : paikady ady amin’ny kolikoly sy tsy fandriampahalemana;
+        fanamafisana ny firaisankina sy fihavanana;
+        fiarovana ny tontolo iainana sy ny harena voajanahary;
+        ady amin’ny afo tanety sy fandripahana ala;
+        fampiharana Dina sy fitsipi-pitondrantena iombonana;
+        fanentanana sy fanabeazana olom-pirenena;
+        ary paikady hafa azo tanterahina ao anatin’ny 140 andro.
+        Hazavao mazava koa ny anjara birikin’ny Vaomiera sy ny VTI.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={paikadyEtika}
+        onChange={(e) => setPaikadyEtika(e.target.value)}
+      />
+
+      <OptionSelect
+        label="4. Score paikady etika sy fandriampahalemana"
+        options={standard10}
+        onChange={(v: number) => setPaikadyScore(v)}
+      />
+
+      <h2 style={styles.score}>
+        Total Vaomiera Etika Fampandrosoana maharitra : {totalScore} / 40
+      </h2>
+
+      <div style={styles.actions}>
+        <button
+          style={styles.secondaryButton}
+          onClick={onBack}
+        >
+          Miverina
+        </button>
+
+        <button
+          style={styles.button}
+          onClick={enregistrerVaomiera}
+        >
+          Enregistrer Vaomiera Etika
+        </button>
+      </div>
+    </section>
+  );
+}
 function FormulaireViergeVti({ onBack }: any) {
   return (
     <main style={styles.main}>
