@@ -377,15 +377,17 @@ function VaomieraAraPanahyForm({ vtiId, onBack, onNext }: any) {
   );
 }
 
-function VaomieraToekarenaForm({ vtiId, onBack }: any) {
+function VaomieraToekarenaForm({ vtiId, onBack, onNext }: any) {
   const [mivoryScore, setMivoryScore] = useState(0);
   const [oraScore, setOraScore] = useState(0);
   const [olanaScore, setOlanaScore] = useState(0);
   const [paikadyScore, setPaikadyScore] = useState(0);
+
   const [olanaToekarena, setOlanaToekarena] = useState("");
   const [paikadyToekarena, setPaikadyToekarena] = useState("");
 
-  const totalScore = mivoryScore + oraScore + olanaScore + paikadyScore;
+  const totalScore =
+    mivoryScore + oraScore + olanaScore + paikadyScore;
 
   const refStyle = {
     fontSize: "12px",
@@ -416,62 +418,123 @@ function VaomieraToekarenaForm({ vtiId, onBack }: any) {
   ];
 
   const enregistrerVaomiera = async () => {
+    if (!vtiId) {
+      alert("ID VTI tsy hita.");
+      return;
+    }
+
     const { error } = await supabase
       .from("vti_vaomiera_fandraharahana_toekarena")
-      .insert([{
-        vti_id: vtiId,
-        mivory_score: mivoryScore,
-        ora_score: oraScore,
-        olana_toekarena: olanaToekarena,
-        olana_score: olanaScore,
-        paikady_toekarena: paikadyToekarena,
-        paikady_score: paikadyScore,
-        total_score: totalScore,
-      }]);
+      .insert([
+        {
+          vti_id: vtiId,
+          mivory_score: mivoryScore,
+          ora_score: oraScore,
+          olana_toekarena: olanaToekarena,
+          olana_score: olanaScore,
+          paikady_toekarena: paikadyToekarena,
+          paikady_score: paikadyScore,
+          total_score: totalScore,
+        },
+      ]);
 
     if (error) {
-      alert("Erreur Vaomiera Toekarena : " + JSON.stringify(error));
+      alert("Erreur Vaomiera Fandraharahana sy Toekarena : " + JSON.stringify(error));
       return;
     }
 
     alert("Vaomiera Fandraharahana sy Toekarena voatahiry tsara !");
+    if (onNext) onNext();
   };
 
   return (
     <section style={styles.block}>
-      <h2 style={styles.sectionTitle}>Vaomiera “Fandraharahana sy Fizakantena ara-toekarena”</h2>
+      <h2 style={styles.sectionTitle}>
+        Vaomiera “Fandraharahana sy Fizakantena ara-toekarena”
+      </h2>
 
-      <OptionSelect label="1. Mivory na manao asa iombonana impiry isan-kerinandro ?" options={mivoryOptions} onChange={(v:number)=>setMivoryScore(v)} />
-      <OptionSelect label="2. Adiny firy isan-kerinandro no atokan’ny mpikambana ?" options={oraOptions} onChange={(v:number)=>setOraScore(v)} />
+      <h4>1. Efa miodina tsara ve ny Vaomiera misy anareo ?</h4>
+
+      <OptionSelect
+        label="11. Mivory na manao asa iombonana impiry isan-kerinandro ?"
+        options={mivoryOptions}
+        onChange={(v: number) => setMivoryScore(v)}
+      />
+
+      <OptionSelect
+        label="12. Adiny firy isan-kerinandro no atokan’ny mpikambana hiasa ao anaty Vaomiera ?"
+        options={oraOptions}
+        onChange={(v: number) => setOraScore(v)}
+      />
+
+      <h4>
+        2. Inona amin’ireto no tena olana ara-toekarena sarotra mianjady amin’ny tanora ?
+      </h4>
 
       <p style={refStyle}>
-        Référence olana ara-toekarena : tsy fananana kolontsain’ny fandraharahana;
-        tsy fisian’ny torohay; famokarana tsy mitodika amin’ny varotra; olana fananantany;
-        tsy fahampian’ny fiofanana sy fanaraha-maso teknika; tsy fahampian’ny tosika
-        ara-pitaovana sy akora; tsy fahampian’ny fotodrafitrasa iombonana toy ny barazy
-        sy lalana famoaham-bokatra; tsy fisian’ny lalambarotra; tsy fisian’ny fiarovana ny
-        mpamokatra manoloana mpijirika/mpanangom-bokatra; fihenan’ny fahefa-mividy
-        noho ny fiankinan-doha ara-tsakafo sy PPN; ary olana hafa.
+        Référence : kilasio 1 raha tena olana mafy mianjady amin’ny tanora,
+        2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana ho an’ny tanora.
+        Diniho indrindra : tsy fananana kolontsain’ny fandraharahana sy tsy fisian’ny
+        torohay amin’ny fandraharahana; famokarana tsy mitodika amin’ny varotra;
+        olana fananantany; tsy fahampian’ny fiofanana sy fanaraha-maso teknika;
+        tsy fahampian’ny tosika ara-pitaovana sy akora; tsy fahampian’ny fotodrafitrasa
+        iombonana toy ny barazy sy lalana famoaham-bokatra; tsy fisian’ny lalambarotra;
+        tsy fisian’ny fiarovana ny mpamokatra manoloana ny mpijirika na mpanangom-bokatra;
+        fihenan’ny fahefa-mividy noho ny fiankinan-doha ara-tsakafo sy PPN; ary olana hafa.
       </p>
-      <textarea style={styles.textarea} value={olanaToekarena} onChange={(e)=>setOlanaToekarena(e.target.value)} />
-      <OptionSelect label="3. Score olana ara-toekarena" options={standard10} onChange={(v:number)=>setOlanaScore(v)} />
+
+      <textarea
+        style={styles.textarea}
+        value={olanaToekarena}
+        onChange={(e) => setOlanaToekarena(e.target.value)}
+      />
+
+      <OptionSelect
+        label="3. Score olana ara-toekarena"
+        options={standard10}
+        onChange={(v: number) => setOlanaScore(v)}
+      />
+
+      <h4>
+        3. Inona no paikady ara-toekarena harindra sy hatomboka ao anatin’ny 140 andro ?
+      </h4>
 
       <p style={refStyle}>
-        Référence paikady ara-toekarena 140 andro : fametrahana “Saha Sekoly” ho sehatra
-        fanofanana sy fanomanana Tanora mpandraharaha; paikady fananantany miaraka
-        amin’ny servisy fananantany sy Kaomina; fanohanana ny “Taniketsa Fandraharahana”;
-        lalambarotra sy famatsiana PPN maharitra miaro ny mpamokatra; fotodrafitrasa
-        maika; ary paikady iombonana hafa. Hazavao izay hatomboka, iza no tompon’andraikitra,
-        ary inona ny anjara birikin’ny Vaomiera/VTI.
+        Référence : hazavao raha azo atomboka ao anatin’ny 140 andro ireto :
+        1-Fametrahana “Saha Sekoly” ho sehatra fanofanana sy fanomanana mitohy
+        ny tanora mpandraharaha hanangana sy hitantana “Taniketsa Fandraharahana”;
+        2-Paikady iombonana mikasika ny fananantany iarahana amin’ny servisy fananantany
+        sy ny Kaomina; 3-Fanohanana ny tetikasa “Taniketsa Fandraharahana” voarafitry
+        ny Tanora Mazava; 4-Paikady iombonana ho fametrahana lalambarotra sy famatsiana
+        ara-tsakafo sy PPN maharitra miaro ny mpamokatra; 5-Fotodrafitrasa maika voalohany;
+        6-Fotodrafitrasa maika faharoa; 7-8 Paikady iombonana hafa. Farito koa mazava
+        ny fanapahan-kevitry ny Vaomiera/VTI hitondra anjara biriky.
       </p>
-      <textarea style={styles.textarea} value={paikadyToekarena} onChange={(e)=>setPaikadyToekarena(e.target.value)} />
-      <OptionSelect label="4. Score paikady ara-toekarena" options={standard10} onChange={(v:number)=>setPaikadyScore(v)} />
 
-      <h2 style={styles.score}>Total Vaomiera Fandraharahana sy Toekarena : {totalScore} / 40</h2>
+      <textarea
+        style={styles.textarea}
+        value={paikadyToekarena}
+        onChange={(e) => setPaikadyToekarena(e.target.value)}
+      />
+
+      <OptionSelect
+        label="4. Score paikady ara-toekarena sy fanapahan-kevitra"
+        options={standard10}
+        onChange={(v: number) => setPaikadyScore(v)}
+      />
+
+      <h2 style={styles.score}>
+        Total Vaomiera Fandraharahana sy Toekarena : {totalScore} / 40
+      </h2>
 
       <div style={styles.actions}>
-        <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-        <button style={styles.button} onClick={enregistrerVaomiera}>Enregistrer Vaomiera Fandraharahana</button>
+        <button style={styles.secondaryButton} onClick={onBack}>
+          Miverina
+        </button>
+
+        <button style={styles.button} onClick={enregistrerVaomiera}>
+          Enregistrer sy hanohy
+        </button>
       </div>
     </section>
   );
