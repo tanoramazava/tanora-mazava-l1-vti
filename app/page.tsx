@@ -121,7 +121,7 @@ export default function HomePage() {
   );
 }
 function TombanaIombonanaVtiForm({ onBack }: any) {
-  const [step, setStep] = useState<"identite" | "arapanahy">("identite");
+  const [step, setStep] = useState<"identite" | "arapanahy" | "toekarena">("identite");
 
   const [nomVti, setNomVti] = useState("");
   const [faritra, setFaritra] = useState("");
@@ -171,6 +171,24 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
           <VaomieraAraPanahyForm
             vtiId={vtiId}
             onBack={() => setStep("identite")}
+            onNext={() => setStep("toekarena")}
+          />
+        </section>
+      </main>
+    );
+  }
+
+  if (step === "toekarena") {
+    return (
+      <main style={styles.main}>
+        <section style={styles.card}>
+          <div style={styles.scoreBox}>
+            <strong>ID VTI :</strong> {vtiId}
+          </div>
+
+          <VaomieraToekarenaForm
+            vtiId={vtiId}
+            onBack={() => setStep("arapanahy")}
           />
         </section>
       </main>
@@ -180,13 +198,9 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Tombana iombonana ao anaty VTI
-        </h1>
+        <h1 style={styles.titleSmall}>Tombana iombonana ao anaty VTI</h1>
 
-        <h2 style={styles.sectionTitle}>
-          A. Famantarana ny VTI
-        </h2>
+        <h2 style={styles.sectionTitle}>A. Famantarana ny VTI</h2>
 
         <label style={styles.label}>VTI Anarany</label>
         <input style={styles.input} value={nomVti} onChange={(e) => setNomVti(e.target.value)} />
@@ -226,7 +240,7 @@ function TombanaIombonanaVtiForm({ onBack }: any) {
     </main>
   );
 }
-function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
+function VaomieraAraPanahyForm({ vtiId, onBack, onNext }: any) {
   const [mivoryScore, setMivoryScore] = useState(0);
   const [oraScore, setOraScore] = useState(0);
   const [herinandroScore, setHerinandroScore] = useState(0);
@@ -314,13 +328,12 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
     }
 
     alert("Vaomiera Ara-panahy sy fanabeazana voatahiry tsara !");
+    onNext();
   };
 
   return (
     <section style={styles.block}>
-      <h2 style={styles.sectionTitle}>
-        Vaomiera “Ara-panahy sy fanabeazana”
-      </h2>
+      <h2 style={styles.sectionTitle}>Vaomiera “Ara-panahy sy fanabeazana”</h2>
 
       <h3>ARA-PANAHY</h3>
 
@@ -338,9 +351,7 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
         onChange={(v: number) => setOraScore(v)}
       />
 
-      <h4>
-        2. Efa natombokareo ve ny Herinandro 5 ho an’ny Mpianatry ny Tompo ?
-      </h4>
+      <h4>2. Efa natombokareo ve ny Herinandro 5 ho an’ny Mpianatry ny Tompo ?</h4>
 
       <p style={styles.text}>
         Référence : Herinandro 1 — Fahamasinana; Herinandro 2 — Fanetre-tena;
@@ -355,8 +366,7 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
       />
 
       <h4>
-        3. Inona amin’ireo fanaka masina dimy/soatoavina dimy no tena sarotra
-        ampiharina ?
+        3. Inona amin’ireo fanaka masina dimy/soatoavina dimy no tena sarotra ampiharina ?
       </h4>
 
       <p style={styles.text}>
@@ -371,9 +381,7 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
         onChange={(e) => setFanakaDimy(e.target.value)}
       />
 
-      <h4>
-        4. Inona no fanamby lehibe tianareo ho tratrarina ao anatin’ny 140 andro ?
-      </h4>
+      <h4>4. Inona no fanamby lehibe tianareo ho tratrarina ao anatin’ny 140 andro ?</h4>
 
       <p style={styles.text}>
         Référence : soraty mazava ny fanamby 1, 2, 3, 4, 5 sy ny fomba
@@ -394,9 +402,7 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
 
       <h3>FANABEAZANA</h3>
 
-      <h4>
-        5. Sokajio araka ny laharam-pahamehana ireo olana ara-panabeazana
-      </h4>
+      <h4>5. Sokajio araka ny laharam-pahamehana ireo olana ara-panabeazana</h4>
 
       <p style={styles.text}>
         Référence : 1-Fahabadoana, 2-Fahatrana ara-panabeazana,
@@ -415,9 +421,7 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
         onChange={(v: number) => setOlanaScore(v)}
       />
 
-      <h4>
-        6. Inona no paikady harindra sy hatomboka ao anatin’ny 140 andro ?
-      </h4>
+      <h4>6. Inona no paikady harindra sy hatomboka ao anatin’ny 140 andro ?</h4>
 
       <p style={styles.text}>
         Référence : 1-Paikady fampianarana mamaky teny sy manoratra,
@@ -448,7 +452,7 @@ function VaomieraAraPanahyForm({ vtiId, onBack }: any) {
         </button>
 
         <button style={styles.button} onClick={enregistrerVaomiera}>
-          Enregistrer Vaomiera Ara-panahy sy fanabeazana
+          Enregistrer sy hanohy Vaomiera Fandraharahana
         </button>
       </div>
     </section>
