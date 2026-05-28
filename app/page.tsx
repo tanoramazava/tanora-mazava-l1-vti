@@ -822,16 +822,19 @@ function VaomieraFahasalamanaForm({ vtiId, onBack, onNext }: any) {
 function VaomieraEtikaForm({ vtiId, onBack }: any) {
   const [mivoryScore, setMivoryScore] = useState(0);
   const [oraScore, setOraScore] = useState(0);
-  const [olanaScore, setOlanaScore] = useState(0);
+  const [fandriampahalemanaScore, setFandriampahalemanaScore] = useState(0);
+  const [tontoloIainanaScore, setTontoloIainanaScore] = useState(0);
   const [paikadyScore, setPaikadyScore] = useState(0);
 
-  const [olanaEtika, setOlanaEtika] = useState("");
+  const [olanaFandriampahalemana, setOlanaFandriampahalemana] = useState("");
+  const [olanaTontoloIainana, setOlanaTontoloIainana] = useState("");
   const [paikadyEtika, setPaikadyEtika] = useState("");
 
   const totalScore =
     Number(mivoryScore || 0) +
     Number(oraScore || 0) +
-    Number(olanaScore || 0) +
+    Number(fandriampahalemanaScore || 0) +
+    Number(tontoloIainanaScore || 0) +
     Number(paikadyScore || 0);
 
   const refStyle = {
@@ -877,8 +880,11 @@ function VaomieraEtikaForm({ vtiId, onBack }: any) {
           mivory_score: Number(mivoryScore || 0),
           ora_score: Number(oraScore || 0),
 
-          olana_etika: olanaEtika || "",
-          olana_score: Number(olanaScore || 0),
+          olana_fandriampahalemana: olanaFandriampahalemana || "",
+          olana_fandriampahalemana_score: Number(fandriampahalemanaScore || 0),
+
+          olana_tontolo_iainana: olanaTontoloIainana || "",
+          olana_tontolo_iainana_score: Number(tontoloIainanaScore || 0),
 
           paikady_etika: paikadyEtika || "",
           paikady_score: Number(paikadyScore || 0),
@@ -916,45 +922,61 @@ function VaomieraEtikaForm({ vtiId, onBack }: any) {
       />
 
       <h4>
-        2. Inona amin’ireto no tena olana etika sy fandriampahalemana
-        sarotra mianjady amin’ny tanora sy ny fiaraha-monina ?
+        2. Olana mikasika ny fandriampahalemana sy kolikoly
       </h4>
 
       <p style={refStyle}>
-        Référence : kilasio 1 raha tena olana mafy mianjady amin’ny tanora,
-        2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana lehibe.
-        Diniho indrindra : kolikoly, tsy fandriampahalemana, herisetra,
-        fanararaotana sy tsy fanajana lalàna, fanimbana ny tontolo iainana,
-        fandoroana ala sy afo tanety, fanapotehana harena voajanahary,
-        fangalarana sy tsy fananan’asa, fahalemen’ny firaisankina,
-        ary olana hafa manimba ny fiaraha-monina.
+        Référence : kilasio 1 raha tena olana mafy, 2 raha olana mafy fa mbola azo leferina,
+        3 raha tsy olana lehibe. Diniho : halatra be vava sy vono olona, halabotry,
+        disadisa ara-piarahamonina, ady lahy sy fizarazarana ara-politika, kolikoly sy
+        fahalovana miantraika amin’ny fiainam-piaraha-monina.
       </p>
 
       <textarea
         style={styles.textarea}
-        value={olanaEtika}
-        onChange={(e) => setOlanaEtika(e.target.value)}
+        value={olanaFandriampahalemana}
+        onChange={(e) => setOlanaFandriampahalemana(e.target.value)}
       />
 
       <OptionSelect
-        label="3. Score olana etika sy fandriampahalemana"
+        label="3. Score olana fandriampahalemana sy kolikoly"
         options={standard10}
-        onChange={(v: number) => setOlanaScore(v)}
+        onChange={(v: number) => setFandriampahalemanaScore(v)}
       />
 
       <h4>
-        3. Inona no paikady harindra sy hatomboka ao anatin’ny 140 andro ?
+        3. Olana mikasika ny tontolo iainana
       </h4>
 
       <p style={refStyle}>
-        Référence : paikady ady amin’ny kolikoly sy tsy fandriampahalemana;
-        fanamafisana ny firaisankina sy fihavanana;
-        fiarovana ny tontolo iainana sy ny harena voajanahary;
-        ady amin’ny afo tanety sy fandripahana ala;
-        fampiharana Dina sy fitsipi-pitondrantena iombonana;
-        fanentanana sy fanabeazana olom-pirenena;
-        ary paikady hafa azo tanterahina ao anatin’ny 140 andro.
-        Hazavao mazava koa ny anjara birikin’ny Vaomiera sy ny VTI.
+        Référence : doro tanety, fandripahana ala, fandrobana harena voajanahary sy
+        loharanon-karena iombonana, faharitry ny loharano sy haintany,
+        fiankinandoha amin’ny saribao sy kitay, loza voajanahary toy ny rivo-doza sy
+        tondradrano, ary olana hafa.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={olanaTontoloIainana}
+        onChange={(e) => setOlanaTontoloIainana(e.target.value)}
+      />
+
+      <OptionSelect
+        label="4. Score olana tontolo iainana"
+        options={standard10}
+        onChange={(v: number) => setTontoloIainanaScore(v)}
+      />
+
+      <h4>
+        4. Paikady harindra sy hatomboka ao anatin’ny 140 andro
+      </h4>
+
+      <p style={refStyle}>
+        Référence : fanamafisana fihavanana sy fandriampahalemana maharitra,
+        fisorohana sy ady amin’ny fahalovana, fambolena hazo/ala, fefy velona
+        manodidina ny Taniketsa Voly rakotra 500m², ady amin’ny doro tanety sy
+        fandripahana ala, angovo maintso, famokarana biolojika miaro ny natiora,
+        fanodidinana fako, ary paikady hafa azo tanterahina ao anatin’ny 140 andro.
       </p>
 
       <textarea
@@ -964,27 +986,21 @@ function VaomieraEtikaForm({ vtiId, onBack }: any) {
       />
 
       <OptionSelect
-        label="4. Score paikady etika sy fandriampahalemana"
+        label="5. Score paikady etika sy fampandrosoana maharitra"
         options={standard10}
         onChange={(v: number) => setPaikadyScore(v)}
       />
 
       <h2 style={styles.score}>
-        Total Vaomiera Etika Fampandrosoana maharitra : {totalScore} / 40
+        Total Vaomiera Etika Fampandrosoana maharitra : {totalScore} / 50
       </h2>
 
       <div style={styles.actions}>
-        <button
-          style={styles.secondaryButton}
-          onClick={onBack}
-        >
+        <button style={styles.secondaryButton} onClick={onBack}>
           Miverina
         </button>
 
-        <button
-          style={styles.button}
-          onClick={enregistrerVaomiera}
-        >
+        <button style={styles.button} onClick={enregistrerVaomiera}>
           Enregistrer Vaomiera Etika
         </button>
       </div>
