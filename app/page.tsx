@@ -678,12 +678,11 @@ function FormulaireViergeVti({ onBack }: any) {
         </h1>
 
         <p style={styles.text}>
-          Ity formulaire ity dia azo imprimer-na sy fenoina à la main. Ny valiny sy
-          ny scores ihany no hofenoina isaky ny Vaomiera.
+          Ity formulaire ity dia azo imprimer-na sy fenoina à la main.
+          Ny valiny sy ny scores ihany no hofenoina isaky ny Vaomiera.
         </p>
 
         <h2>1. Famantarana ny VTI</h2>
-
         <p>VTI Anarany : {blank}</p>
         <p>Faritra : {blank}</p>
         <p>Distrika : {blank}</p>
@@ -694,7 +693,7 @@ function FormulaireViergeVti({ onBack }: any) {
 
         <hr />
 
-        <h2>2. Vaomiera “Ara-panahy sy fanabeazana”</h2>
+        <h2>A. Vaomiera “Ara-panahy sy fanabeazana”</h2>
 
         <h3>ARA-PANAHY</h3>
 
@@ -706,227 +705,282 @@ function FormulaireViergeVti({ onBack }: any) {
         <p>Score 11 : ______ / 10</p>
 
         <p>
-          12. Adiny firy isan-kerinandro no atokan’ny mpikambana hiasa ao anaty
-          Vaomiera ?
-          □ mihoatra ny adiny 4 = 10 points □ adiny 2-3 = 5 points
-          □ latsaky ny adiny 2 = 2 points □ tsy voafaritra = 0 point
+          12. Adiny firy isan-kerinandro ny mpikambana no manoka-tena hiasa
+          ao anaty Vaomiera ?
+          □ mihoatra ny adiny 4 = 20 points
+          □ adiny 2-3 = 10 points
+          □ latsaky ny adiny 2 = 5 points
+          □ tsy voafaritra = 0 point
         </p>
-        <p>Score 12 : ______ / 10</p>
+        <p>Score 12 : ______ / 20</p>
+        <p><strong>Total 11 + 12 : ______ / 30</strong></p>
 
+        <h4>2. Herinandro 05 ho an’ny Mpianatry ny Tompo</h4>
         <p style={refStyle}>
-          Référence : Herinandro 1 — Fahamasinana; Herinandro 2 — Fanetre-tena;
-          Herinandro 3 — Fandeferana; Herinandro 4 — Fahaizana mamela heloka;
-          Herinandro 5 — Fiantrana ny madiniky ny Tompo.
+          Référence :
+          1-Fahamasinana : fialana amin’ny ota mamatotra sy ny fahazaran-dratsy rehetra.
+          2-Fanetre-tena.
+          3-Fandeferana : fifehezantena, fitoniana, tsy manetsika ady.
+          4-Fahaizana mamela heloka : tsy fitehirizana lolompo, tsy famaliana faty.
+          5-Fiantrana ny madiniky ny Tompo : asa soa, fanampiana ny madinika, tsy voatery ho fizarana vola aman-karena.
         </p>
-
         <p>
-          2. Efa natombokareo ve ny Herinandro dimy ny Mpianatry ny Tompo ?
-          □ efa natomboka = 10 points □ eo am-panomanana = 5 points
-          □ mbola tsy voaeritreritra = 0 point
+          Efa natombokareo ve ?
+          □ Eny = 10 points
+          □ Eo am-panomanana / hanomboka tsy ho ela = 5 points
+          □ Mbola tsy voaeritreritra = 0 point
         </p>
         <p>Score : ______ / 10</p>
 
+        <h4>3. Fanaka masina dimy / soatoavina dimy sarotra ampiharina</h4>
         <p style={refStyle}>
-          Référence : Fanaka masina dimy — Fahamasinana, Fanetre-tena,
-          Fandeferana, Fahaizana mamela heloka, Fiantrana ny madiniky ny Tompo.
-          Lazao izay tena sarotra ampiharina, kilasio 1 hatramin’ny 5, ary hazavao
-          ny antony.
+          Référence : kilasio 1 hatramin’ny 5 izay tena sarotra ampiharina eo anivon’ny fiaraha-monina :
+          1-Fahamasinana.
+          2-Fanetre-tena.
+          3-Fandeferana.
+          4-Fahaizana mamela heloka.
+          5-Fiantrana ny madiniky ny Tompo.
         </p>
-        <p>3. Fanaka masina dimy tena sarotra ampiharina :</p>
+        <p>Valiny : {blank}</p>
         <p>{blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score fanadihadiana : ______ / 10</p>
 
+        <h4>4. Fanamby lehibe ho tratrarina ao anatin’ny 140 andro</h4>
         <p style={refStyle}>
-          Référence fanamby 140 andro : mety aminareo ve raha toy izao no fanamby ?
-          1-Fitaizana sy fanabeazana ny tanora hanatanteraka ny Vavaka Betela
-          arahin’ny Herinandro dimy ny Mpianatry ny Tompo. 2-Fijoroana vavolombelona
-          sy fanapariahana amin’ny tanora namana ny Vavaka Betela. 3-Fanapariahana
-          miandalana ny Herinandro dimy mba ho pratika fiainana sy kolotsaina.
-          Raha eny, hazavao; raha tsia, soraty ny sosokevitra.
+          Référence : soraty ny fanamby 1 hatramin’ny 5 tian’ny VTI hotratrarina amin’ny Herinandro 05 ny Mpianatry ny Tompo mandritra ny 140 andro.
+          Raha mazava sy azo tanterahina tsara = 20 points.
+          Raha manjavozavo fa azo tanterahina = 10 points.
+          Raha tsy mazava na tsy azo tanterahina = 2 points.
         </p>
-        <p>4. Fanamby 140 andro :</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score fanamby : ______ / 10</p>
+        <p>Fanamby 1 : {blank}</p>
+        <p>Fanamby 2 : {blank}</p>
+        <p>Fanamby 3 : {blank}</p>
+        <p>Fanamby 4 : {blank}</p>
+        <p>Fanamby 5 : {blank}</p>
+        <p>Score fanamby : ______ / 20</p>
 
         <h3>FANABEAZANA</h3>
 
+        <h4>5. Olana ara-panabeazana</h4>
         <p style={refStyle}>
-          Référence olana ara-panabeazana : Fahabadoana = tsy fahaizana mamaky teny,
-          manoratra ary manisa, mahakasika tanora, ray aman-dreny ary zokiolona.
-          Fitsoahana/fialana an-tsekoly = tanora niala aloha, zara raha nianatra,
-          zara raha mahay mamaky teny sy manoratra. Fahantrana ara-panabeazana =
-          ankizy an-tsekoly latsaky ny 10 taona, tratry ny faharatsian’ny kalitaon’ny
-          fanabeazana, tsy mahazo lahatsoratra tsotra ary tsy mahay mikajy tsara.
+          Référence : sokajio araka ny laharam-pahamehana :
+          1-Fahabadoana : tsy fahaizana mamaky teny, manoratra ary manisa; mahakasika tanora, ray aman-dreny ary zokiolona.
+          2-Fahantrana ara-panabeazana / pauvreté d’apprentissage : mahakasika ny ankizy latsaky ny 10 taona, mianatra an-tsekoly nefa zara raha mahay mamaky teny sy manisa, tsy mahazo lahatsoratra tsotra.
+          3-Fitsoahana na fialana an-tsekoly : mahakasika tanora niala an-tsekoly aloha, zara raha nianatra, zara raha mahay mamaky teny sy manoratra.
         </p>
-        <p>5. Sokajio ireo olana ara-panabeazana :</p>
+        <p>Valiny : {blank}</p>
         <p>{blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score olana : ______ / 10</p>
+        <p>Score : ______ / 5</p>
 
+        <h4>6. Paikady iombonana ara-panabeazana ao anatin’ny 140 andro</h4>
         <p style={refStyle}>
-          Référence paikady : fampianarana mamaky teny sy manoratra; tohana
-          pedagojika ho an’ny tanora niala an-tsekoly; fametrahana “Sekoly Tsara
-          Kalitao” miaraka amin’ny Kaomina, ZAP, ray aman-dreny, Fokonolona ary VTI.
-          Hazavao ny zavatra hatomboka ao anatin’ny 140 andro sy ny anjara biriky.
+          Référence :
+          1-Paikady iombonana ho fampianarana mamaky teny sy manoratra, ady amin’ny habadoana.
+          2-Paikady iombonana ho tohana pedagojika ho an’ny tanora nitsoaka an-daharana na niala an-tsekoly.
+          3-Paikady iombonana ho fametrahana “Sekoly Tsara Kalitao” miaraka amin’ny Kaomina, ZAP, ray aman-dreny, Fokonolona ary Vaomiera/VTI.
         </p>
-        <p>6. Paikady 140 andro :</p>
+        <p>Paikady sy fanapahan-kevitry ny Vaomiera/VTI : {blank}</p>
         <p>{blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score paikady : ______ / 10</p>
+        <p>Score : ______ / 20</p>
 
-        <h3>Total Vaomiera Ara-panahy sy fanabeazana : ______ / 70</h3>
+        <h3>Total Vaomiera Ara-panahy sy fanabeazana : ______ / 85</h3>
 
         <hr />
 
-        <h2>3. Vaomiera “Fandraharahana sy Fizakantena ara-toekarena”</h2>
+        <h2>B. Vaomiera “Fandraharahana sy Fizakantena ara-toekarena”</h2>
 
-        <p>
-          1. Fivoriana : □ in-2 = 10 □ in-1 = 5 □ tsy misy = 0
-        </p>
-        <p>Score fivoriana : ______ / 10</p>
+        <h4>1. Efa miodina tsara ve ny Vaomiera ?</h4>
+        <p>11. Fivoriana : □ in-2 = 10 □ in-1 = 5 □ tsy misy = 0</p>
+        <p>Score 11 : ______ / 10</p>
+        <p>12. Ora iasana : □ mihoatra ny adiny 4 = 20 □ adiny 2-3 = 10 □ latsaky ny adiny 2 = 5 □ tsy voafaritra = 0</p>
+        <p>Score 12 : ______ / 20</p>
+        <p><strong>Total 11 + 12 : ______ / 30</strong></p>
 
-        <p>
-          2. Ora iasana : □ mihoatra ny adiny 4 = 10 □ adiny 2-3 = 5
-          □ latsaky ny adiny 2 = 2 □ tsy voafaritra = 0
-        </p>
-        <p>Score ora : ______ / 10</p>
-
+        <h4>2. Olana ara-toekarena mianjady amin’ny tanora</h4>
         <p style={refStyle}>
-          Référence : kilasio 1 raha tena olana mafy mianjady amin’ny tanora,
-          2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana. Diniho :
-          tsy fananana kolontsain’ny fandraharahana; tsy fisian’ny torohay;
-          famokarana tsy mitodika amin’ny varotra; olana fananantany;
-          tsy fahampian’ny fiofanana sy fanaraha-maso teknika; tsy fahampian’ny
-          tosika ara-pitaovana sy akora; tsy fahampian’ny fotodrafitrasa; tsy fisian’ny
-          lalambarotra; tsy fisian’ny fiarovana ny mpamokatra; fihenan’ny fahefa-mividy
-          sy fiankinan-doha amin’ny PPN; ary olana hafa.
+          Référence : kilasio 1 raha tena olana mafy, 2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana :
+          1-Tsy fananana kolontsain’ny fandraharahana sy tsy fisian’ny torohay.
+          2-Famokarana tsy mitodika amin’ny varotra.
+          3-Olana fananantany.
+          4-Tsy fahampian’ny fiofanana sy fanaraha-maso teknika.
+          5-Tsy fahampian’ny tosika ara-pitaovana sy akora.
+          6-Tsy fahampian’ny fotodrafitrasa iombonana.
+          7-Tsy fisian’ny lalambarotra.
+          8-Tsy fisian’ny fiarovana ny mpamokatra.
+          9-Fihenan’ny fahefa-mividy sy fiankinan-doha amin’ny PPN.
+          10-Olana hafa.
         </p>
-        <p>3. Olana ara-toekarena :</p>
+        <p>Valiny : {blank}</p>
         <p>{blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score olana : ______ / 10</p>
+        <p>Score : ______ / 10</p>
 
+        <h4>3. Paikady ara-toekarena ao anatin’ny 140 andro</h4>
         <p style={refStyle}>
-          Référence paikady 140 andro : Saha Sekoly; paikady fananantany miaraka
-          amin’ny servisy fananantany sy Kaomina; fanohanana Taniketsa Fandraharahana;
-          lalambarotra sy famatsiana PPN maharitra; fotodrafitrasa maika 1 sy 2;
-          paikady iombonana hafa; ary fanapahan-kevitry ny Vaomiera/VTI hitondra
-          anjara biriky.
+          Référence :
+          1-Fametrahana Saha Sekoly.
+          2-Paikady fananantany miaraka amin’ny servisy fananantany sy Kaomina.
+          3-Fanohanana ny Taniketsa Fandraharahana.
+          4-Lalambarotra sy famatsiana ara-tsakafo/PPN maharitra.
+          5-Fotodrafitrasa maika voalohany.
+          6-Fotodrafitrasa maika faharoa.
+          7-Paikady iombonana hafa.
+          8-Paikady iombonana hafa.
         </p>
-        <p>4. Paikady ara-toekarena 140 andro :</p>
+        <p>Valiny : {blank}</p>
         <p>{blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score paikady : ______ / 10</p>
+        <p>Score : ______ / 20</p>
 
-        <h3>Total Vaomiera Fandraharahana sy Toekarena : ______ / 40</h3>
+        <h3>Total Vaomiera Fandraharahana sy Toekarena : ______ / 60</h3>
 
         <hr />
 
-        <h2>4. Vaomiera “Fahasalamana sy Fiarovana ny tanora”</h2>
+        <h2>D. Vaomiera “Fahasalamana sy Fiarovana ny tanora”</h2>
 
-        <p>
-          1. Fivoriana : □ in-2 = 10 □ in-1 = 5 □ tsy misy = 0
-        </p>
-        <p>Score fivoriana : ______ / 10</p>
+        <h4>1. Efa miodina tsara ve ny Vaomiera ?</h4>
+        <p>11. Fivoriana : □ in-2 = 10 □ in-1 = 5 □ tsy misy = 0</p>
+        <p>Score 11 : ______ / 10</p>
+        <p>12. Ora iasana : □ mihoatra ny adiny 4 = 20 □ adiny 2-3 = 10 □ latsaky ny adiny 2 = 5 □ tsy voafaritra = 0</p>
+        <p>Score 12 : ______ / 20</p>
+        <p><strong>Total 11 + 12 : ______ / 30</strong></p>
 
-        <p>
-          2. Ora iasana : □ mihoatra ny adiny 4 = 10 □ adiny 2-3 = 5
-          □ latsaky ny adiny 2 = 2 □ tsy voafaritra = 0
-        </p>
-        <p>Score ora : ______ / 10</p>
-
+        <h4>2. Olana ara-pahasalamana</h4>
         <p style={refStyle}>
-          Référence : tazo moka, aretim-pivalanana, aretina azo amin’ny firaisana
-          ara-nofo ao anatin’izany ny VIH-SIDA, areti-mifindra hafa, areti-mandoza
-          mandripaka toy ny tosidra, diabeta, homamiadana, ary aretina hafa.
+          Référence : kilasio 1 raha tena olana mafy, 2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana :
+          1-Tazo moka.
+          2-Aretim-pivalanana.
+          3-Aretina azo amin’ny firaisana ara-nofo, anisan’izany VIH-SIDA.
+          4-Areti-mifindra hafa.
+          5-Areti-mandoza mandripaka : tosidra, diabeta, homamiadana.
+          6-Aretina hafa 1.
+          7-Aretina hafa 2.
         </p>
-        <p>3. Olana ara-pahasalamana :</p>
+        <p>Valiny : {blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score olana : ______ / 10</p>
+        <p>Score : ______ / 10</p>
 
+        <h4>3. Voina manimba taranaka</h4>
         <p style={refStyle}>
-          Référence : vohoka aloha loatra, mariazin’ny ankizy, fidorohana
-          zava-mahadomelina, herisetra, fitondran-tena mampidi-doza, fahaverezan’ny
-          fanantenana, ary olana hafa manimba ny hoavin’ny tanora.
+          Référence : saraho amin’ny olana ara-pahasalamana ny fiarovana ny tanora amin’ny voina manimba ny hoaviny :
+          1-Vohoka aloha loatra.
+          2-Mariazin’ny ankizy.
+          3-Fidorohana zava-mahadomelina.
+          4-Herisetra.
+          5-Fitondran-tena mampidi-doza.
+          6-Fahaverezan’ny fanantenana.
+          7-Olana hafa manimba ny hoavin’ny tanora.
         </p>
-        <p>4. Voina manimba taranaka :</p>
+        <p>Valiny : {blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score voina : ______ / 10</p>
+        <p>Score : ______ / 10</p>
 
+        <h4>4A. Vahaolana 140 andro — Fahasalamana</h4>
         <p style={refStyle}>
-          Référence paikady : ady amin’ny tazo moka sy aretim-pivalanana, vaksiny,
-          fanjarian-tsakafo, fanatanjahantena sy fialamboly, fisorohana vohoka aloha
-          loatra sy mariazin’ny ankizy, fisorohana zava-mahadomelina sy herisetra,
-          ary paikady hafa azo atomboka ao anatin’ny 140 andro.
+          Référence :
+          1-Ady amin’ny tazo moka.
+          2-Ady amin’ny aretim-pivalanana.
+          3-Vaksiny.
+          4-Fanjarian-tsakafo.
+          5-Fampiroboroboana fanatanjahantena sy fialamboly ho an’ny fahasalamana ara-batana sy ara-tsaina.
         </p>
-        <p>5. Paikady ara-pahasalamana sy fiarovana :</p>
+        <p>Valiny : {blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score paikady : ______ / 10</p>
 
-        <h3>Total Vaomiera Fahasalamana sy Fiarovana : ______ / 50</h3>
+        <h4>4B. Vahaolana 140 andro — Fiarovana amin’ny voina manimba ny tanora</h4>
+        <p style={refStyle}>
+          Référence :
+          1-Fisorohana vohoka aloha loatra.
+          2-Fisorohana mariazin’ny ankizy.
+          3-Fisorohana fidorohana zava-mahadomelina.
+          4-Fisorohana herisetra.
+          5-Paikady iombonana hafa.
+          6-Paikady iombonana hafa.
+        </p>
+        <p>Valiny : {blank}</p>
+        <p>{blank}</p>
+        <p>Score paikady ankapobeny : ______ / 20</p>
+
+        <h3>Total Vaomiera Fahasalamana sy Fiarovana : ______ / 70</h3>
 
         <hr />
 
-        <h2>5. Vaomiera “Etika Fampandrosoana maharitra”</h2>
+        <h2>E. Vaomiera “Etikan’ny fampandrosoana maharitra”</h2>
 
-        <p>
-          1. Fivoriana : □ in-2 = 10 □ in-1 = 5 □ tsy misy = 0
-        </p>
-        <p>Score fivoriana : ______ / 10</p>
+        <h4>1. Efa miodina tsara ve ny Vaomiera ?</h4>
+        <p>11. Fivoriana : □ in-2 = 10 □ in-1 = 5 □ tsy misy = 0</p>
+        <p>Score 11 : ______ / 10</p>
+        <p>12. Ora iasana : □ mihoatra ny adiny 4 = 20 □ adiny 2-3 = 10 □ latsaky ny adiny 2 = 5 □ tsy voafaritra = 0</p>
+        <p>Score 12 : ______ / 20</p>
+        <p><strong>Total 11 + 12 : ______ / 30</strong></p>
 
-        <p>
-          2. Ora iasana : □ mihoatra ny adiny 4 = 10 □ adiny 2-3 = 5
-          □ latsaky ny adiny 2 = 2 □ tsy voafaritra = 0
-        </p>
-        <p>Score ora : ______ / 10</p>
-
+        <h4>2. Olana mikasika ny fandriampahalemana sy kolikoly</h4>
         <p style={refStyle}>
-          Référence : kolikoly, tsy fandriampahalemana, herisetra, fanararaotana
-          sy tsy fanajana lalàna, fanimbana tontolo iainana, fandoroana ala sy afo tanety,
-          fanapotehana harena voajanahary, fahalemen’ny firaisankina, ary olana hafa.
+          Référence : kilasio 1 raha tena olana mafy, 2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana :
+          1-Halatra be vava miaraka amin’ny vono olona.
+          2-Halabotry.
+          3-Disadisa ara-piarahamonina.
+          4-Ady lahy sy fizarazarana ara-politika.
+          5-Kolikoly sy fahalovana miantraika amin’ny fiainam-piaraha-monina.
         </p>
-        <p>3. Olana etika sy fandriampahalemana :</p>
+        <p>Valiny : {blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score olana : ______ / 10</p>
+        <p>Score : ______ / 10</p>
 
+        <h4>3. Olana mikasika ny tontolo iainana</h4>
         <p style={refStyle}>
-          Référence paikady : ady amin’ny kolikoly, fanamafisana fandriampahalemana,
-          firaisankina sy fihavanana, fiarovana tontolo iainana sy harena voajanahary,
-          ady amin’ny afo tanety sy fandripahana ala, Dina sy fitsipika iombonana,
-          fanabeazana olom-pirenena, ary paikady hafa ao anatin’ny 140 andro.
+          Référence : kilasio 1 raha tena olana mafy, 2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana :
+          1-Doro tanety.
+          2-Fandripahana ny ala.
+          3-Fandripahana na fandrobana ny harena voajanahary sy loharanon-karena iombonana.
+          4-Faharitry ny loharano sy haintany.
+          5-Fiankinandoha amin’ny saribao sy kitay.
+          6-Loza voajanahary : rivo-doza, tondradrano.
+          7-Olana hafa.
         </p>
-        <p>4. Paikady etika sy fampandrosoana maharitra :</p>
+        <p>Valiny : {blank}</p>
         <p>{blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
-        <p>Score paikady : ______ / 10</p>
+        <p>Score : ______ / 10</p>
 
-        <h3>Total Vaomiera Etika Fampandrosoana maharitra : ______ / 40</h3>
+        <h4>4A. Vahaolana 140 andro — Fandriampahalemana sy ady amin’ny kolikoly</h4>
+        <p style={refStyle}>
+          Référence :
+          1-Fanamafisana fihavanana.
+          2-Fametrahana fandriampahalemana maharitra.
+          3-Fisorohana sy ady amin’ny fahalovana.
+          4-Fanabeazana olom-pirenena.
+          5-Dina sy fitsipika iombonana.
+        </p>
+        <p>Valiny : {blank}</p>
+        <p>{blank}</p>
+
+        <h4>4B. Vahaolana 140 andro — Tontolo iainana</h4>
+        <p style={refStyle}>
+          Référence :
+          1-Fambolena hazo/ala.
+          2-Fefy velona manodidina ny Taniketsa Voly rakotra 500m².
+          3-Ady amin’ny doro tanety sy fandripahana ala.
+          4-Angovo maintso.
+          5-Famokarana biolojika miaro ny natiora.
+          6-Fanodinana fako.
+          7-Paikady hafa.
+        </p>
+        <p>Valiny : {blank}</p>
+        <p>{blank}</p>
+        <p>Score paikady ankapobeny : ______ / 20</p>
+
+        <h3>Total Vaomiera Etika Fampandrosoana maharitra : ______ / 70</h3>
 
         <hr />
 
         <h2>6. Synthèse générale VTI</h2>
-        <p>Total Ara-panahy sy fanabeazana : ______ / 70</p>
-        <p>Total Fandraharahana sy Toekarena : ______ / 40</p>
-        <p>Total Fahasalamana sy Fiarovana : ______ / 50</p>
-        <p>Total Etika Fampandrosoana maharitra : ______ / 40</p>
-        <h3>Total général VTI : ______ / 200</h3>
+        <p>Total Ara-panahy sy fanabeazana : ______ / 85</p>
+        <p>Total Fandraharahana sy Toekarena : ______ / 60</p>
+        <p>Total Fahasalamana sy Fiarovana : ______ / 70</p>
+        <p>Total Etika Fampandrosoana maharitra : ______ / 70</p>
+        <h3>Total général VTI : ______ / 285</h3>
 
         <div style={styles.actions}>
           <button style={styles.secondaryButton} onClick={onBack}>
