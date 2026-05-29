@@ -272,30 +272,63 @@ function VaomieraAraPanahyForm({ vtiId, onBack, onNext }: any) {
   const [olanaFanabeazana, setOlanaFanabeazana] = useState("");
   const [paikady140, setPaikady140] = useState("");
 
-  const totalScore = mivoryScore + oraScore + herinandroScore + fanakaScore + fanambyScore + olanaScore + paikadyScore;
+  const totalScore =
+    Number(mivoryScore || 0) +
+    Number(oraScore || 0) +
+    Number(herinandroScore || 0) +
+    Number(fanakaScore || 0) +
+    Number(fanambyScore || 0) +
+    Number(olanaScore || 0) +
+    Number(paikadyScore || 0);
 
-  const refStyle = { fontSize: "12px", fontStyle: "italic" as const, color: "#555", lineHeight: "1.6", marginBottom: 10 };
+  const refStyle = {
+    fontSize: "12px",
+    fontStyle: "italic" as const,
+    color: "#555",
+    lineHeight: "1.6",
+    marginBottom: 10,
+  };
 
-  const mivoryOptions: [string, number][] = [["In-2 isan-kerinandro — 10 points", 10], ["In-1 isan-kerinandro — 5 points", 5], ["Tsy misy — 0 point", 0]];
-  const oraOptions: [string, number][] = [["Mihoatra ny adiny 4 — 10 points", 10], ["Adiny 2-3 — 5 points", 5], ["Latsaky ny adiny 2 — 2 points", 2], ["Tsy voafaritra — 0 point", 0]];
-  const standard10: [string, number][] = [["Valiny mazava sy feno — 10 points", 10], ["Valiny antonony — 5 points", 5], ["Valiny manjavozavo — 2 points", 2], ["Tsy misy valiny — 0 point", 0]];
+  const mivoryOptions: [string, number][] = [
+    ["In-2 isan-kerinandro — 10 points", 10],
+    ["In-1 isan-kerinandro — 5 points", 5],
+    ["Tsy misy — 0 point", 0],
+  ];
+
+  const oraOptions: [string, number][] = [
+    ["Mihoatra ny adiny 4 — 10 points", 10],
+    ["Adiny 2-3 — 5 points", 5],
+    ["Latsaky ny adiny 2 — 2 points", 2],
+    ["Tsy voafaritra — 0 point", 0],
+  ];
+
+  const standard10: [string, number][] = [
+    ["Valiny mazava sy feno — 10 points", 10],
+    ["Valiny antonony — 5 points", 5],
+    ["Valiny manjavozavo — 2 points", 2],
+    ["Tsy misy valiny — 0 point", 0],
+  ];
 
   const enregistrerVaomiera = async () => {
-    const { error } = await supabase.from("vti_vaomiera_arapanahy_fanabeazana").insert([{
-      vti_id: Number(vtiId),
-      mivory_score: Number(mivoryScore || 0),
-      ora_score: Number(oraScore || 0),
-      herinandro_score: Number(herinandroScore || 0),
-      fanaka_score: Number(fanakaScore || 0),
-      fanaka_dimy: fanakaDimy || "",
-      fanamby_140_andro: fanamby140 || "",
-      fanamby_score: Number(fanambyScore || 0),
-      olana_fanabeazana: olanaFanabeazana || "",
-      olana_score: Number(olanaScore || 0),
-      paikady_140_andro: paikady140 || "",
-      paikady_score: Number(paikadyScore || 0),
-      total_score: Number(totalScore || 0),
-    }]);
+    const { error } = await supabase
+      .from("vti_vaomiera_arapanahy_fanabeazana")
+      .insert([
+        {
+          vti_id: Number(vtiId),
+          mivory_score: Number(mivoryScore || 0),
+          ora_score: Number(oraScore || 0),
+          herinandro_score: Number(herinandroScore || 0),
+          fanaka_score: Number(fanakaScore || 0),
+          fanaka_dimy: fanakaDimy || "",
+          fanamby_140_andro: fanamby140 || "",
+          fanamby_score: Number(fanambyScore || 0),
+          olana_fanabeazana: olanaFanabeazana || "",
+          olana_score: Number(olanaScore || 0),
+          paikady_140_andro: paikady140 || "",
+          paikady_score: Number(paikadyScore || 0),
+          total_score: Number(totalScore || 0),
+        },
+      ]);
 
     if (error) {
       alert("Erreur Vaomiera Ara-panahy : " + JSON.stringify(error));
@@ -308,35 +341,141 @@ function VaomieraAraPanahyForm({ vtiId, onBack, onNext }: any) {
 
   return (
     <section style={styles.block}>
-      <h2 style={styles.sectionTitle}>Vaomiera “Ara-panahy sy fanabeazana”</h2>
+      <h2 style={styles.sectionTitle}>
+        A. Vaomiera “Ara-panahy sy fanabeazana”
+      </h2>
 
-      <OptionSelect label="1. Mivory na manao asa iombonana impiry isan-kerinandro ?" options={mivoryOptions} onChange={(v:number)=>setMivoryScore(v)} />
-      <OptionSelect label="2. Adiny firy isan-kerinandro no atokan’ny mpikambana ?" options={oraOptions} onChange={(v:number)=>setOraScore(v)} />
+      <h3>ARA-PANAHY</h3>
 
-      <p style={refStyle}>Référence : Herinandro 1 — Fahamasinana; Herinandro 2 — Fanetre-tena; Herinandro 3 — Fandeferana; Herinandro 4 — Fahaizana mamela heloka; Herinandro 5 — Fiantrana ny madiniky ny Tompo.</p>
-      <OptionSelect label="3. Efa natomboka ve ny Herinandro dimy ny Mpianatry ny Tompo ?" options={standard10} onChange={(v:number)=>setHerinandroScore(v)} />
+      <h4>1. Efa miodina tsara ve ny Vaomiera misy anareo ?</h4>
 
-      <p style={refStyle}>Référence : Fanaka masina dimy — Fahamasinana, Fanetre-tena, Fandeferana, Fahaizana mamela heloka, Fiantrana ny madiniky ny Tompo. Lazao izay tena sarotra ampiharina, kilasio 1 hatramin’ny 5, ary hazavao ny antony.</p>
-      <textarea style={styles.textarea} value={fanakaDimy} onChange={(e)=>setFanakaDimy(e.target.value)} />
-      <OptionSelect label="4. Score fanadihadiana fanaka dimy" options={standard10} onChange={(v:number)=>setFanakaScore(v)} />
+      <OptionSelect
+        label="11. Mivory na manao asa iombonana impiry isan-kerinandro ?"
+        options={mivoryOptions}
+        onChange={(v: number) => setMivoryScore(v)}
+      />
 
-      <p style={refStyle}>Référence fanamby 140 andro : Mety aminareo ve raha toy izao no fanamby ? 1-Fitaizana sy fanabeazana ny tanora hanatanteraka ny Vavaka Betela arahin’ny Herinandro dimy ny Mpianatry ny Tompo. 2-Fijoroana vavolombelona sy fanapariahana amin’ny tanora namana ny Vavaka Betela. 3-Fanapariahana miandalana ny Herinandro dimy mba ho pratika fiainana sy kolotsaina. Raha eny, hazavao; raha tsia, soraty ny sosokevitra.</p>
-      <textarea style={styles.textarea} value={fanamby140} onChange={(e)=>setFanamby140(e.target.value)} />
-      <OptionSelect label="5. Score fanamby 140 andro" options={standard10} onChange={(v:number)=>setFanambyScore(v)} />
+      <OptionSelect
+        label="12. Adiny firy isan-kerinandro no atokan’ny mpikambana hiasa ao anaty Vaomiera ?"
+        options={oraOptions}
+        onChange={(v: number) => setOraScore(v)}
+      />
 
-      <p style={refStyle}>Référence olana ara-panabeazana : Fahabadoana = tsy fahaizana mamaky teny, manoratra ary manisa, mahakasika tanora, ray aman-dreny ary zokiolona. Fitsoahana/fialana an-tsekoly = tanora niala aloha, zara raha nianatra, zara raha mahay mamaky teny sy manoratra. Fahantrana ara-panabeazana = ankizy an-tsekoly latsaky ny 10 taona, tratry ny faharatsian’ny kalitaon’ny fanabeazana, tsy mahazo lahatsoratra tsotra ary tsy mahay mikajy tsara.</p>
-      <textarea style={styles.textarea} value={olanaFanabeazana} onChange={(e)=>setOlanaFanabeazana(e.target.value)} />
-      <OptionSelect label="6. Score olana ara-panabeazana" options={standard10} onChange={(v:number)=>setOlanaScore(v)} />
+      <p style={refStyle}>
+        Référence : 1-Fahamasinana : fialana amin’ny ota mamatotra sy ny fahazaran-dratsy rehetra.
+        2-Fanetre-tena.
+        3-Fandeferana : fifehezantena, fitoniana, tsy manetsika ady.
+        4-Fahaizana mamela heloka : tsy fitehirizana lolompo, tsy famaliana faty.
+        5-Fiantrana ny madiniky ny Tompo : asa soa, fanampiana ny madinika, tsy voatery ho fizarana vola aman-karena.
+      </p>
 
-      <p style={refStyle}>Référence paikady : fampianarana mamaky teny sy manoratra; tohana pedagojika ho an’ny tanora niala an-tsekoly; fametrahana “Sekoly Tsara Kalitao” miaraka amin’ny Kaomina, ZAP, ray aman-dreny, Fokonolona ary VTI. Hazavao ny zavatra hatomboka ao anatin’ny 140 andro sy ny anjara biriky.</p>
-      <textarea style={styles.textarea} value={paikady140} onChange={(e)=>setPaikady140(e.target.value)} />
-      <OptionSelect label="7. Score paikady sy fanapahan-kevitra" options={standard10} onChange={(v:number)=>setPaikadyScore(v)} />
+      <OptionSelect
+        label="2. Efa natombokareo ve ny Herinandro 05 ho an’ny Mpianatry ny Tompo ?"
+        options={standard10}
+        onChange={(v: number) => setHerinandroScore(v)}
+      />
 
-      <h2 style={styles.score}>Total Vaomiera Ara-panahy sy fanabeazana : {totalScore} / 70</h2>
+      <h4>3. Fanaka masina dimy / soatoavina dimy sarotra ampiharina</h4>
+
+      <p style={refStyle}>
+        Référence : kilasio 1 hatramin’ny 5 izay tena sarotra ampiharina eo anivon’ny fiaraha-monina :
+        1-Fahamasinana.
+        2-Fanetre-tena.
+        3-Fandeferana.
+        4-Fahaizana mamela heloka.
+        5-Fiantrana ny madiniky ny Tompo.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={fanakaDimy}
+        onChange={(e) => setFanakaDimy(e.target.value)}
+      />
+
+      <OptionSelect
+        label="Score fanadihadiana fanaka dimy"
+        options={standard10}
+        onChange={(v: number) => setFanakaScore(v)}
+      />
+
+      <h4>4. Fanamby lehibe ho tratrarina ao anatin’ny 140 andro</h4>
+
+      <p style={refStyle}>
+        Référence : soraty ny fanamby 1 hatramin’ny 5 tian’ny VTI hotratrarina amin’ny Herinandro 05 ny Mpianatry ny Tompo mandritra ny 140 andro.
+        Raha mazava sy azo tanterahina tsara = 10 points.
+        Raha antonony = 5 points.
+        Raha manjavozavo = 2 points.
+        Raha tsy misy valiny = 0 point.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={fanamby140}
+        onChange={(e) => setFanamby140(e.target.value)}
+      />
+
+      <OptionSelect
+        label="Score fanamby 140 andro"
+        options={standard10}
+        onChange={(v: number) => setFanambyScore(v)}
+      />
+
+      <h3>FANABEAZANA</h3>
+
+      <h4>5. Olana ara-panabeazana</h4>
+
+      <p style={refStyle}>
+        Référence : sokajio araka ny laharam-pahamehana :
+        1-Fahabadoana : tsy fahaizana mamaky teny, manoratra ary manisa; mahakasika tanora, ray aman-dreny ary zokiolona.
+        2-Fahantrana ara-panabeazana / pauvreté d’apprentissage : mahakasika ny ankizy latsaky ny 10 taona, mianatra an-tsekoly nefa zara raha mahay mamaky teny sy manisa, tsy mahazo lahatsoratra tsotra.
+        3-Fitsoahana na fialana an-tsekoly : mahakasika tanora niala an-tsekoly aloha, zara raha nianatra, zara raha mahay mamaky teny sy manoratra.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={olanaFanabeazana}
+        onChange={(e) => setOlanaFanabeazana(e.target.value)}
+      />
+
+      <OptionSelect
+        label="Score olana ara-panabeazana"
+        options={standard10}
+        onChange={(v: number) => setOlanaScore(v)}
+      />
+
+      <h4>6. Paikady iombonana ara-panabeazana ao anatin’ny 140 andro</h4>
+
+      <p style={refStyle}>
+        Référence :
+        1-Paikady iombonana ho fampianarana mamaky teny sy manoratra, ady amin’ny habadoana.
+        2-Paikady iombonana ho tohana pedagojika ho an’ny tanora nitsoaka an-daharana na niala an-tsekoly.
+        3-Paikady iombonana ho fametrahana “Sekoly Tsara Kalitao” miaraka amin’ny Kaomina, ZAP, ray aman-dreny, Fokonolona ary Vaomiera/VTI.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={paikady140}
+        onChange={(e) => setPaikady140(e.target.value)}
+      />
+
+      <OptionSelect
+        label="Score paikady sy fanapahan-kevitra"
+        options={standard10}
+        onChange={(v: number) => setPaikadyScore(v)}
+      />
+
+      <h2 style={styles.score}>
+        Total Vaomiera Ara-panahy sy fanabeazana : {totalScore} / 70
+      </h2>
 
       <div style={styles.actions}>
-        <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-        <button style={styles.button} onClick={enregistrerVaomiera}>Enregistrer sy hanohy Vaomiera Fandraharahana</button>
+        <button style={styles.secondaryButton} onClick={onBack}>
+          Miverina
+        </button>
+
+        <button style={styles.button} onClick={enregistrerVaomiera}>
+          Enregistrer sy hanohy Vaomiera Fandraharahana
+        </button>
       </div>
     </section>
   );
@@ -347,27 +486,59 @@ function VaomieraToekarenaForm({ vtiId, onBack, onNext }: any) {
   const [oraScore, setOraScore] = useState(0);
   const [olanaScore, setOlanaScore] = useState(0);
   const [paikadyScore, setPaikadyScore] = useState(0);
+
   const [olanaToekarena, setOlanaToekarena] = useState("");
   const [paikadyToekarena, setPaikadyToekarena] = useState("");
 
-  const totalScore = Number(mivoryScore || 0) + Number(oraScore || 0) + Number(olanaScore || 0) + Number(paikadyScore || 0);
-  const refStyle = { fontSize: "12px", fontStyle: "italic" as const, color: "#555", lineHeight: "1.6", marginBottom: 10 };
+  const totalScore =
+    Number(mivoryScore || 0) +
+    Number(oraScore || 0) +
+    Number(olanaScore || 0) +
+    Number(paikadyScore || 0);
 
-  const mivoryOptions: [string, number][] = [["In-2 isan-kerinandro — 10 points", 10], ["In-1 isan-kerinandro — 5 points", 5], ["Tsy misy — 0 point", 0]];
-  const oraOptions: [string, number][] = [["Mihoatra ny adiny 4 — 10 points", 10], ["Adiny 2-3 — 5 points", 5], ["Latsaky ny adiny 2 — 2 points", 2], ["Tsy voafaritra — 0 point", 0]];
-  const standard10: [string, number][] = [["Valiny mazava sy feno — 10 points", 10], ["Valiny antonony — 5 points", 5], ["Valiny manjavozavo — 2 points", 2], ["Tsy misy valiny — 0 point", 0]];
+  const refStyle = {
+    fontSize: "12px",
+    fontStyle: "italic" as const,
+    color: "#555",
+    lineHeight: "1.6",
+    marginBottom: 10,
+  };
+
+  const mivoryOptions: [string, number][] = [
+    ["In-2 isan-kerinandro — 10 points", 10],
+    ["In-1 isan-kerinandro — 5 points", 5],
+    ["Tsy misy — 0 point", 0],
+  ];
+
+  const oraOptions: [string, number][] = [
+    ["Mihoatra ny adiny 4 — 10 points", 10],
+    ["Adiny 2-3 — 5 points", 5],
+    ["Latsaky ny adiny 2 — 2 points", 2],
+    ["Tsy voafaritra — 0 point", 0],
+  ];
+
+  const standard10: [string, number][] = [
+    ["Valiny mazava sy feno — 10 points", 10],
+    ["Valiny antonony — 5 points", 5],
+    ["Valiny manjavozavo — 2 points", 2],
+    ["Tsy misy valiny — 0 point", 0],
+  ];
 
   const enregistrerVaomiera = async () => {
-    const { error } = await supabase.from("vti_vaomiera_fandraharahana_toekarena").insert([{
-      vti_id: Number(vtiId),
-      mivory_score: Number(mivoryScore || 0),
-      ora_score: Number(oraScore || 0),
-      olana_toekarena: olanaToekarena || "",
-      olana_score: Number(olanaScore || 0),
-      paikady_toekarena: paikadyToekarena || "",
-      paikady_score: Number(paikadyScore || 0),
-      total_score: Number(totalScore || 0),
-    }]);
+    const { error } = await supabase
+      .from("vti_vaomiera_fandraharahana_toekarena")
+      .insert([
+        {
+          vti_id: Number(vtiId),
+          mivory_score: Number(mivoryScore || 0),
+          ora_score: Number(oraScore || 0),
+          olana_toekarena: olanaToekarena || "",
+          olana_score: Number(olanaScore || 0),
+          paikady_toekarena: paikadyToekarena || "",
+          paikady_score: Number(paikadyScore || 0),
+          total_score: Number(totalScore || 0),
+        },
+      ]);
 
     if (error) {
       alert("Erreur Vaomiera Fandraharahana sy Toekarena : " + JSON.stringify(error));
@@ -380,24 +551,90 @@ function VaomieraToekarenaForm({ vtiId, onBack, onNext }: any) {
 
   return (
     <section style={styles.block}>
-      <h2 style={styles.sectionTitle}>Vaomiera “Fandraharahana sy Fizakantena ara-toekarena”</h2>
+      <h2 style={styles.sectionTitle}>
+        B. Vaomiera “Fandraharahana sy Fizakantena ara-toekarena”
+      </h2>
 
-      <OptionSelect label="1. Mivory na manao asa iombonana impiry isan-kerinandro ?" options={mivoryOptions} onChange={(v:number)=>setMivoryScore(v)} />
-      <OptionSelect label="2. Adiny firy isan-kerinandro no atokan’ny mpikambana hiasa ao anaty Vaomiera ?" options={oraOptions} onChange={(v:number)=>setOraScore(v)} />
+      <h4>1. Efa miodina tsara ve ny Vaomiera misy anareo ?</h4>
 
-      <p style={refStyle}>Référence : kilasio 1 raha tena olana mafy mianjady amin’ny tanora, 2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana ho an’ny tanora. Diniho : tsy fananana kolontsain’ny fandraharahana; tsy fisian’ny torohay; famokarana tsy mitodika amin’ny varotra; olana fananantany; tsy fahampian’ny fiofanana sy fanaraha-maso teknika; tsy fahampian’ny tosika ara-pitaovana sy akora; tsy fahampian’ny fotodrafitrasa iombonana; tsy fisian’ny lalambarotra; tsy fisian’ny fiarovana ny mpamokatra; fihenan’ny fahefa-mividy sy PPN; ary olana hafa.</p>
-      <textarea style={styles.textarea} value={olanaToekarena} onChange={(e)=>setOlanaToekarena(e.target.value)} />
-      <OptionSelect label="3. Score olana ara-toekarena" options={standard10} onChange={(v:number)=>setOlanaScore(v)} />
+      <OptionSelect
+        label="11. Mivory na manao asa iombonana impiry isan-kerinandro ?"
+        options={mivoryOptions}
+        onChange={(v: number) => setMivoryScore(v)}
+      />
 
-      <p style={refStyle}>Référence : Saha Sekoly; paikady fananantany miaraka amin’ny servisy fananantany sy Kaomina; fanohanana Taniketsa Fandraharahana; lalambarotra sy famatsiana PPN maharitra; fotodrafitrasa maika voalohany sy faharoa; paikady iombonana hafa; ary fanapahan-kevitry ny Vaomiera/VTI hitondra anjara biriky.</p>
-      <textarea style={styles.textarea} value={paikadyToekarena} onChange={(e)=>setPaikadyToekarena(e.target.value)} />
-      <OptionSelect label="4. Score paikady ara-toekarena sy fanapahan-kevitra" options={standard10} onChange={(v:number)=>setPaikadyScore(v)} />
+      <OptionSelect
+        label="12. Adiny firy isan-kerinandro no atokan’ny mpikambana hiasa ao anaty Vaomiera ?"
+        options={oraOptions}
+        onChange={(v: number) => setOraScore(v)}
+      />
 
-      <h2 style={styles.score}>Total Vaomiera Fandraharahana sy Toekarena : {totalScore} / 40</h2>
+      <h4>2. Olana ara-toekarena mianjady amin’ny tanora</h4>
+
+      <p style={refStyle}>
+        Référence : kilasio 1 raha tena olana mafy, 2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana :
+        1-Tsy fananana kolontsain’ny fandraharahana sy tsy fisian’ny torohay.
+        2-Famokarana tsy mitodika amin’ny varotra.
+        3-Olana fananantany.
+        4-Tsy fahampian’ny fiofanana sy fanaraha-maso teknika.
+        5-Tsy fahampian’ny tosika ara-pitaovana sy akora.
+        6-Tsy fahampian’ny fotodrafitrasa iombonana.
+        7-Tsy fisian’ny lalambarotra.
+        8-Tsy fisian’ny fiarovana ny mpamokatra.
+        9-Fihenan’ny fahefa-mividy sy fiankinan-doha amin’ny PPN.
+        10-Olana hafa.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={olanaToekarena}
+        onChange={(e) => setOlanaToekarena(e.target.value)}
+      />
+
+      <OptionSelect
+        label="Score olana ara-toekarena"
+        options={standard10}
+        onChange={(v: number) => setOlanaScore(v)}
+      />
+
+      <h4>3. Paikady ara-toekarena ao anatin’ny 140 andro</h4>
+
+      <p style={refStyle}>
+        Référence :
+        1-Fametrahana Saha Sekoly.
+        2-Paikady fananantany miaraka amin’ny servisy fananantany sy Kaomina.
+        3-Fanohanana ny Taniketsa Fandraharahana.
+        4-Lalambarotra sy famatsiana ara-tsakafo/PPN maharitra.
+        5-Fotodrafitrasa maika voalohany.
+        6-Fotodrafitrasa maika faharoa.
+        7-Paikady iombonana hafa.
+        8-Paikady iombonana hafa.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={paikadyToekarena}
+        onChange={(e) => setPaikadyToekarena(e.target.value)}
+      />
+
+      <OptionSelect
+        label="Score paikady ara-toekarena sy fanapahan-kevitra"
+        options={standard10}
+        onChange={(v: number) => setPaikadyScore(v)}
+      />
+
+      <h2 style={styles.score}>
+        Total Vaomiera Fandraharahana sy Toekarena : {totalScore} / 40
+      </h2>
 
       <div style={styles.actions}>
-        <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-        <button style={styles.button} onClick={enregistrerVaomiera}>Enregistrer sy hanohy</button>
+        <button style={styles.secondaryButton} onClick={onBack}>
+          Miverina
+        </button>
+
+        <button style={styles.button} onClick={enregistrerVaomiera}>
+          Enregistrer sy hanohy
+        </button>
       </div>
     </section>
   );
@@ -409,30 +646,72 @@ function VaomieraFahasalamanaForm({ vtiId, onBack, onNext }: any) {
   const [olanaFahasalamanaScore, setOlanaFahasalamanaScore] = useState(0);
   const [voinaScore, setVoinaScore] = useState(0);
   const [paikadyScore, setPaikadyScore] = useState(0);
+
   const [olanaFahasalamana, setOlanaFahasalamana] = useState("");
   const [voinaTanora, setVoinaTanora] = useState("");
   const [paikadyFahasalamana, setPaikadyFahasalamana] = useState("");
+  const [paikadyFiarovana, setPaikadyFiarovana] = useState("");
 
-  const totalScore = Number(mivoryScore || 0) + Number(oraScore || 0) + Number(olanaFahasalamanaScore || 0) + Number(voinaScore || 0) + Number(paikadyScore || 0);
-  const refStyle = { fontSize: "12px", fontStyle: "italic" as const, color: "#555", lineHeight: "1.6", marginBottom: 10 };
+  const totalScore =
+    Number(mivoryScore || 0) +
+    Number(oraScore || 0) +
+    Number(olanaFahasalamanaScore || 0) +
+    Number(voinaScore || 0) +
+    Number(paikadyScore || 0);
 
-  const mivoryOptions: [string, number][] = [["In-2 isan-kerinandro — 10 points", 10], ["In-1 isan-kerinandro — 5 points", 5], ["Tsy misy — 0 point", 0]];
-  const oraOptions: [string, number][] = [["Mihoatra ny adiny 4 — 10 points", 10], ["Adiny 2-3 — 5 points", 5], ["Latsaky ny adiny 2 — 2 points", 2], ["Tsy voafaritra — 0 point", 0]];
-  const standard10: [string, number][] = [["Valiny mazava sy feno — 10 points", 10], ["Valiny antonony — 5 points", 5], ["Valiny manjavozavo — 2 points", 2], ["Tsy misy valiny — 0 point", 0]];
+  const refStyle = {
+    fontSize: "12px",
+    fontStyle: "italic" as const,
+    color: "#555",
+    lineHeight: "1.6",
+    marginBottom: 10,
+  };
+
+  const mivoryOptions: [string, number][] = [
+    ["In-2 isan-kerinandro — 10 points", 10],
+    ["In-1 isan-kerinandro — 5 points", 5],
+    ["Tsy misy — 0 point", 0],
+  ];
+
+  const oraOptions: [string, number][] = [
+    ["Mihoatra ny adiny 4 — 10 points", 10],
+    ["Adiny 2-3 — 5 points", 5],
+    ["Latsaky ny adiny 2 — 2 points", 2],
+    ["Tsy voafaritra — 0 point", 0],
+  ];
+
+  const standard10: [string, number][] = [
+    ["Valiny mazava sy feno — 10 points", 10],
+    ["Valiny antonony — 5 points", 5],
+    ["Valiny manjavozavo — 2 points", 2],
+    ["Tsy misy valiny — 0 point", 0],
+  ];
 
   const enregistrerVaomiera = async () => {
-    const { error } = await supabase.from("vti_vaomiera_fahasalamana_fiarovana").insert([{
-      vti_id: Number(vtiId),
-      mivory_score: Number(mivoryScore || 0),
-      ora_score: Number(oraScore || 0),
-      olana_fahasalamana: olanaFahasalamana || "",
-      olana_fahasalamana_score: Number(olanaFahasalamanaScore || 0),
-      voina_tanora: voinaTanora || "",
-      voina_score: Number(voinaScore || 0),
-      paikady_fahasalamana: paikadyFahasalamana || "",
-      paikady_score: Number(paikadyScore || 0),
-      total_score: Number(totalScore || 0),
-    }]);
+    const paikadyMitambatra = `
+VAHAOLANA 140 ANDRO — FAHASALAMANA:
+${paikadyFahasalamana || ""}
+
+VAHAOLANA 140 ANDRO — FIAROVANA AMIN’NY VOINA MANIMBA NY TANORA:
+${paikadyFiarovana || ""}
+`;
+
+    const { error } = await supabase
+      .from("vti_vaomiera_fahasalamana_fiarovana")
+      .insert([
+        {
+          vti_id: Number(vtiId),
+          mivory_score: Number(mivoryScore || 0),
+          ora_score: Number(oraScore || 0),
+          olana_fahasalamana: olanaFahasalamana || "",
+          olana_fahasalamana_score: Number(olanaFahasalamanaScore || 0),
+          voina_tanora: voinaTanora || "",
+          voina_score: Number(voinaScore || 0),
+          paikady_fahasalamana: paikadyMitambatra,
+          paikady_score: Number(paikadyScore || 0),
+          total_score: Number(totalScore || 0),
+        },
+      ]);
 
     if (error) {
       alert("Erreur Vaomiera Fahasalamana : " + JSON.stringify(error));
@@ -445,28 +724,127 @@ function VaomieraFahasalamanaForm({ vtiId, onBack, onNext }: any) {
 
   return (
     <section style={styles.block}>
-      <h2 style={styles.sectionTitle}>Vaomiera “Fahasalamana sy Fiarovana ny tanora”</h2>
+      <h2 style={styles.sectionTitle}>
+        D. Vaomiera “Fahasalamana sy Fiarovana ny tanora”
+      </h2>
 
-      <OptionSelect label="1. Mivory na manao asa iombonana impiry isan-kerinandro ?" options={mivoryOptions} onChange={(v:number)=>setMivoryScore(v)} />
-      <OptionSelect label="2. Adiny firy isan-kerinandro no atokan’ny mpikambana ?" options={oraOptions} onChange={(v:number)=>setOraScore(v)} />
+      <h4>1. Efa miodina tsara ve ny Vaomiera misy anareo ?</h4>
 
-      <p style={refStyle}>Référence : tazo moka, aretim-pivalanana, aretina azo amin’ny firaisana ara-nofo ao anatin’izany ny VIH-SIDA, areti-mifindra hafa, areti-mandoza mandripaka toy ny tosidra, diabeta, homamiadana, ary aretina hafa.</p>
-      <textarea style={styles.textarea} value={olanaFahasalamana} onChange={(e)=>setOlanaFahasalamana(e.target.value)} />
-      <OptionSelect label="3. Score olana ara-pahasalamana" options={standard10} onChange={(v:number)=>setOlanaFahasalamanaScore(v)} />
+      <OptionSelect
+        label="11. Mivory na manao asa iombonana impiry isan-kerinandro ?"
+        options={mivoryOptions}
+        onChange={(v: number) => setMivoryScore(v)}
+      />
 
-      <p style={refStyle}>Référence : vohoka aloha loatra, mariazin’ny ankizy, fidorohana zava-mahadomelina, herisetra, fitondran-tena mampidi-doza, fahaverezan’ny fanantenana, ary olana hafa manimba ny hoavin’ny tanora.</p>
-      <textarea style={styles.textarea} value={voinaTanora} onChange={(e)=>setVoinaTanora(e.target.value)} />
-      <OptionSelect label="4. Score voina manimba taranaka" options={standard10} onChange={(v:number)=>setVoinaScore(v)} />
+      <OptionSelect
+        label="12. Adiny firy isan-kerinandro no atokan’ny mpikambana hiasa ao anaty Vaomiera ?"
+        options={oraOptions}
+        onChange={(v: number) => setOraScore(v)}
+      />
 
-      <p style={refStyle}>Référence : ady amin’ny tazo moka, aretim-pivalanana, vaksiny, fanjarian-tsakafo; fanatanjahantena sy fialamboly; fisorohana vohoka aloha loatra sy mariazin’ny ankizy; fisorohana zava-mahadomelina sy herisetra; ary paikady hafa azo atomboka ao anatin’ny 140 andro.</p>
-      <textarea style={styles.textarea} value={paikadyFahasalamana} onChange={(e)=>setPaikadyFahasalamana(e.target.value)} />
-      <OptionSelect label="5. Score paikady ara-pahasalamana sy fiarovana" options={standard10} onChange={(v:number)=>setPaikadyScore(v)} />
+      <h4>2. Olana ara-pahasalamana</h4>
 
-      <h2 style={styles.score}>Total Vaomiera Fahasalamana sy Fiarovana : {totalScore} / 50</h2>
+      <p style={refStyle}>
+        Référence : kilasio 1 raha tena olana mafy, 2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana :
+        1-Tazo moka.
+        2-Aretim-pivalanana.
+        3-Aretina azo amin’ny firaisana ara-nofo, anisan’izany VIH-SIDA.
+        4-Areti-mifindra hafa.
+        5-Areti-mandoza mandripaka : tosidra, diabeta, homamiadana.
+        6-Aretina hafa 1.
+        7-Aretina hafa 2.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={olanaFahasalamana}
+        onChange={(e) => setOlanaFahasalamana(e.target.value)}
+      />
+
+      <OptionSelect
+        label="Score olana ara-pahasalamana"
+        options={standard10}
+        onChange={(v: number) => setOlanaFahasalamanaScore(v)}
+      />
+
+      <h4>3. Voina manimba taranaka</h4>
+
+      <p style={refStyle}>
+        Référence : saraho amin’ny olana ara-pahasalamana ny fiarovana ny tanora amin’ny voina manimba ny hoaviny :
+        1-Vohoka aloha loatra.
+        2-Mariazin’ny ankizy.
+        3-Fidorohana zava-mahadomelina.
+        4-Herisetra.
+        5-Fitondran-tena mampidi-doza.
+        6-Fahaverezan’ny fanantenana.
+        7-Olana hafa manimba ny hoavin’ny tanora.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={voinaTanora}
+        onChange={(e) => setVoinaTanora(e.target.value)}
+      />
+
+      <OptionSelect
+        label="Score voina manimba taranaka"
+        options={standard10}
+        onChange={(v: number) => setVoinaScore(v)}
+      />
+
+      <h4>4A. Vahaolana 140 andro — Fahasalamana</h4>
+
+      <p style={refStyle}>
+        Référence :
+        1-Ady amin’ny tazo moka.
+        2-Ady amin’ny aretim-pivalanana.
+        3-Vaksiny.
+        4-Fanjarian-tsakafo.
+        5-Fampiroboroboana fanatanjahantena sy fialamboly ho an’ny fahasalamana ara-batana sy ara-tsaina.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={paikadyFahasalamana}
+        onChange={(e) => setPaikadyFahasalamana(e.target.value)}
+      />
+
+      <h4>4B. Vahaolana 140 andro — Fiarovana amin’ny voina manimba ny tanora</h4>
+
+      <p style={refStyle}>
+        Référence :
+        1-Fisorohana vohoka aloha loatra.
+        2-Fisorohana mariazin’ny ankizy.
+        3-Fisorohana fidorohana zava-mahadomelina.
+        4-Fisorohana herisetra.
+        5-Paikady iombonana hafa.
+        6-Paikady iombonana hafa.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={paikadyFiarovana}
+        onChange={(e) => setPaikadyFiarovana(e.target.value)}
+      />
+
+      <OptionSelect
+        label="Score paikady ankapobeny ara-pahasalamana sy fiarovana"
+        options={standard10}
+        onChange={(v: number) => setPaikadyScore(v)}
+      />
+
+      <h2 style={styles.score}>
+        Total Vaomiera Fahasalamana sy Fiarovana : {totalScore} / 50
+      </h2>
 
       <div style={styles.actions}>
-        <button style={styles.secondaryButton} onClick={onBack}>Miverina</button>
-        <button style={styles.button} onClick={enregistrerVaomiera}>Enregistrer sy hanohy</button>
+        <button style={styles.secondaryButton} onClick={onBack}>
+          Miverina
+        </button>
+
+        <button style={styles.button} onClick={enregistrerVaomiera}>
+          Enregistrer sy hanohy
+        </button>
       </div>
     </section>
   );
@@ -481,7 +859,8 @@ function VaomieraEtikaForm({ vtiId, onBack }: any) {
 
   const [olanaFandriampahalemana, setOlanaFandriampahalemana] = useState("");
   const [olanaTontoloIainana, setOlanaTontoloIainana] = useState("");
-  const [paikadyEtika, setPaikadyEtika] = useState("");
+  const [paikadyFandriampahalemana, setPaikadyFandriampahalemana] = useState("");
+  const [paikadyTontoloIainana, setPaikadyTontoloIainana] = useState("");
 
   const scoreOlanaMitambatra =
     Number(fandriampahalemanaScore || 0) +
@@ -522,11 +901,6 @@ function VaomieraEtikaForm({ vtiId, onBack }: any) {
   ];
 
   const enregistrerVaomiera = async () => {
-    if (!vtiId) {
-      alert("ID VTI tsy hita.");
-      return;
-    }
-
     const olanaEtikaMitambatra = `
 OLANA VOASOKAJY 1 — Fandriampahalemana sy kolikoly:
 ${olanaFandriampahalemana || ""}
@@ -535,27 +909,29 @@ OLANA VOASOKAJY 2 — Tontolo iainana:
 ${olanaTontoloIainana || ""}
 `;
 
+    const paikadyEtikaMitambatra = `
+VAHAOLANA 140 ANDRO — FANDRIAMPAHALEMANA SY ADY AMIN’NY KOLIKOLY:
+${paikadyFandriampahalemana || ""}
+
+VAHAOLANA 140 ANDRO — TONTOLO IAINANA:
+${paikadyTontoloIainana || ""}
+`;
+
     const { error } = await supabase
       .from("vti_vaomiera_etika_fampandrosoana")
       .insert([
         {
           vti_id: Number(vtiId),
-
           mivory_score: Number(mivoryScore || 0),
           ora_score: Number(oraScore || 0),
-
           olana_fandriampahalemana: olanaFandriampahalemana || "",
           olana_fandriampahalemana_score: Number(fandriampahalemanaScore || 0),
-
           olana_tontolo_iainana: olanaTontoloIainana || "",
           olana_tontolo_iainana_score: Number(tontoloIainanaScore || 0),
-
           olana_etika: olanaEtikaMitambatra,
           olana_score: Number(scoreOlanaMitambatra || 0),
-
-          paikady_etika: paikadyEtika || "",
+          paikady_etika: paikadyEtikaMitambatra,
           paikady_score: Number(paikadyScore || 0),
-
           total_score: Number(totalScore || 0),
         },
       ]);
@@ -571,25 +947,32 @@ ${olanaTontoloIainana || ""}
   return (
     <section style={styles.block}>
       <h2 style={styles.sectionTitle}>
-        Vaomiera “Etika Fampandrosoana maharitra”
+        E. Vaomiera “Etikan’ny fampandrosoana maharitra”
       </h2>
 
+      <h4>1. Efa miodina tsara ve ny Vaomiera misy anareo ?</h4>
+
       <OptionSelect
-        label="1. Mivory na manao asa iombonana impiry isan-kerinandro ?"
+        label="11. Mivory na manao asa iombonana impiry isan-kerinandro ?"
         options={mivoryOptions}
         onChange={(v: number) => setMivoryScore(v)}
       />
 
       <OptionSelect
-        label="2. Adiny firy isan-kerinandro no atokan’ny mpikambana ?"
+        label="12. Adiny firy isan-kerinandro no atokan’ny mpikambana hiasa ao anaty Vaomiera ?"
         options={oraOptions}
         onChange={(v: number) => setOraScore(v)}
       />
 
+      <h4>2. Olana mikasika ny fandriampahalemana sy kolikoly</h4>
+
       <p style={refStyle}>
-        Référence : halatra be vava sy vono olona, halabotry,
-        disadisa ara-piarahamonina, ady lahy sy fizarazarana ara-politika,
-        kolikoly sy fahalovana miantraika amin’ny fiainam-piaraha-monina.
+        Référence : kilasio 1 raha tena olana mafy, 2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana :
+        1-Halatra be vava miaraka amin’ny vono olona.
+        2-Halabotry.
+        3-Disadisa ara-piarahamonina.
+        4-Ady lahy sy fizarazarana ara-politika.
+        5-Kolikoly sy fahalovana miantraika amin’ny fiainam-piaraha-monina.
       </p>
 
       <textarea
@@ -599,16 +982,22 @@ ${olanaTontoloIainana || ""}
       />
 
       <OptionSelect
-        label="3. Score olana fandriampahalemana sy kolikoly"
+        label="Score olana fandriampahalemana sy kolikoly"
         options={standard10}
         onChange={(v: number) => setFandriampahalemanaScore(v)}
       />
 
+      <h4>3. Olana mikasika ny tontolo iainana</h4>
+
       <p style={refStyle}>
-        Référence : doro tanety, fandripahana ala, fandrobana harena voajanahary
-        sy loharanon-karena iombonana, faharitry ny loharano sy haintany,
-        fiankinandoha amin’ny saribao sy kitay, loza voajanahary toy ny rivo-doza
-        sy tondradrano, ary olana hafa.
+        Référence : kilasio 1 raha tena olana mafy, 2 raha olana mafy fa mbola azo leferina, 3 raha tsy olana :
+        1-Doro tanety.
+        2-Fandripahana ny ala.
+        3-Fandripahana na fandrobana ny harena voajanahary sy loharanon-karena iombonana.
+        4-Faharitry ny loharano sy haintany.
+        5-Fiankinandoha amin’ny saribao sy kitay.
+        6-Loza voajanahary : rivo-doza, tondradrano.
+        7-Olana hafa.
       </p>
 
       <textarea
@@ -618,27 +1007,49 @@ ${olanaTontoloIainana || ""}
       />
 
       <OptionSelect
-        label="4. Score olana tontolo iainana"
+        label="Score olana tontolo iainana"
         options={standard10}
         onChange={(v: number) => setTontoloIainanaScore(v)}
       />
 
+      <h4>4A. Vahaolana 140 andro — Fandriampahalemana sy ady amin’ny kolikoly</h4>
+
       <p style={refStyle}>
-        Référence : fanamafisana fihavanana sy fandriampahalemana maharitra,
-        fisorohana sy ady amin’ny fahalovana, fambolena hazo/ala, fefy velona
-        manodidina ny Taniketsa Voly rakotra 500m², ady amin’ny doro tanety sy
-        fandripahana ala, angovo maintso, famokarana biolojika miaro ny natiora,
-        fanodinana fako, ary paikady hafa azo tanterahina ao anatin’ny 140 andro.
+        Référence :
+        1-Fanamafisana fihavanana.
+        2-Fametrahana fandriampahalemana maharitra.
+        3-Fisorohana sy ady amin’ny fahalovana.
+        4-Fanabeazana olom-pirenena.
+        5-Dina sy fitsipika iombonana.
       </p>
 
       <textarea
         style={styles.textarea}
-        value={paikadyEtika}
-        onChange={(e) => setPaikadyEtika(e.target.value)}
+        value={paikadyFandriampahalemana}
+        onChange={(e) => setPaikadyFandriampahalemana(e.target.value)}
+      />
+
+      <h4>4B. Vahaolana 140 andro — Tontolo iainana</h4>
+
+      <p style={refStyle}>
+        Référence :
+        1-Fambolena hazo/ala.
+        2-Fefy velona manodidina ny Taniketsa Voly rakotra 500m².
+        3-Ady amin’ny doro tanety sy fandripahana ala.
+        4-Angovo maintso.
+        5-Famokarana biolojika miaro ny natiora.
+        6-Fanodinana fako.
+        7-Paikady hafa.
+      </p>
+
+      <textarea
+        style={styles.textarea}
+        value={paikadyTontoloIainana}
+        onChange={(e) => setPaikadyTontoloIainana(e.target.value)}
       />
 
       <OptionSelect
-        label="5. Score paikady etika sy fampandrosoana maharitra"
+        label="Score paikady etika sy fampandrosoana maharitra"
         options={standard10}
         onChange={(v: number) => setPaikadyScore(v)}
       />
