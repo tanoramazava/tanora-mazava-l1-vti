@@ -483,11 +483,14 @@ function VaomieraEtikaForm({ vtiId, onBack }: any) {
   const [olanaTontoloIainana, setOlanaTontoloIainana] = useState("");
   const [paikadyEtika, setPaikadyEtika] = useState("");
 
+  const scoreOlanaMitambatra =
+    Number(fandriampahalemanaScore || 0) +
+    Number(tontoloIainanaScore || 0);
+
   const totalScore =
     Number(mivoryScore || 0) +
     Number(oraScore || 0) +
-    Number(fandriampahalemanaScore || 0) +
-    Number(tontoloIainanaScore || 0) +
+    Number(scoreOlanaMitambatra || 0) +
     Number(paikadyScore || 0);
 
   const refStyle = {
@@ -532,10 +535,6 @@ OLANA VOASOKAJY 2 — Tontolo iainana:
 ${olanaTontoloIainana || ""}
 `;
 
-    const scoreOlanaMitambatra =
-      Number(fandriampahalemanaScore || 0) +
-      Number(tontoloIainanaScore || 0);
-
     const { error } = await supabase
       .from("vti_vaomiera_etika_fampandrosoana")
       .insert([
@@ -544,6 +543,12 @@ ${olanaTontoloIainana || ""}
 
           mivory_score: Number(mivoryScore || 0),
           ora_score: Number(oraScore || 0),
+
+          olana_fandriampahalemana: olanaFandriampahalemana || "",
+          olana_fandriampahalemana_score: Number(fandriampahalemanaScore || 0),
+
+          olana_tontolo_iainana: olanaTontoloIainana || "",
+          olana_tontolo_iainana_score: Number(tontoloIainanaScore || 0),
 
           olana_etika: olanaEtikaMitambatra,
           olana_score: Number(scoreOlanaMitambatra || 0),
