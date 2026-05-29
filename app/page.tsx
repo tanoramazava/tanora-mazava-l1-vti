@@ -668,7 +668,23 @@ function FormulaireViergeVti({ onBack }: any) {
     marginBottom: 10,
   };
 
-  const blank = "____________________________________________________________";
+  const answerBox = {
+    border: "1px solid #999",
+    minHeight: "120px",
+    padding: "10px",
+    marginTop: "8px",
+    marginBottom: "15px",
+    borderRadius: "6px",
+  };
+
+  const largeAnswerBox = {
+    border: "1px solid #999",
+    minHeight: "220px",
+    padding: "10px",
+    marginTop: "8px",
+    marginBottom: "15px",
+    borderRadius: "6px",
+  };
 
   return (
     <main style={styles.main}>
@@ -683,13 +699,26 @@ function FormulaireViergeVti({ onBack }: any) {
         </p>
 
         <h2>1. Famantarana ny VTI</h2>
-        <p>VTI Anarany : {blank}</p>
-        <p>Faritra : {blank}</p>
-        <p>Distrika : {blank}</p>
-        <p>Kaomina : {blank}</p>
+
+        <p>VTI Anarany :</p>
+        <div style={answerBox}></div>
+
+        <p>Faritra :</p>
+        <div style={answerBox}></div>
+
+        <p>Distrika :</p>
+        <div style={answerBox}></div>
+
+        <p>Kaomina :</p>
+        <div style={answerBox}></div>
+
         <p>Karazana Kaomina : □ Ambanivohitra □ Andrenivohitra</p>
-        <p>Fokontany : {blank}</p>
-        <p>Isan’ny Mponina : {blank}</p>
+
+        <p>Fokontany :</p>
+        <div style={answerBox}></div>
+
+        <p>Isan’ny Mponina :</p>
+        <div style={answerBox}></div>
 
         <hr />
 
@@ -698,6 +727,7 @@ function FormulaireViergeVti({ onBack }: any) {
         <h3>ARA-PANAHY</h3>
 
         <h4>1. Efa miodina tsara ve ny Vaomiera misy anareo ?</h4>
+
         <p>
           11. Mivory na manao asa iombonana impiry isan-kerinandro ?
           □ in-2 = 10 points □ in-1 = 5 points □ tsy misy = 0 point
@@ -741,9 +771,8 @@ function FormulaireViergeVti({ onBack }: any) {
           4-Fahaizana mamela heloka.
           5-Fiantrana ny madiniky ny Tompo.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
 
         <h4>4. Fanamby lehibe ho tratrarina ao anatin’ny 140 andro</h4>
         <p style={refStyle}>
@@ -752,11 +781,22 @@ function FormulaireViergeVti({ onBack }: any) {
           Raha manjavozavo fa azo tanterahina = 10 points.
           Raha tsy mazava na tsy azo tanterahina = 2 points.
         </p>
-        <p>Fanamby 1 : {blank}</p>
-        <p>Fanamby 2 : {blank}</p>
-        <p>Fanamby 3 : {blank}</p>
-        <p>Fanamby 4 : {blank}</p>
-        <p>Fanamby 5 : {blank}</p>
+
+        <p><strong>Fanamby lehibe 1 :</strong></p>
+        <div style={answerBox}></div>
+
+        <p><strong>Fanamby lehibe 2 :</strong></p>
+        <div style={answerBox}></div>
+
+        <p><strong>Fanamby lehibe 3 :</strong></p>
+        <div style={answerBox}></div>
+
+        <p><strong>Fanamby lehibe 4 :</strong></p>
+        <div style={answerBox}></div>
+
+        <p><strong>Fanamby lehibe 5 :</strong></p>
+        <div style={answerBox}></div>
+
         <p>Score fanamby : ______ / 20</p>
 
         <h3>FANABEAZANA</h3>
@@ -768,9 +808,8 @@ function FormulaireViergeVti({ onBack }: any) {
           2-Fahantrana ara-panabeazana / pauvreté d’apprentissage : mahakasika ny ankizy latsaky ny 10 taona, mianatra an-tsekoly nefa zara raha mahay mamaky teny sy manisa, tsy mahazo lahatsoratra tsotra.
           3-Fitsoahana na fialana an-tsekoly : mahakasika tanora niala an-tsekoly aloha, zara raha nianatra, zara raha mahay mamaky teny sy manoratra.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score : ______ / 5</p>
 
         <h4>6. Paikady iombonana ara-panabeazana ao anatin’ny 140 andro</h4>
@@ -780,9 +819,8 @@ function FormulaireViergeVti({ onBack }: any) {
           2-Paikady iombonana ho tohana pedagojika ho an’ny tanora nitsoaka an-daharana na niala an-tsekoly.
           3-Paikady iombonana ho fametrahana “Sekoly Tsara Kalitao” miaraka amin’ny Kaomina, ZAP, ray aman-dreny, Fokonolona ary Vaomiera/VTI.
         </p>
-        <p>Paikady sy fanapahan-kevitry ny Vaomiera/VTI : {blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
+        <p><strong>Paikady sy fanapahan-kevitry ny Vaomiera/VTI :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score : ______ / 20</p>
 
         <h3>Total Vaomiera Ara-panahy sy fanabeazana : ______ / 85</h3>
@@ -812,9 +850,8 @@ function FormulaireViergeVti({ onBack }: any) {
           9-Fihenan’ny fahefa-mividy sy fiankinan-doha amin’ny PPN.
           10-Olana hafa.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score : ______ / 10</p>
 
         <h4>3. Paikady ara-toekarena ao anatin’ny 140 andro</h4>
@@ -829,9 +866,8 @@ function FormulaireViergeVti({ onBack }: any) {
           7-Paikady iombonana hafa.
           8-Paikady iombonana hafa.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
-        <p>{blank}</p>
+        <p><strong>Paikady sy fanapahan-kevitra :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score : ______ / 20</p>
 
         <h3>Total Vaomiera Fandraharahana sy Toekarena : ______ / 60</h3>
@@ -858,8 +894,8 @@ function FormulaireViergeVti({ onBack }: any) {
           6-Aretina hafa 1.
           7-Aretina hafa 2.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score : ______ / 10</p>
 
         <h4>3. Voina manimba taranaka</h4>
@@ -873,8 +909,8 @@ function FormulaireViergeVti({ onBack }: any) {
           6-Fahaverezan’ny fanantenana.
           7-Olana hafa manimba ny hoavin’ny tanora.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score : ______ / 10</p>
 
         <h4>4A. Vahaolana 140 andro — Fahasalamana</h4>
@@ -886,8 +922,8 @@ function FormulaireViergeVti({ onBack }: any) {
           4-Fanjarian-tsakafo.
           5-Fampiroboroboana fanatanjahantena sy fialamboly ho an’ny fahasalamana ara-batana sy ara-tsaina.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
 
         <h4>4B. Vahaolana 140 andro — Fiarovana amin’ny voina manimba ny tanora</h4>
         <p style={refStyle}>
@@ -899,8 +935,8 @@ function FormulaireViergeVti({ onBack }: any) {
           5-Paikady iombonana hafa.
           6-Paikady iombonana hafa.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score paikady ankapobeny : ______ / 20</p>
 
         <h3>Total Vaomiera Fahasalamana sy Fiarovana : ______ / 70</h3>
@@ -925,8 +961,8 @@ function FormulaireViergeVti({ onBack }: any) {
           4-Ady lahy sy fizarazarana ara-politika.
           5-Kolikoly sy fahalovana miantraika amin’ny fiainam-piaraha-monina.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score : ______ / 10</p>
 
         <h4>3. Olana mikasika ny tontolo iainana</h4>
@@ -940,8 +976,8 @@ function FormulaireViergeVti({ onBack }: any) {
           6-Loza voajanahary : rivo-doza, tondradrano.
           7-Olana hafa.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score : ______ / 10</p>
 
         <h4>4A. Vahaolana 140 andro — Fandriampahalemana sy ady amin’ny kolikoly</h4>
@@ -953,8 +989,8 @@ function FormulaireViergeVti({ onBack }: any) {
           4-Fanabeazana olom-pirenena.
           5-Dina sy fitsipika iombonana.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
 
         <h4>4B. Vahaolana 140 andro — Tontolo iainana</h4>
         <p style={refStyle}>
@@ -967,8 +1003,8 @@ function FormulaireViergeVti({ onBack }: any) {
           6-Fanodinana fako.
           7-Paikady hafa.
         </p>
-        <p>Valiny : {blank}</p>
-        <p>{blank}</p>
+        <p><strong>Valiny :</strong></p>
+        <div style={largeAnswerBox}></div>
         <p>Score paikady ankapobeny : ______ / 20</p>
 
         <h3>Total Vaomiera Etika Fampandrosoana maharitra : ______ / 70</h3>
