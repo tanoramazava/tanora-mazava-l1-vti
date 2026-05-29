@@ -1447,115 +1447,226 @@ function FormulaireViergeVti({ onBack }: any) {
   );
 }
 function FicheRemplieVti({ onBack }: any) {
-  return (
-    <main style={styles.main}>
-      <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Fiche remplie VTI
-        </h1>
+  const [vtiIdInput, setVtiIdInput] = useState("");
+  const [vti, setVti] = useState<any>(null);
+  const [arapanahy, setArapanahy] = useState<any>(null);
+  const [toekarena, setToekarena] = useState<any>(null);
+  const [fahasalamana, setFahasalamana] = useState<any>(null);
+  const [etika, setEtika] = useState<any>(null);
 
-        <p style={styles.text}>
-          Fiche remplie VTI mbola eo am-panamboarana.
-        </p>
+  const chargerFiche = async () => {
+    const id = Number(vtiIdInput);
 
-        <button
-          style={styles.secondaryButton}
-          onClick={onBack}
-        >
-          Miverina
-        </button>
-      </section>
-    </main>
-  );
-}
-function IdentiteForm({
-  onBack,
-  onNext,
-  onSaved,
-}: any) {
-  const [anarana, setAnarana] = useState("");
-  const [taona, setTaona] = useState("");
-
-  const [faritra, setFaritra] = useState("");
-  const [distrika, setDistrika] = useState("");
-  const [kaomina, setKaomina] = useState("");
-  const [typeKaomina, setTypeKaomina] = useState("Ambanivohitra");
-  const [fokontany, setFokontany] = useState("");
-
-  const [vti, setVti] = useState("");
-
-  const enregistrer = async () => {
-    const { data, error } = await supabase
-      .from("tanora")
-      .insert([
-        {
-          anarana,
-          taona: taona ? parseInt(taona) : null,
-          faritra,
-          distrika,
-          kaomina,
-          type_kaomina: typeKaomina,
-          fokontany,
-          vti,
-        },
-      ])
-      .select();
-
-    if (error) {
-      alert("Erreur : " + JSON.stringify(error));
+    if (!id) {
+      alert("Ampidiro aloha ny ID VTI.");
       return;
     }
 
-    const newTanoraId = data?.[0]?.id;
+    const { data: vtiData, error: vtiError } = await supabase
+      .from("vti")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-    await supabase.from("scores").insert([
-      {
-        tanora_id: newTanoraId,
-        score_arapanahy: 0,
-        score_vti: 0,
-        score_economie: 0,
-        score_taniketsa: 0,
-        score_taniketsa_max: 0,
-      },
-    ]);
+    if (vtiError) {
+      alert("Tsy hita ny ID VTI : " + JSON.stringify(vtiError));
+      return;
+    }
 
-    onSaved(newTanoraId);
-    alert("Voatahiry ao Supabase ! ID = " + newTanoraId);
-    onNext();
+    const { data: araData } = await supabase
+      .from("vti_vaomiera_arapanahy_fanabeazana")
+      .select("*")
+      .eq("vti_id", id)
+      .order("id", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const { data: toeData } = await supabase
+      .from("vti_vaomiera_fandraharahana_toekarena")
+      .select("*")
+      .eq("vti_id", id)
+      .order("id", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const { data: fahData } = await supabase
+      .from("vti_vaomiera_fahasalamana_fiarovana")
+      .select("*")
+      .eq("vti_id", id)
+      .order("id", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const { data: etiData } = await supabase
+      .from("vti_vaomiera_etika_fampandrosoana")
+      .select("*")
+      .eq("vti_id", id)
+      .order("id", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    setVti(vtiData);
+    setArapanahy(araData);
+    setToekarena(toeData);
+    setFahasalamana(fahData);
+    setEtika(etiData);
+  };
+
+  const show = (value: any) => value || "—";
+  const score = (value: any) => Number(value || 0);
+
+  const totalGeneral =
+    score(arapanahy?.total_score) +
+    score(toekarena?.total_score) +
+    score(fahasalamana?.total_score) +
+    score(etika?.total_score);
+
+  const boxStyle = {
+    border: "1px solid #ddd",
+    padding: "12px",
+    borderRadius: "8px",
+    marginBottom: "12px",
+    background: "#fafafa",
+    whiteSpace: "pre-wrap" as const,
   };
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Famantarana ny Tanora</h1>
+        <h1 style={styles.titleSmall}>Fiche remplie VTI</h1>
 
-        <input style={styles.input} placeholder="Anarana sy fanampiny" value={anarana} onChange={(e) => setAnarana(e.target.value)} />
-        <input style={styles.input} placeholder="Taona" type="number" value={taona} onChange={(e) => setTaona(e.target.value)} />
-        <input style={styles.input} placeholder="Faritra" value={faritra} onChange={(e) => setFaritra(e.target.value)} />
-        <input style={styles.input} placeholder="Distrika" value={distrika} onChange={(e) => setDistrika(e.target.value)} />
-        <input style={styles.input} placeholder="Kaomina" value={kaomina} onChange={(e) => setKaomina(e.target.value)} />
-
-        <select
+        <label style={styles.label}>Ampidiro ny ID VTI</label>
+        <input
           style={styles.input}
-          value={typeKaomina}
-          onChange={(e) => setTypeKaomina(e.target.value)}
-        >
-          <option value="Ambanivohitra">Kaomina Ambanivohitra</option>
-          <option value="Andrenivohitra">Kaomina Andrenivohitra</option>
-        </select>
-
-        <input style={styles.input} placeholder="Fokontany" value={fokontany} onChange={(e) => setFokontany(e.target.value)} />
-        <input style={styles.input} placeholder="VTI misy azy" value={vti} onChange={(e) => setVti(e.target.value)} />
+          type="number"
+          value={vtiIdInput}
+          onChange={(e) => setVtiIdInput(e.target.value)}
+        />
 
         <div style={styles.actions}>
+          <button style={styles.button} onClick={chargerFiche}>
+            Charger la fiche
+          </button>
+
           <button style={styles.secondaryButton} onClick={onBack}>
             Miverina
           </button>
-
-          <button style={styles.button} onClick={enregistrer}>
-            Enregistrer sy Hanohy
-          </button>
         </div>
+
+        {vti && (
+          <>
+            <hr />
+
+            <h2>1. Famantarana ny VTI</h2>
+            <p><strong>ID VTI :</strong> {vti.id}</p>
+            <p><strong>VTI Anarany :</strong> {show(vti.nom_vti)}</p>
+            <p><strong>Faritra :</strong> {show(vti.faritra)}</p>
+            <p><strong>Distrika :</strong> {show(vti.distrika)}</p>
+            <p><strong>Kaomina :</strong> {show(vti.kaomina)}</p>
+            <p><strong>Karazana Kaomina :</strong> {show(vti.type_kaomina)}</p>
+            <p><strong>Fokontany :</strong> {show(vti.fokontany)}</p>
+            <p><strong>Isan’ny Mponina :</strong> {show(vti.isan_mponina)}</p>
+
+            <hr />
+
+            <h2>A. Vaomiera Ara-panahy sy fanabeazana</h2>
+            <p><strong>Total :</strong> {score(arapanahy?.total_score)} / 70</p>
+            <p>Fivoriana : {score(arapanahy?.mivory_score)} points</p>
+            <p>Ora iasana : {score(arapanahy?.ora_score)} points</p>
+            <p>Herinandro dimy : {score(arapanahy?.herinandro_score)} points</p>
+
+            <h4>Fanaka dimy</h4>
+            <div style={boxStyle}>{show(arapanahy?.fanaka_dimy)}</div>
+            <p>Score : {score(arapanahy?.fanaka_score)} points</p>
+
+            <h4>Fanamby 140 andro</h4>
+            <div style={boxStyle}>{show(arapanahy?.fanamby_140_andro)}</div>
+            <p>Score : {score(arapanahy?.fanamby_score)} points</p>
+
+            <h4>Olana ara-panabeazana</h4>
+            <div style={boxStyle}>{show(arapanahy?.olana_fanabeazana)}</div>
+            <p>Score : {score(arapanahy?.olana_score)} points</p>
+
+            <h4>Paikady ara-panabeazana</h4>
+            <div style={boxStyle}>{show(arapanahy?.paikady_140_andro)}</div>
+            <p>Score : {score(arapanahy?.paikady_score)} points</p>
+
+            <hr />
+
+            <h2>B. Vaomiera Fandraharahana sy Toekarena</h2>
+            <p><strong>Total :</strong> {score(toekarena?.total_score)} / 40</p>
+            <p>Fivoriana : {score(toekarena?.mivory_score)} points</p>
+            <p>Ora iasana : {score(toekarena?.ora_score)} points</p>
+
+            <h4>Olana ara-toekarena</h4>
+            <div style={boxStyle}>{show(toekarena?.olana_toekarena)}</div>
+            <p>Score : {score(toekarena?.olana_score)} points</p>
+
+            <h4>Paikady ara-toekarena</h4>
+            <div style={boxStyle}>{show(toekarena?.paikady_toekarena)}</div>
+            <p>Score : {score(toekarena?.paikady_score)} points</p>
+
+            <hr />
+
+            <h2>D. Vaomiera Fahasalamana sy Fiarovana ny tanora</h2>
+            <p><strong>Total :</strong> {score(fahasalamana?.total_score)} / 50</p>
+            <p>Fivoriana : {score(fahasalamana?.mivory_score)} points</p>
+            <p>Ora iasana : {score(fahasalamana?.ora_score)} points</p>
+
+            <h4>Olana ara-pahasalamana</h4>
+            <div style={boxStyle}>{show(fahasalamana?.olana_fahasalamana)}</div>
+            <p>Score : {score(fahasalamana?.olana_fahasalamana_score)} points</p>
+
+            <h4>Voina manimba taranaka</h4>
+            <div style={boxStyle}>{show(fahasalamana?.voina_tanora)}</div>
+            <p>Score : {score(fahasalamana?.voina_score)} points</p>
+
+            <h4>Vahaolana 140 andro — Fahasalamana sy fiarovana</h4>
+            <div style={boxStyle}>{show(fahasalamana?.paikady_fahasalamana)}</div>
+            <p>Score : {score(fahasalamana?.paikady_score)} points</p>
+
+            <hr />
+
+            <h2>E. Vaomiera Etikan’ny fampandrosoana maharitra</h2>
+            <p><strong>Total :</strong> {score(etika?.total_score)} / 50</p>
+            <p>Fivoriana : {score(etika?.mivory_score)} points</p>
+            <p>Ora iasana : {score(etika?.ora_score)} points</p>
+
+            <h4>Olana fandriampahalemana sy kolikoly</h4>
+            <div style={boxStyle}>{show(etika?.olana_fandriampahalemana)}</div>
+            <p>Score : {score(etika?.olana_fandriampahalemana_score)} points</p>
+
+            <h4>Olana tontolo iainana</h4>
+            <div style={boxStyle}>{show(etika?.olana_tontolo_iainana)}</div>
+            <p>Score : {score(etika?.olana_tontolo_iainana_score)} points</p>
+
+            <h4>Vahaolana 140 andro — Etika sy fampandrosoana maharitra</h4>
+            <div style={boxStyle}>{show(etika?.paikady_etika)}</div>
+            <p>Score : {score(etika?.paikady_score)} points</p>
+
+            <hr />
+
+            <h2>Synthèse générale VTI</h2>
+            <p>Total Ara-panahy sy fanabeazana : {score(arapanahy?.total_score)} / 70</p>
+            <p>Total Fandraharahana sy Toekarena : {score(toekarena?.total_score)} / 40</p>
+            <p>Total Fahasalamana sy Fiarovana : {score(fahasalamana?.total_score)} / 50</p>
+            <p>Total Etika Fampandrosoana maharitra : {score(etika?.total_score)} / 50</p>
+
+            <h2 style={styles.score}>
+              Total général VTI : {totalGeneral} / 210
+            </h2>
+
+            <div style={styles.actions}>
+              <button style={styles.button} onClick={() => window.print()}>
+                Imprimer
+              </button>
+
+              <button style={styles.secondaryButton} onClick={() => window.print()}>
+                Télécharger PDF
+              </button>
+            </div>
+          </>
+        )}
       </section>
     </main>
   );
