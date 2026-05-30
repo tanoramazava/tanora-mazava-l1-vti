@@ -1681,6 +1681,7 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
   const [kaomina, setKaomina] = useState("");
   const [fokontany, setFokontany] = useState("");
   const [vtiId, setVtiId] = useState("");
+  const [vaomieraMisyAzy, setVaomieraMisyAzy] = useState("");
 
   const enregistrerIdentite = async () => {
     const { data, error } = await supabase
@@ -1689,13 +1690,14 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
         {
           nom,
           prenom,
-          age: Number(age || 0),
+          taona: Number(age || 0),
           sexe,
           faritra,
           distrika,
           kaomina,
           fokontany,
           vti_id: vtiId ? Number(vtiId) : null,
+          vaomiera_misy_azy: vaomieraMisyAzy || "",
         },
       ])
       .select()
@@ -1725,33 +1727,79 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
           placeholder="Ampidiro eto ny ID VTI raha efa misy"
         />
 
+        <label style={styles.label}>Vaomiera misy azy</label>
+        <input
+          style={styles.input}
+          value={vaomieraMisyAzy}
+          onChange={(e) => setVaomieraMisyAzy(e.target.value)}
+          placeholder="Ohatra : Vaomiera Fandraharahana sy Toekarena"
+        />
+
+        <p style={styles.text}>
+          Soraty ao anatin’ity champ ity ny Vaomiera misy ilay Tanora. Ampiasao tsara
+          ny teny hoe : Ara-panahy, Fandraharahana, Fahasalamana, na Etika.
+        </p>
+
         <label style={styles.label}>Anarana</label>
-        <input style={styles.input} value={nom} onChange={(e) => setNom(e.target.value)} />
+        <input
+          style={styles.input}
+          value={nom}
+          onChange={(e) => setNom(e.target.value)}
+        />
 
         <label style={styles.label}>Fanampin’anarana</label>
-        <input style={styles.input} value={prenom} onChange={(e) => setPrenom(e.target.value)} />
+        <input
+          style={styles.input}
+          value={prenom}
+          onChange={(e) => setPrenom(e.target.value)}
+        />
 
         <label style={styles.label}>Taona</label>
-        <input style={styles.input} type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+        <input
+          style={styles.input}
+          type="number"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+        />
 
         <label style={styles.label}>Lahy / Vavy</label>
-        <select style={styles.input} value={sexe} onChange={(e) => setSexe(e.target.value)}>
+        <select
+          style={styles.input}
+          value={sexe}
+          onChange={(e) => setSexe(e.target.value)}
+        >
           <option value="">Safidio</option>
           <option value="Lahy">Lahy</option>
           <option value="Vavy">Vavy</option>
         </select>
 
         <label style={styles.label}>Faritra</label>
-        <input style={styles.input} value={faritra} onChange={(e) => setFaritra(e.target.value)} />
+        <input
+          style={styles.input}
+          value={faritra}
+          onChange={(e) => setFaritra(e.target.value)}
+        />
 
         <label style={styles.label}>Distrika</label>
-        <input style={styles.input} value={distrika} onChange={(e) => setDistrika(e.target.value)} />
+        <input
+          style={styles.input}
+          value={distrika}
+          onChange={(e) => setDistrika(e.target.value)}
+        />
 
         <label style={styles.label}>Kaomina</label>
-        <input style={styles.input} value={kaomina} onChange={(e) => setKaomina(e.target.value)} />
+        <input
+          style={styles.input}
+          value={kaomina}
+          onChange={(e) => setKaomina(e.target.value)}
+        />
 
         <label style={styles.label}>Fokontany</label>
-        <input style={styles.input} value={fokontany} onChange={(e) => setFokontany(e.target.value)} />
+        <input
+          style={styles.input}
+          value={fokontany}
+          onChange={(e) => setFokontany(e.target.value)}
+        />
 
         <div style={styles.actions}>
           <button style={styles.secondaryButton} onClick={onBack}>
