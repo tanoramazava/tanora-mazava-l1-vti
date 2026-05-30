@@ -1672,8 +1672,7 @@ function FicheRemplieVti({ onBack }: any) {
   );
 }
 function IdentiteForm({ onBack, onNext, onSaved }: any) {
-  const [nom, setNom] = useState("");
-  const [prenom, setPrenom] = useState("");
+  const [anarana, setAnarana] = useState("");
   const [age, setAge] = useState("");
   const [sexe, setSexe] = useState("");
   const [faritra, setFaritra] = useState("");
@@ -1689,7 +1688,7 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
       .from("tanora")
       .insert([
         {
-          anarana: nom + (prenom ? " " + prenom : ""),
+          anarana,
           taona: Number(age || 0),
           sexe,
           kaomina,
@@ -1740,15 +1739,8 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
         <label style={styles.label}>Anarana</label>
         <input
           style={styles.input}
-          value={nom}
-          onChange={(e) => setNom(e.target.value)}
-        />
-
-        <label style={styles.label}>Fanampin’anarana</label>
-        <input
-          style={styles.input}
-          value={prenom}
-          onChange={(e) => setPrenom(e.target.value)}
+          value={anarana}
+          onChange={(e) => setAnarana(e.target.value)}
         />
 
         <label style={styles.label}>Taona</label>
