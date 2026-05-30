@@ -1678,6 +1678,7 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
   const [sexe, setSexe] = useState("");
   const [faritra, setFaritra] = useState("");
   const [distrika, setDistrika] = useState("");
+  const [typeKaomina, setTypeKaomina] = useState("Ambanivohitra");
   const [kaomina, setKaomina] = useState("");
   const [fokontany, setFokontany] = useState("");
   const [vtiId, setVtiId] = useState("");
@@ -1694,6 +1695,7 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
           sexe,
           faritra,
           distrika,
+          type_kaomina: typeKaomina,
           kaomina,
           fokontany,
           vti_id: vtiId ? Number(vtiId) : null,
@@ -1786,6 +1788,22 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
           value={distrika}
           onChange={(e) => setDistrika(e.target.value)}
         />
+
+        <label style={styles.label}>Type de Kaomina</label>
+        <select
+          style={styles.input}
+          value={typeKaomina}
+          onChange={(e) => setTypeKaomina(e.target.value)}
+        >
+          <option value="Ambanivohitra">Kaomina Ambanivohitra</option>
+          <option value="Andrenivohitra">Kaomina Andrenivohitra</option>
+        </select>
+
+        <p style={styles.text}>
+          Amin’ity version L1 ity, ny formulaire dia natao indrindra ho an’ny
+          Kaomina Ambanivohitra. Ny Kaomina Andrenivohitra dia homena formulaire
+          manokana amin’ny dingana manaraka.
+        </p>
 
         <label style={styles.label}>Kaomina</label>
         <input
