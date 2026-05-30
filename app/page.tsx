@@ -2390,14 +2390,38 @@ function FicheRemplie({ onBack }: any) {
   const [repSpirituel, setRepSpirituel] = useState<any>(null);
   const [repVti, setRepVti] = useState<any>(null);
 
+  const [vtiLie, setVtiLie] = useState<any>(null);
+  const [annexeVaomiera, setAnnexeVaomiera] = useState<any>(null);
+  const [annexeTitre, setAnnexeTitre] = useState("");
+
   const chargerFiche = async () => {
     const tanoraId = parseInt(id);
+
+    if (!tanoraId) {
+      alert("Ampidiro aloha ny ID Tanora.");
+      return;
+    }
+
+    setTanora(null);
+    setScores(null);
+    setEco(null);
+    setRep(null);
+    setRepSpirituel(null);
+    setRepVti(null);
+    setVtiLie(null);
+    setAnnexeVaomiera(null);
+    setAnnexeTitre("");
 
     const { data: tanoraData } = await supabase
       .from("tanora")
       .select("*")
       .eq("id", tanoraId)
       .maybeSingle();
+
+    if (!tanoraData) {
+      alert("Tsy hita ny ID Tanora.");
+      return;
+    }
 
     const { data: scoresData } = await supabase
       .from("scores")
@@ -2443,6 +2467,49 @@ function FicheRemplie({ onBack }: any) {
     setRep(repData);
     setRepSpirituel(spirituelData);
     setRepVti(vtiData);
+
+    if (tanoraData?.vti_id && vtiData?.vti_q5) {
+      const vtiId = Number(tanoraData.vti_id);
+      const vaomieraChoisie = String(vtiData.vti_q5 || "");
+
+      const { data: vtiLieData } = await supabase
+        .from("vti")
+        .select("*")
+        .eq("id", vtiId)
+        .maybeSingle();
+
+      setVtiLie(vtiLieData);
+
+      let tableVaomiera = "";
+      let titreVaomiera = "";
+
+      if (vaomieraChoisie.includes("Ara-panahy")) {
+        tableVaomiera = "vti_vaomiera_arapanahy_fanabeazana";
+        titreVaomiera = "Vaomiera Ara-panahy sy fanabeazana";
+      } else if (vaomieraChoisie.includes("Fandraharahana")) {
+        tableVaomiera = "vti_vaomiera_fandraharahana_toekarena";
+        titreVaomiera = "Vaomiera Fandraharahana sy Toekarena";
+      } else if (vaomieraChoisie.includes("Fahasalamana")) {
+        tableVaomiera = "vti_vaomiera_fahasalamana_fiarovana";
+        titreVaomiera = "Vaomiera Fahasalamana sy Fiarovana ny tanora";
+      } else if (vaomieraChoisie.includes("Etika")) {
+        tableVaomiera = "vti_vaomiera_etika_fampandrosoana";
+        titreVaomiera = "Vaomiera Etika Fampandrosoana maharitra";
+      }
+
+      if (tableVaomiera) {
+        const { data: vaomieraData } = await supabase
+          .from(tableVaomiera)
+          .select("*")
+          .eq("vti_id", vtiId)
+          .order("id", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        setAnnexeTitre(titreVaomiera);
+        setAnnexeVaomiera(vaomieraData);
+      }
+    }
   };
 
   const LigneQuestion = ({ numero, question, reponse }: any) => (
@@ -2476,14 +2543,15 @@ function FicheRemplie({ onBack }: any) {
         {tanora && (
           <>
             <h2>1. Famantarana ny Tanora</h2>
-            <p>Anarana sy fanampiny : {tanora.anarana}</p>
-            <p>Taona : {tanora.taona}</p>
-            <p>Faritra : {tanora.faritra}</p>
-            <p>Distrika : {tanora.distrika}</p>
-            <p>Kaomina : {tanora.kaomina}</p>
-            <p>Karazana Kaomina : {tanora.type_kaomina}</p>
-            <p>Fokontany : {tanora.fokontany}</p>
-            <p>VTI misy azy : {tanora.vti}</p>
+            <p>Anarana : {tanora.nom || tanora.anarana || "—"}</p>
+            <p>Fanampin’anarana : {tanora.prenom || "—"}</p>
+            <p>Taona : {tanora.age || tanora.taona || "—"}</p>
+            <p>Lahy / Vavy : {tanora.sexe || "—"}</p>
+            <p>Faritra : {tanora.faritra || "—"}</p>
+            <p>Distrika : {tanora.distrika || "—"}</p>
+            <p>Kaomina : {tanora.kaomina || "—"}</p>
+            <p>Fokontany : {tanora.fokontany || "—"}</p>
+            <p><strong>ID VTI mifandray :</strong> {tanora.vti_id || "—"}</p>
 
             <hr />
 
@@ -2501,66 +2569,46 @@ function FicheRemplie({ onBack }: any) {
 
             <hr />
 
-            <h2>3. Tombana VTI — 29 points</h2>
+            <h2>3. Function VTI — Anjara ao amin’ny VTI</h2>
 
-            <LigneQuestion numero="1" question="Efa tao anaty fikambanana ve ?" reponse={repVti?.vti_q1} />
-            <LigneQuestion numero="2" question="Efa tao anaty fikambanana tanora ve ?" reponse={repVti?.vti_q2} />
-            <LigneQuestion numero="3" question="Andraikitra teo anivon’ny vohitra na Fokontany" reponse={repVti?.vti_q3} />
-            <LigneQuestion numero="4" question="Fahalalana mikasika ny VTI misy azy" reponse={repVti?.vti_q4} />
-            <LigneQuestion numero="5" question="Ao anaty Vaomiera inona no misy azy ?" reponse={repVti?.vti_q5} />
-            <LigneQuestion numero="6" question="Inona no andraikiny ao anatin’ny Vaomiera ?" reponse={repVti?.vti_q6} />
-            <LigneQuestion numero="7" question="Adiny firy isan-kerinandro no atokany hiasa ao anaty Vaomiera ?" reponse={repVti?.vti_q7} />
+            <LigneQuestion numero="1" question="Tena tafiditra ao anaty VTI ve ilay Tanora ?" reponse={repVti?.vti_q1} />
+            <LigneQuestion numero="2" question="Mahafantatra ny tanjon’ny VTI ve izy ?" reponse={repVti?.vti_q2} />
+            <LigneQuestion numero="3" question="Mandray andraikitra ve izy ?" reponse={repVti?.vti_q3} />
+            <LigneQuestion numero="4" question="Manana anjara biriky ve izy ?" reponse={repVti?.vti_q4} />
+            <LigneQuestion numero="5" question="Vaomiera misy azy" reponse={repVti?.vti_q5} />
 
-            <h3>Total VTI : {scores?.score_vti || 0} / 29</h3>
+            <h3>Total VTI : {scores?.score_vti || 0} / 55</h3>
 
             <hr />
 
             <h2>4. Taniketsa Fandraharahana</h2>
 
-            <p>
-              Total score Taniketsa : {scores?.score_taniketsa || 0} /{" "}
-              {scores?.score_taniketsa_max || 0}
-            </p>
-            <p>Score économie : {scores?.score_economie || 0}</p>
+            <h3>Voly rakotra</h3>
+            <p>Fananantany : {rep?.voly_fananantany || "—"}</p>
+            <p>Fiofanana : {rep?.voly_fiofanana || "—"}</p>
+            <p>Ezaka : {rep?.voly_ezaka || "—"}</p>
+            <p>Tohana : {rep?.voly_tohana || "—"}</p>
+            <p>Diagnostic : {rep?.voly_diagnostic || "—"}</p>
+            <p>Score : {scores?.score_voly || 0} / 55</p>
+            <p>CA : {eco?.ca_voly || 0} Ar — Dépenses : {eco?.depenses_voly || 0} Ar — Bénéfice : {eco?.benefice_voly || 0} Ar</p>
 
-            <h3>Voly rakotra 500m²</h3>
-            <p>Fananantany : {rep?.voly_rakotra_fananantany || "—"}</p>
-            <p>Fiofanana : {rep?.voly_rakotra_fiofanana || "—"}</p>
-            <p>Ezaka : {rep?.voly_rakotra_ezaka || "—"}</p>
-            <p>Tohana : {rep?.voly_rakotra_tohana || "—"}</p>
-            <p>Diagnostic : {rep?.voly_rakotra_diagnostic || "—"}</p>
-            <p>Score : {scores?.score_voly_rakotra || 0} / 55</p>
-            <p>
-              CA : {eco?.ca_voly_rakotra || 0} Ar — Dépenses :{" "}
-              {eco?.depenses_voly_rakotra || 0} Ar — Bénéfice :{" "}
-              {eco?.benefice_voly_rakotra || 0} Ar
-            </p>
-
-            <h3>Voly vary 750m²</h3>
+            <h3>Vary</h3>
             <p>Fananantany : {rep?.vary_fananantany || "—"}</p>
             <p>Fiofanana : {rep?.vary_fiofanana || "—"}</p>
             <p>Ezaka : {rep?.vary_ezaka || "—"}</p>
             <p>Tohana : {rep?.vary_tohana || "—"}</p>
             <p>Diagnostic : {rep?.vary_diagnostic || "—"}</p>
             <p>Score : {scores?.score_vary || 0} / 55</p>
-            <p>
-              CA : {eco?.ca_vary || 0} Ar — Dépenses :{" "}
-              {eco?.depenses_vary || 0} Ar — Bénéfice :{" "}
-              {eco?.benefice_vary || 0} Ar
-            </p>
+            <p>CA : {eco?.ca_vary || 0} Ar — Dépenses : {eco?.depenses_vary || 0} Ar — Bénéfice : {eco?.benefice_vary || 0} Ar</p>
 
             <h3>Akoho gasy</h3>
-            <p>Fananantany : {rep?.akoho_gasy_fananantany || "—"}</p>
-            <p>Fiofanana : {rep?.akoho_gasy_fiofanana || "—"}</p>
-            <p>Ezaka : {rep?.akoho_gasy_ezaka || "—"}</p>
-            <p>Tohana : {rep?.akoho_gasy_tohana || "—"}</p>
-            <p>Diagnostic : {rep?.akoho_gasy_diagnostic || "—"}</p>
-            <p>Score : {scores?.score_akoho_gasy || 0} / 55</p>
-            <p>
-              CA : {eco?.ca_akoho_gasy || 0} Ar — Dépenses :{" "}
-              {eco?.depenses_akoho_gasy || 0} Ar — Bénéfice :{" "}
-              {eco?.benefice_akoho_gasy || 0} Ar
-            </p>
+            <p>Fananantany : {rep?.akoho_fananantany || "—"}</p>
+            <p>Fiofanana : {rep?.akoho_fiofanana || "—"}</p>
+            <p>Ezaka : {rep?.akoho_ezaka || "—"}</p>
+            <p>Tohana : {rep?.akoho_tohana || "—"}</p>
+            <p>Diagnostic : {rep?.akoho_diagnostic || "—"}</p>
+            <p>Score : {scores?.score_akoho || 0} / 55</p>
+            <p>CA : {eco?.ca_akoho || 0} Ar — Dépenses : {eco?.depenses_akoho || 0} Ar — Bénéfice : {eco?.benefice_akoho || 0} Ar</p>
 
             <h3>Kisoa</h3>
             <p>Fananantany : {rep?.kisoa_fananantany || "—"}</p>
@@ -2569,11 +2617,7 @@ function FicheRemplie({ onBack }: any) {
             <p>Tohana : {rep?.kisoa_tohana || "—"}</p>
             <p>Diagnostic : {rep?.kisoa_diagnostic || "—"}</p>
             <p>Score : {scores?.score_kisoa || 0} / 55</p>
-            <p>
-              CA : {eco?.ca_kisoa || 0} Ar — Dépenses :{" "}
-              {eco?.depenses_kisoa || 0} Ar — Bénéfice :{" "}
-              {eco?.benefice_kisoa || 0} Ar
-            </p>
+            <p>CA : {eco?.ca_kisoa || 0} Ar — Dépenses : {eco?.depenses_kisoa || 0} Ar — Bénéfice : {eco?.benefice_kisoa || 0} Ar</p>
 
             <h3>Tantely</h3>
             <p>Fananantany : {rep?.tantely_fananantany || "—"}</p>
@@ -2582,11 +2626,7 @@ function FicheRemplie({ onBack }: any) {
             <p>Tohana : {rep?.tantely_tohana || "—"}</p>
             <p>Diagnostic : {rep?.tantely_diagnostic || "—"}</p>
             <p>Score : {scores?.score_tantely || 0} / 55</p>
-            <p>
-              CA : {eco?.ca_tantely || 0} Ar — Dépenses :{" "}
-              {eco?.depenses_tantely || 0} Ar — Bénéfice :{" "}
-              {eco?.benefice_tantely || 0} Ar
-            </p>
+            <p>CA : {eco?.ca_tantely || 0} Ar — Dépenses : {eco?.depenses_tantely || 0} Ar — Bénéfice : {eco?.benefice_tantely || 0} Ar</p>
 
             <hr />
 
@@ -2594,6 +2634,60 @@ function FicheRemplie({ onBack }: any) {
             <p>Total CA 3 ans : {eco?.ca_total || 0} Ar</p>
             <p>Total dépenses 3 ans : {eco?.depenses_total || 0} Ar</p>
             <p>Total bénéfice 3 ans : {eco?.benefice_total || 0} Ar</p>
+
+            {vtiLie && (
+              <>
+                <hr />
+
+                <h2>TOVANA — Vaomiera mifandray amin’ny VTI</h2>
+
+                <p><strong>ID VTI :</strong> {vtiLie.id}</p>
+                <p><strong>Anaran’ny VTI :</strong> {vtiLie.nom_vti || "—"}</p>
+                <p><strong>Faritra :</strong> {vtiLie.faritra || "—"}</p>
+                <p><strong>Distrika :</strong> {vtiLie.distrika || "—"}</p>
+                <p><strong>Kaomina :</strong> {vtiLie.kaomina || "—"}</p>
+                <p><strong>Fokontany :</strong> {vtiLie.fokontany || "—"}</p>
+
+                <h3>{annexeTitre || "Vaomiera mifandray"}</h3>
+                <p><strong>Vaomiera misy ilay Tanora :</strong> {repVti?.vti_q5 || "—"}</p>
+
+                {annexeVaomiera ? (
+                  <div style={styles.miniBox}>
+                    <p><strong>Total score Vaomiera :</strong> {annexeVaomiera.total_score || 0}</p>
+
+                    {Object.entries(annexeVaomiera).map(([key, value]) => {
+                      if (
+                        key === "id" ||
+                        key === "vti_id" ||
+                        key === "created_at" ||
+                        key.includes("_score") ||
+                        key === "total_score"
+                      ) {
+                        return null;
+                      }
+
+                      return (
+                        <p key={key}>
+                          <strong>{key} :</strong> {String(value || "—")}
+                        </p>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p>Aucune donnée Vaomiera trouvée pour ce VTI.</p>
+                )}
+              </>
+            )}
+
+            {!vtiLie && tanora.vti_id && (
+              <>
+                <hr />
+                <h2>TOVANA — Vaomiera mifandray amin’ny VTI</h2>
+                <p>
+                  ID VTI hita ao amin’ny Tanora, fa tsy mbola hita na tsy mbola feno ny Vaomiera mifandray.
+                </p>
+              </>
+            )}
 
             <div style={styles.actions}>
               <button style={styles.button} onClick={() => window.print()}>
