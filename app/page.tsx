@@ -1680,7 +1680,9 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
   const [typeKaomina, setTypeKaomina] = useState("Ambanivohitra");
   const [kaomina, setKaomina] = useState("");
   const [fokontany, setFokontany] = useState("");
+
   const [vtiId, setVtiId] = useState("");
+  const [nomVti, setNomVti] = useState("");
   const [vaomieraMisyAzy, setVaomieraMisyAzy] = useState("");
 
   const enregistrerIdentite = async () => {
@@ -1693,11 +1695,16 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
           sexe,
           kaomina,
           fokontany,
+
           vti: String(vtiId || ""),
+
           faritra,
           distrika,
+
           type_kaomina: typeKaomina,
+
           vti_id: vtiId ? Number(vtiId) : null,
+          nom_vti: nomVti || "",
           vaomiera_misy_azy: vaomieraMisyAzy || "",
         },
       ])
@@ -1710,16 +1717,26 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
     }
 
     onSaved(data.id);
-    alert("Identité Tanora voatahiry tsara ! ID Tanora : " + data.id);
+
+    alert(
+      "Identité Tanora voatahiry tsara ! ID Tanora : " +
+        data.id
+    );
+
     onNext();
   };
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Famantarana ny Tanora</h1>
+        <h1 style={styles.titleSmall}>
+          Famantarana ny Tanora
+        </h1>
 
-        <label style={styles.label}>ID VTI mifandray</label>
+        <label style={styles.label}>
+          ID VTI mifandray
+        </label>
+
         <input
           style={styles.input}
           type="number"
@@ -1728,22 +1745,46 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
           placeholder="Ampidiro eto ny ID VTI"
         />
 
-        <label style={styles.label}>Vaomiera misy azy</label>
+        <label style={styles.label}>
+          Anaran'ny VTI
+        </label>
+
+        <input
+          style={styles.input}
+          value={nomVti}
+          onChange={(e) => setNomVti(e.target.value)}
+          placeholder="Ohatra : VTI Betela Marofarihy"
+        />
+
+        <label style={styles.label}>
+          Vaomiera misy azy
+        </label>
+
         <input
           style={styles.input}
           value={vaomieraMisyAzy}
-          onChange={(e) => setVaomieraMisyAzy(e.target.value)}
+          onChange={(e) =>
+            setVaomieraMisyAzy(e.target.value)
+          }
           placeholder="Ara-panahy / Fandraharahana / Fahasalamana / Etika"
         />
 
-        <label style={styles.label}>Anarana</label>
+        <label style={styles.label}>
+          Anarana
+        </label>
+
         <input
           style={styles.input}
           value={anarana}
-          onChange={(e) => setAnarana(e.target.value)}
+          onChange={(e) =>
+            setAnarana(e.target.value)
+          }
         />
 
-        <label style={styles.label}>Taona</label>
+        <label style={styles.label}>
+          Taona
+        </label>
+
         <input
           style={styles.input}
           type="number"
@@ -1751,7 +1792,10 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
           onChange={(e) => setAge(e.target.value)}
         />
 
-        <label style={styles.label}>Lahy / Vavy</label>
+        <label style={styles.label}>
+          Lahy / Vavy
+        </label>
+
         <select
           style={styles.input}
           value={sexe}
@@ -1762,50 +1806,86 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
           <option value="Vavy">Vavy</option>
         </select>
 
-        <label style={styles.label}>Faritra</label>
+        <label style={styles.label}>
+          Faritra
+        </label>
+
         <input
           style={styles.input}
           value={faritra}
-          onChange={(e) => setFaritra(e.target.value)}
+          onChange={(e) =>
+            setFaritra(e.target.value)
+          }
         />
 
-        <label style={styles.label}>Distrika</label>
+        <label style={styles.label}>
+          Distrika
+        </label>
+
         <input
           style={styles.input}
           value={distrika}
-          onChange={(e) => setDistrika(e.target.value)}
+          onChange={(e) =>
+            setDistrika(e.target.value)
+          }
         />
 
-        <label style={styles.label}>Type de Kaomina</label>
+        <label style={styles.label}>
+          Type de Kaomina
+        </label>
+
         <select
           style={styles.input}
           value={typeKaomina}
-          onChange={(e) => setTypeKaomina(e.target.value)}
+          onChange={(e) =>
+            setTypeKaomina(e.target.value)
+          }
         >
-          <option value="Ambanivohitra">Kaomina Ambanivohitra</option>
-          <option value="Andrenivohitra">Kaomina Andrenivohitra</option>
+          <option value="Ambanivohitra">
+            Kaomina Ambanivohitra
+          </option>
+
+          <option value="Andrenivohitra">
+            Kaomina Andrenivohitra
+          </option>
         </select>
 
-        <label style={styles.label}>Kaomina</label>
+        <label style={styles.label}>
+          Kaomina
+        </label>
+
         <input
           style={styles.input}
           value={kaomina}
-          onChange={(e) => setKaomina(e.target.value)}
+          onChange={(e) =>
+            setKaomina(e.target.value)
+          }
         />
 
-        <label style={styles.label}>Fokontany</label>
+        <label style={styles.label}>
+          Fokontany
+        </label>
+
         <input
           style={styles.input}
           value={fokontany}
-          onChange={(e) => setFokontany(e.target.value)}
+          onChange={(e) =>
+            setFokontany(e.target.value)
+          }
         />
 
         <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>
+          <button
+            style={styles.secondaryButton}
+            onClick={onBack}
+          >
             Miverina
           </button>
 
-          <button style={styles.button} onClick={enregistrerIdentite}>
+          <button
+            style={styles.button}
+            onClick={enregistrerIdentite}
+          >
             Enregistrer Identité Tanora sy hanohy
           </button>
         </div>
