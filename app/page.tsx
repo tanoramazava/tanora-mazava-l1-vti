@@ -1832,6 +1832,156 @@ function IdentiteForm({ onBack, onNext, onSaved }: any) {
     </main>
   );
 }
+function IdentiteForm({ onBack, onNext, onSaved }: any) {
+  const [nom, setNom] = useState("");
+  const [prenom, setPrenom] = useState("");
+  const [age, setAge] = useState("");
+  const [sexe, setSexe] = useState("");
+  const [faritra, setFaritra] = useState("");
+  const [distrika, setDistrika] = useState("");
+  const [typeKaomina, setTypeKaomina] = useState("Ambanivohitra");
+  const [kaomina, setKaomina] = useState("");
+  const [fokontany, setFokontany] = useState("");
+  const [vtiId, setVtiId] = useState("");
+  const [vaomieraMisyAzy, setVaomieraMisyAzy] = useState("");
+
+  const enregistrerIdentite = async () => {
+    const { data, error } = await supabase
+      .from("tanora")
+      .insert([
+        {
+          anarana: nom + (prenom ? " " + prenom : ""),
+          taona: Number(age || 0),
+          sexe,
+          kaomina,
+          fokontany,
+          vti: String(vtiId || ""),
+          faritra,
+          distrika,
+          type_kaomina: typeKaomina,
+          vti_id: vtiId ? Number(vtiId) : null,
+          vaomiera_misy_azy: vaomieraMisyAzy || "",
+        },
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      alert("Erreur Identité Tanora : " + JSON.stringify(error));
+      return;
+    }
+
+    onSaved(data.id);
+    alert("Identité Tanora voatahiry tsara ! ID Tanora : " + data.id);
+    onNext();
+  };
+
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>Famantarana ny Tanora</h1>
+
+        <label style={styles.label}>ID VTI mifandray</label>
+        <input
+          style={styles.input}
+          type="number"
+          value={vtiId}
+          onChange={(e) => setVtiId(e.target.value)}
+          placeholder="Ampidiro eto ny ID VTI"
+        />
+
+        <label style={styles.label}>Vaomiera misy azy</label>
+        <input
+          style={styles.input}
+          value={vaomieraMisyAzy}
+          onChange={(e) => setVaomieraMisyAzy(e.target.value)}
+          placeholder="Ara-panahy / Fandraharahana / Fahasalamana / Etika"
+        />
+
+        <label style={styles.label}>Anarana</label>
+        <input
+          style={styles.input}
+          value={nom}
+          onChange={(e) => setNom(e.target.value)}
+        />
+
+        <label style={styles.label}>Fanampin’anarana</label>
+        <input
+          style={styles.input}
+          value={prenom}
+          onChange={(e) => setPrenom(e.target.value)}
+        />
+
+        <label style={styles.label}>Taona</label>
+        <input
+          style={styles.input}
+          type="number"
+          value={age}
+          onChange={(e) => setAge(e.target.value)}
+        />
+
+        <label style={styles.label}>Lahy / Vavy</label>
+        <select
+          style={styles.input}
+          value={sexe}
+          onChange={(e) => setSexe(e.target.value)}
+        >
+          <option value="">Safidio</option>
+          <option value="Lahy">Lahy</option>
+          <option value="Vavy">Vavy</option>
+        </select>
+
+        <label style={styles.label}>Faritra</label>
+        <input
+          style={styles.input}
+          value={faritra}
+          onChange={(e) => setFaritra(e.target.value)}
+        />
+
+        <label style={styles.label}>Distrika</label>
+        <input
+          style={styles.input}
+          value={distrika}
+          onChange={(e) => setDistrika(e.target.value)}
+        />
+
+        <label style={styles.label}>Type de Kaomina</label>
+        <select
+          style={styles.input}
+          value={typeKaomina}
+          onChange={(e) => setTypeKaomina(e.target.value)}
+        >
+          <option value="Ambanivohitra">Kaomina Ambanivohitra</option>
+          <option value="Andrenivohitra">Kaomina Andrenivohitra</option>
+        </select>
+
+        <label style={styles.label}>Kaomina</label>
+        <input
+          style={styles.input}
+          value={kaomina}
+          onChange={(e) => setKaomina(e.target.value)}
+        />
+
+        <label style={styles.label}>Fokontany</label>
+        <input
+          style={styles.input}
+          value={fokontany}
+          onChange={(e) => setFokontany(e.target.value)}
+        />
+
+        <div style={styles.actions}>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+
+          <button style={styles.button} onClick={enregistrerIdentite}>
+            Enregistrer Identité Tanora sy hanohy
+          </button>
+        </div>
+      </section>
+    </main>
+  );
+}
 function SpirituelForm({ tanoraId, onBack, onNext }: any) {
   const [scores, setScores] = useState<number[]>(Array(7).fill(0));
   const [reponses, setReponses] = useState<string[]>(Array(7).fill(""));
