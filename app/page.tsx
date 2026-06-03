@@ -2520,9 +2520,60 @@ function FicheRemplie({ onBack }: any) {
   const [vtiLie, setVtiLie] = useState<any>(null);
   const [annexeVaomiera, setAnnexeVaomiera] = useState<any>(null);
   const [annexeTitre, setAnnexeTitre] = useState("");
+  const [annexeType, setAnnexeType] = useState("");
+
+  const boxStyle = {
+    border: "1px solid #cfeedd",
+    padding: "14px",
+    borderRadius: "10px",
+    marginBottom: "12px",
+    background: "#ffffff",
+    whiteSpace: "pre-wrap" as const,
+  };
+
+  const sectionBox = {
+    border: "1px solid #ddd",
+    padding: "14px",
+    borderRadius: "10px",
+    marginBottom: "14px",
+    background: "#fafafa",
+    whiteSpace: "pre-wrap" as const,
+  };
+
+  const show = (value: any) => {
+    if (value === null || value === undefined || value === "") return "—";
+    return String(value);
+  };
+
+  const money = (value: any) => {
+    const n = Number(value || 0);
+    return n.toLocaleString("fr-FR") + " Ar";
+  };
+
+  const extractPoints = (value: any) => {
+    const text = String(value || "");
+    const match = text.match(/—\s*(\d+)\s*point/i);
+    return match ? Number(match[1]) : 0;
+  };
+
+  const totalSpirituelCalcule =
+    extractPoints(repSpirituel?.spirituel_q1) +
+    extractPoints(repSpirituel?.spirituel_q2) +
+    extractPoints(repSpirituel?.spirituel_q3) +
+    extractPoints(repSpirituel?.spirituel_q4) +
+    extractPoints(repSpirituel?.spirituel_q5) +
+    extractPoints(repSpirituel?.spirituel_q6) +
+    extractPoints(repSpirituel?.spirituel_q7);
+
+  const totalVtiCalcule =
+    extractPoints(repVti?.vti_q1) +
+    extractPoints(repVti?.vti_q2) +
+    extractPoints(repVti?.vti_q3) +
+    extractPoints(repVti?.vti_q4) +
+    extractPoints(repVti?.vti_q5);
 
   const chargerFiche = async () => {
-    const tanoraId = parseInt(id);
+    const tanoraId = Number(id);
 
     if (!tanoraId) {
       alert("Ampidiro aloha ny ID Tanora.");
@@ -2538,15 +2589,16 @@ function FicheRemplie({ onBack }: any) {
     setVtiLie(null);
     setAnnexeVaomiera(null);
     setAnnexeTitre("");
+    setAnnexeType("");
 
-    const { data: tanoraData } = await supabase
+    const { data: tanoraData, error: tanoraError } = await supabase
       .from("tanora")
       .select("*")
       .eq("id", tanoraId)
       .maybeSingle();
 
-    if (!tanoraData) {
-      alert("Tsy hita ny ID Tanora.");
+    if (tanoraError || !tanoraData) {
+      alert("Tsy hita ny ID Tanora : " + JSON.stringify(tanoraError));
       return;
     }
 
@@ -2554,13 +2606,15 @@ function FicheRemplie({ onBack }: any) {
       .from("scores")
       .select("*")
       .eq("tanora_id", tanoraId)
+      .order("id", { ascending: false })
+      .limit(1)
       .maybeSingle();
 
     const { data: ecoData } = await supabase
       .from("economies_taniketsa")
       .select("*")
       .eq("tanora_id", tanoraId)
-      .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .limit(1)
       .maybeSingle();
 
@@ -2568,7 +2622,7 @@ function FicheRemplie({ onBack }: any) {
       .from("reponses_taniketsa_detaillees")
       .select("*")
       .eq("tanora_id", tanoraId)
-      .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .limit(1)
       .maybeSingle();
 
@@ -2576,7 +2630,7 @@ function FicheRemplie({ onBack }: any) {
       .from("reponses_spirituel")
       .select("*")
       .eq("tanora_id", tanoraId)
-      .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .limit(1)
       .maybeSingle();
 
@@ -2584,7 +2638,7 @@ function FicheRemplie({ onBack }: any) {
       .from("reponses_vti")
       .select("*")
       .eq("tanora_id", tanoraId)
-      .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .limit(1)
       .maybeSingle();
 
@@ -2595,10 +2649,9 @@ function FicheRemplie({ onBack }: any) {
     setRepSpirituel(spirituelData);
     setRepVti(vtiData);
 
-    if (tanoraData?.vti_id && vtiData?.vti_q5) {
-      const vtiId = Number(tanoraData.vti_id);
-      const vaomieraChoisie = String(vtiData.vti_q5 || "");
+    const vtiId = Number(tanoraData?.vti_id || 0);
 
+    if (vtiId) {
       const { data: vtiLieData } = await supabase
         .from("vti")
         .select("*")
@@ -2607,21 +2660,42 @@ function FicheRemplie({ onBack }: any) {
 
       setVtiLie(vtiLieData);
 
+      const vaomieraSource = String(
+        tanoraData?.vaomiera_misy_azy || vtiData?.vti_q5 || ""
+      ).toLowerCase();
+
       let tableVaomiera = "";
       let titreVaomiera = "";
+      let typeVaomiera = "";
 
-      if (vaomieraChoisie.includes("Ara-panahy")) {
+      if (
+        vaomieraSource.includes("ara-panahy") ||
+        vaomieraSource.includes("fanabeazana")
+      ) {
         tableVaomiera = "vti_vaomiera_arapanahy_fanabeazana";
         titreVaomiera = "Vaomiera Ara-panahy sy fanabeazana";
-      } else if (vaomieraChoisie.includes("Fandraharahana")) {
+        typeVaomiera = "arapanahy";
+      } else if (
+        vaomieraSource.includes("fandraharahana") ||
+        vaomieraSource.includes("toekarena")
+      ) {
         tableVaomiera = "vti_vaomiera_fandraharahana_toekarena";
         titreVaomiera = "Vaomiera Fandraharahana sy Toekarena";
-      } else if (vaomieraChoisie.includes("Fahasalamana")) {
+        typeVaomiera = "toekarena";
+      } else if (
+        vaomieraSource.includes("fahasalamana") ||
+        vaomieraSource.includes("fiarovana")
+      ) {
         tableVaomiera = "vti_vaomiera_fahasalamana_fiarovana";
         titreVaomiera = "Vaomiera Fahasalamana sy Fiarovana ny tanora";
-      } else if (vaomieraChoisie.includes("Etika")) {
+        typeVaomiera = "fahasalamana";
+      } else if (
+        vaomieraSource.includes("etika") ||
+        vaomieraSource.includes("fampandrosoana")
+      ) {
         tableVaomiera = "vti_vaomiera_etika_fampandrosoana";
         titreVaomiera = "Vaomiera Etika Fampandrosoana maharitra";
+        typeVaomiera = "etika";
       }
 
       if (tableVaomiera) {
@@ -2634,19 +2708,120 @@ function FicheRemplie({ onBack }: any) {
           .maybeSingle();
 
         setAnnexeTitre(titreVaomiera);
+        setAnnexeType(typeVaomiera);
         setAnnexeVaomiera(vaomieraData);
       }
     }
   };
 
   const LigneQuestion = ({ numero, question, reponse }: any) => (
-    <div style={styles.miniBox}>
+    <div style={boxStyle}>
       <h4>{numero}. {question}</h4>
-      <p>
-        <strong>Valiny nomena :</strong> {reponse || "—"}
-      </p>
+      <p><strong>Valiny nomena :</strong> {show(reponse)}</p>
     </div>
   );
+
+  const ChampArchive = ({ label, value }: any) => (
+    <p>
+      <strong>{label} :</strong> {show(value)}
+    </p>
+  );
+
+  const TovanaVaomiera = () => {
+    if (!vtiLie && !tanora?.vti_id) return null;
+
+    return (
+      <>
+        <hr />
+
+        <h2>TOVANA — Vaomiera mifandray amin’ny ID Tanora</h2>
+
+        <h3>1. Fifandraisana Tanora — VTI</h3>
+        <ChampArchive label="ID Tanora" value={tanora?.id} />
+        <ChampArchive label="Anaran’ny Tanora" value={tanora?.anarana} />
+        <ChampArchive label="ID VTI" value={tanora?.vti_id} />
+        <ChampArchive label="Anaran’ny VTI" value={tanora?.nom_vti || vtiLie?.nom_vti} />
+        <ChampArchive label="Vaomiera misy ilay Tanora" value={tanora?.vaomiera_misy_azy || repVti?.vti_q5} />
+
+        {vtiLie && (
+          <>
+            <h3>2. Famantarana ny VTI</h3>
+            <ChampArchive label="VTI Anarany" value={vtiLie?.nom_vti} />
+            <ChampArchive label="Faritra" value={vtiLie?.faritra} />
+            <ChampArchive label="Distrika" value={vtiLie?.distrika} />
+            <ChampArchive label="Kaomina" value={vtiLie?.kaomina} />
+            <ChampArchive label="Karazana Kaomina" value={vtiLie?.type_kaomina} />
+            <ChampArchive label="Fokontany" value={vtiLie?.fokontany} />
+          </>
+        )}
+
+        <h3>3. {annexeTitre || "Vaomiera tsy mbola voafaritra"}</h3>
+
+        {!annexeVaomiera && (
+          <p>
+            Tsy mbola hita ny données an’io Vaomiera io ao amin’ny Tombana Iombonana VTI.
+          </p>
+        )}
+
+        {annexeVaomiera && annexeType === "arapanahy" && (
+          <div style={sectionBox}>
+            <ChampArchive label="Total score Vaomiera" value={`${annexeVaomiera.total_score || 0} / 70`} />
+            <ChampArchive label="Fivoriana" value={`${annexeVaomiera.mivory_score || 0} points`} />
+            <ChampArchive label="Ora iasana" value={`${annexeVaomiera.ora_score || 0} points`} />
+            <ChampArchive label="Herinandro dimy" value={`${annexeVaomiera.herinandro_score || 0} points`} />
+            <ChampArchive label="Fanaka dimy" value={annexeVaomiera.fanaka_dimy} />
+            <ChampArchive label="Score Fanaka dimy" value={`${annexeVaomiera.fanaka_score || 0} points`} />
+            <ChampArchive label="Fanamby 140 andro" value={annexeVaomiera.fanamby_140_andro} />
+            <ChampArchive label="Score Fanamby" value={`${annexeVaomiera.fanamby_score || 0} points`} />
+            <ChampArchive label="Olana ara-panabeazana" value={annexeVaomiera.olana_fanabeazana} />
+            <ChampArchive label="Score Olana" value={`${annexeVaomiera.olana_score || 0} points`} />
+            <ChampArchive label="Paikady ara-panabeazana 140 andro" value={annexeVaomiera.paikady_140_andro} />
+            <ChampArchive label="Score Paikady" value={`${annexeVaomiera.paikady_score || 0} points`} />
+          </div>
+        )}
+
+        {annexeVaomiera && annexeType === "toekarena" && (
+          <div style={sectionBox}>
+            <ChampArchive label="Total score Vaomiera" value={`${annexeVaomiera.total_score || 0} / 40`} />
+            <ChampArchive label="Fivoriana" value={`${annexeVaomiera.mivory_score || 0} points`} />
+            <ChampArchive label="Ora iasana" value={`${annexeVaomiera.ora_score || 0} points`} />
+            <ChampArchive label="Olana ara-toekarena" value={annexeVaomiera.olana_toekarena} />
+            <ChampArchive label="Score Olana" value={`${annexeVaomiera.olana_score || 0} points`} />
+            <ChampArchive label="Paikady ara-toekarena 140 andro" value={annexeVaomiera.paikady_toekarena} />
+            <ChampArchive label="Score Paikady" value={`${annexeVaomiera.paikady_score || 0} points`} />
+          </div>
+        )}
+
+        {annexeVaomiera && annexeType === "fahasalamana" && (
+          <div style={sectionBox}>
+            <ChampArchive label="Total score Vaomiera" value={`${annexeVaomiera.total_score || 0} / 50`} />
+            <ChampArchive label="Fivoriana" value={`${annexeVaomiera.mivory_score || 0} points`} />
+            <ChampArchive label="Ora iasana" value={`${annexeVaomiera.ora_score || 0} points`} />
+            <ChampArchive label="Olana ara-pahasalamana" value={annexeVaomiera.olana_fahasalamana} />
+            <ChampArchive label="Score Olana ara-pahasalamana" value={`${annexeVaomiera.olana_fahasalamana_score || 0} points`} />
+            <ChampArchive label="Voina manimba taranaka" value={annexeVaomiera.voina_tanora} />
+            <ChampArchive label="Score Voina" value={`${annexeVaomiera.voina_score || 0} points`} />
+            <ChampArchive label="Paikady Fahasalamana sy Fiarovana 140 andro" value={annexeVaomiera.paikady_fahasalamana} />
+            <ChampArchive label="Score Paikady" value={`${annexeVaomiera.paikady_score || 0} points`} />
+          </div>
+        )}
+
+        {annexeVaomiera && annexeType === "etika" && (
+          <div style={sectionBox}>
+            <ChampArchive label="Total score Vaomiera" value={`${annexeVaomiera.total_score || 0} / 50`} />
+            <ChampArchive label="Fivoriana" value={`${annexeVaomiera.mivory_score || 0} points`} />
+            <ChampArchive label="Ora iasana" value={`${annexeVaomiera.ora_score || 0} points`} />
+            <ChampArchive label="Olana Fandriampahalemana sy kolikoly" value={annexeVaomiera.olana_fandriampahalemana} />
+            <ChampArchive label="Score Fandriampahalemana" value={`${annexeVaomiera.olana_fandriampahalemana_score || 0} points`} />
+            <ChampArchive label="Olana Tontolo iainana" value={annexeVaomiera.olana_tontolo_iainana} />
+            <ChampArchive label="Score Tontolo iainana" value={`${annexeVaomiera.olana_tontolo_iainana_score || 0} points`} />
+            <ChampArchive label="Paikady Etika sy fampandrosoana maharitra" value={annexeVaomiera.paikady_etika} />
+            <ChampArchive label="Score Paikady" value={`${annexeVaomiera.paikady_score || 0} points`} />
+          </div>
+        )}
+      </>
+    );
+  };
 
   return (
     <main style={styles.main}>
@@ -2655,30 +2830,41 @@ function FicheRemplie({ onBack }: any) {
           Fiche individuelle scientifique remplie
         </h1>
 
+        <label style={styles.label}>Ampidiro ny ID Tanora</label>
         <input
           style={styles.input}
           type="number"
-          placeholder="Ampidiro ny ID Tanora"
           value={id}
           onChange={(e) => setId(e.target.value)}
         />
 
-        <button style={styles.button} onClick={chargerFiche}>
-          Charger la fiche
-        </button>
+        <div style={styles.actions}>
+          <button style={styles.button} onClick={chargerFiche}>
+            Charger la fiche
+          </button>
+
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+        </div>
 
         {tanora && (
           <>
+            <hr />
+
             <h2>1. Famantarana ny Tanora</h2>
-            <p>Anarana : {tanora.nom || tanora.anarana || "—"}</p>
-            <p>Fanampin’anarana : {tanora.prenom || "—"}</p>
-            <p>Taona : {tanora.age || tanora.taona || "—"}</p>
-            <p>Lahy / Vavy : {tanora.sexe || "—"}</p>
-            <p>Faritra : {tanora.faritra || "—"}</p>
-            <p>Distrika : {tanora.distrika || "—"}</p>
-            <p>Kaomina : {tanora.kaomina || "—"}</p>
-            <p>Fokontany : {tanora.fokontany || "—"}</p>
-            <p><strong>ID VTI mifandray :</strong> {tanora.vti_id || "—"}</p>
+            <ChampArchive label="ID Tanora" value={tanora.id} />
+            <ChampArchive label="Anarana" value={tanora.anarana} />
+            <ChampArchive label="Taona" value={tanora.taona} />
+            <ChampArchive label="Lahy / Vavy" value={tanora.sexe} />
+            <ChampArchive label="Faritra" value={tanora.faritra} />
+            <ChampArchive label="Distrika" value={tanora.distrika} />
+            <ChampArchive label="Type de Kaomina" value={tanora.type_kaomina} />
+            <ChampArchive label="Kaomina" value={tanora.kaomina} />
+            <ChampArchive label="Fokontany" value={tanora.fokontany} />
+            <ChampArchive label="ID VTI mifandray" value={tanora.vti_id} />
+            <ChampArchive label="Anaran’ny VTI" value={tanora.nom_vti} />
+            <ChampArchive label="Vaomiera misy azy" value={tanora.vaomiera_misy_azy} />
 
             <hr />
 
@@ -2692,7 +2878,9 @@ function FicheRemplie({ onBack }: any) {
             <LigneQuestion numero="6" question="Fandroahana devoly sy fandravana planina satanika isan’andro" reponse={repSpirituel?.spirituel_q6} />
             <LigneQuestion numero="7" question="Vavaka mamindra tendrombohitra" reponse={repSpirituel?.spirituel_q7} />
 
-            <h3>Total ara-panahy : {scores?.score_arapanahy || 0} / 52</h3>
+            <h3>
+              Total ara-panahy : {scores?.score_arapanahy || totalSpirituelCalcule || 0} / 52
+            </h3>
 
             <hr />
 
@@ -2702,119 +2890,79 @@ function FicheRemplie({ onBack }: any) {
             <LigneQuestion numero="2" question="Mahafantatra ny tanjon’ny VTI ve izy ?" reponse={repVti?.vti_q2} />
             <LigneQuestion numero="3" question="Mandray andraikitra ve izy ?" reponse={repVti?.vti_q3} />
             <LigneQuestion numero="4" question="Manana anjara biriky ve izy ?" reponse={repVti?.vti_q4} />
-            <LigneQuestion numero="5" question="Vaomiera misy azy" reponse={repVti?.vti_q5} />
+            <LigneQuestion numero="5" question="Vaomiera misy azy" reponse={repVti?.vti_q5 || tanora.vaomiera_misy_azy} />
 
-            <h3>Total VTI : {scores?.score_vti || 0} / 55</h3>
+            <h3>
+              Total VTI : {scores?.score_vti || totalVtiCalcule || 0} / 55
+            </h3>
 
             <hr />
 
             <h2>4. Taniketsa Fandraharahana</h2>
 
             <h3>Voly rakotra</h3>
-            <p>Fananantany : {rep?.voly_fananantany || "—"}</p>
-            <p>Fiofanana : {rep?.voly_fiofanana || "—"}</p>
-            <p>Ezaka : {rep?.voly_ezaka || "—"}</p>
-            <p>Tohana : {rep?.voly_tohana || "—"}</p>
-            <p>Diagnostic : {rep?.voly_diagnostic || "—"}</p>
-            <p>Score : {scores?.score_voly || 0} / 55</p>
-            <p>CA : {eco?.ca_voly || 0} Ar — Dépenses : {eco?.depenses_voly || 0} Ar — Bénéfice : {eco?.benefice_voly || 0} Ar</p>
+            <ChampArchive label="Fananantany" value={rep?.voly_fananantany} />
+            <ChampArchive label="Fiofanana" value={rep?.voly_fiofanana} />
+            <ChampArchive label="Ezaka" value={rep?.voly_ezaka} />
+            <ChampArchive label="Tohana" value={rep?.voly_tohana} />
+            <ChampArchive label="Diagnostic" value={rep?.voly_diagnostic} />
+            <ChampArchive label="Score" value={`${scores?.score_voly || 0} / 55`} />
+            <ChampArchive label="CA" value={money(eco?.ca_voly)} />
+            <ChampArchive label="Dépenses" value={money(eco?.depenses_voly)} />
+            <ChampArchive label="Bénéfice" value={money(eco?.benefice_voly)} />
 
             <h3>Vary</h3>
-            <p>Fananantany : {rep?.vary_fananantany || "—"}</p>
-            <p>Fiofanana : {rep?.vary_fiofanana || "—"}</p>
-            <p>Ezaka : {rep?.vary_ezaka || "—"}</p>
-            <p>Tohana : {rep?.vary_tohana || "—"}</p>
-            <p>Diagnostic : {rep?.vary_diagnostic || "—"}</p>
-            <p>Score : {scores?.score_vary || 0} / 55</p>
-            <p>CA : {eco?.ca_vary || 0} Ar — Dépenses : {eco?.depenses_vary || 0} Ar — Bénéfice : {eco?.benefice_vary || 0} Ar</p>
+            <ChampArchive label="Fananantany" value={rep?.vary_fananantany} />
+            <ChampArchive label="Fiofanana" value={rep?.vary_fiofanana} />
+            <ChampArchive label="Ezaka" value={rep?.vary_ezaka} />
+            <ChampArchive label="Tohana" value={rep?.vary_tohana} />
+            <ChampArchive label="Diagnostic" value={rep?.vary_diagnostic} />
+            <ChampArchive label="Score" value={`${scores?.score_vary || 0} / 55`} />
+            <ChampArchive label="CA" value={money(eco?.ca_vary)} />
+            <ChampArchive label="Dépenses" value={money(eco?.depenses_vary)} />
+            <ChampArchive label="Bénéfice" value={money(eco?.benefice_vary)} />
 
             <h3>Akoho gasy</h3>
-            <p>Fananantany : {rep?.akoho_fananantany || "—"}</p>
-            <p>Fiofanana : {rep?.akoho_fiofanana || "—"}</p>
-            <p>Ezaka : {rep?.akoho_ezaka || "—"}</p>
-            <p>Tohana : {rep?.akoho_tohana || "—"}</p>
-            <p>Diagnostic : {rep?.akoho_diagnostic || "—"}</p>
-            <p>Score : {scores?.score_akoho || 0} / 55</p>
-            <p>CA : {eco?.ca_akoho || 0} Ar — Dépenses : {eco?.depenses_akoho || 0} Ar — Bénéfice : {eco?.benefice_akoho || 0} Ar</p>
+            <ChampArchive label="Fananantany" value={rep?.akoho_fananantany} />
+            <ChampArchive label="Fiofanana" value={rep?.akoho_fiofanana} />
+            <ChampArchive label="Ezaka" value={rep?.akoho_ezaka} />
+            <ChampArchive label="Tohana" value={rep?.akoho_tohana} />
+            <ChampArchive label="Diagnostic" value={rep?.akoho_diagnostic} />
+            <ChampArchive label="Score" value={`${scores?.score_akoho || 0} / 55`} />
+            <ChampArchive label="CA" value={money(eco?.ca_akoho)} />
+            <ChampArchive label="Dépenses" value={money(eco?.depenses_akoho)} />
+            <ChampArchive label="Bénéfice" value={money(eco?.benefice_akoho)} />
 
             <h3>Kisoa</h3>
-            <p>Fananantany : {rep?.kisoa_fananantany || "—"}</p>
-            <p>Fiofanana : {rep?.kisoa_fiofanana || "—"}</p>
-            <p>Ezaka : {rep?.kisoa_ezaka || "—"}</p>
-            <p>Tohana : {rep?.kisoa_tohana || "—"}</p>
-            <p>Diagnostic : {rep?.kisoa_diagnostic || "—"}</p>
-            <p>Score : {scores?.score_kisoa || 0} / 55</p>
-            <p>CA : {eco?.ca_kisoa || 0} Ar — Dépenses : {eco?.depenses_kisoa || 0} Ar — Bénéfice : {eco?.benefice_kisoa || 0} Ar</p>
+            <ChampArchive label="Fananantany" value={rep?.kisoa_fananantany} />
+            <ChampArchive label="Fiofanana" value={rep?.kisoa_fiofanana} />
+            <ChampArchive label="Ezaka" value={rep?.kisoa_ezaka} />
+            <ChampArchive label="Tohana" value={rep?.kisoa_tohana} />
+            <ChampArchive label="Diagnostic" value={rep?.kisoa_diagnostic} />
+            <ChampArchive label="Score" value={`${scores?.score_kisoa || 0} / 55`} />
+            <ChampArchive label="CA" value={money(eco?.ca_kisoa)} />
+            <ChampArchive label="Dépenses" value={money(eco?.depenses_kisoa)} />
+            <ChampArchive label="Bénéfice" value={money(eco?.benefice_kisoa)} />
 
             <h3>Tantely</h3>
-            <p>Fananantany : {rep?.tantely_fananantany || "—"}</p>
-            <p>Fiofanana : {rep?.tantely_fiofanana || "—"}</p>
-            <p>Ezaka : {rep?.tantely_ezaka || "—"}</p>
-            <p>Tohana : {rep?.tantely_tohana || "—"}</p>
-            <p>Diagnostic : {rep?.tantely_diagnostic || "—"}</p>
-            <p>Score : {scores?.score_tantely || 0} / 55</p>
-            <p>CA : {eco?.ca_tantely || 0} Ar — Dépenses : {eco?.depenses_tantely || 0} Ar — Bénéfice : {eco?.benefice_tantely || 0} Ar</p>
+            <ChampArchive label="Fananantany" value={rep?.tantely_fananantany} />
+            <ChampArchive label="Fiofanana" value={rep?.tantely_fiofanana} />
+            <ChampArchive label="Ezaka" value={rep?.tantely_ezaka} />
+            <ChampArchive label="Tohana" value={rep?.tantely_tohana} />
+            <ChampArchive label="Diagnostic" value={rep?.tantely_diagnostic} />
+            <ChampArchive label="Score" value={`${scores?.score_tantely || 0} / 55`} />
+            <ChampArchive label="CA" value={money(eco?.ca_tantely)} />
+            <ChampArchive label="Dépenses" value={money(eco?.depenses_tantely)} />
+            <ChampArchive label="Bénéfice" value={money(eco?.benefice_tantely)} />
 
             <hr />
 
-            <h2>5. Synthèse générale</h2>
-            <p>Total CA 3 ans : {eco?.ca_total || 0} Ar</p>
-            <p>Total dépenses 3 ans : {eco?.depenses_total || 0} Ar</p>
-            <p>Total bénéfice 3 ans : {eco?.benefice_total || 0} Ar</p>
+            <h2>5. Synthèse générale Tanora</h2>
+            <ChampArchive label="Total CA 3 ans" value={money(eco?.ca_total)} />
+            <ChampArchive label="Total dépenses 3 ans" value={money(eco?.depenses_total)} />
+            <ChampArchive label="Total bénéfice 3 ans" value={money(eco?.benefice_total)} />
 
-            {vtiLie && (
-              <>
-                <hr />
-
-                <h2>TOVANA — Vaomiera mifandray amin’ny VTI</h2>
-
-                <p><strong>ID VTI :</strong> {vtiLie.id}</p>
-                <p><strong>Anaran’ny VTI :</strong> {vtiLie.nom_vti || "—"}</p>
-                <p><strong>Faritra :</strong> {vtiLie.faritra || "—"}</p>
-                <p><strong>Distrika :</strong> {vtiLie.distrika || "—"}</p>
-                <p><strong>Kaomina :</strong> {vtiLie.kaomina || "—"}</p>
-                <p><strong>Fokontany :</strong> {vtiLie.fokontany || "—"}</p>
-
-                <h3>{annexeTitre || "Vaomiera mifandray"}</h3>
-                <p><strong>Vaomiera misy ilay Tanora :</strong> {repVti?.vti_q5 || "—"}</p>
-
-                {annexeVaomiera ? (
-                  <div style={styles.miniBox}>
-                    <p><strong>Total score Vaomiera :</strong> {annexeVaomiera.total_score || 0}</p>
-
-                    {Object.entries(annexeVaomiera).map(([key, value]) => {
-                      if (
-                        key === "id" ||
-                        key === "vti_id" ||
-                        key === "created_at" ||
-                        key.includes("_score") ||
-                        key === "total_score"
-                      ) {
-                        return null;
-                      }
-
-                      return (
-                        <p key={key}>
-                          <strong>{key} :</strong> {String(value || "—")}
-                        </p>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <p>Aucune donnée Vaomiera trouvée pour ce VTI.</p>
-                )}
-              </>
-            )}
-
-            {!vtiLie && tanora.vti_id && (
-              <>
-                <hr />
-                <h2>TOVANA — Vaomiera mifandray amin’ny VTI</h2>
-                <p>
-                  ID VTI hita ao amin’ny Tanora, fa tsy mbola hita na tsy mbola feno ny Vaomiera mifandray.
-                </p>
-              </>
-            )}
+            <TovanaVaomiera />
 
             <div style={styles.actions}>
               <button style={styles.button} onClick={() => window.print()}>
@@ -2827,12 +2975,6 @@ function FicheRemplie({ onBack }: any) {
             </div>
           </>
         )}
-
-        <div style={styles.actions}>
-          <button style={styles.secondaryButton} onClick={onBack}>
-            Miverina
-          </button>
-        </div>
       </section>
     </main>
   );
