@@ -11,6 +11,7 @@ type Screen =
   | "taniketsa"
   | "imprimable"
   | "fiche"
+  | "modifier_tanora"
   | "vti_iombonana"
   | "vti_imprimable"
   | "vti_fiche";
@@ -66,6 +67,10 @@ export default function HomePage() {
     return <FicheRemplie onBack={() => setScreen("home")} />;
   }
 
+  if (screen === "modifier_tanora") {
+    return <ModifierCompleterTanora onBack={() => setScreen("home")} />;
+  }
+
   if (screen === "vti_iombonana") {
     return <TombanaIombonanaVtiForm onBack={() => setScreen("home")} />;
   }
@@ -84,19 +89,35 @@ export default function HomePage() {
         <h1 style={styles.title}>TOMBANA TANORA MAZAVA L1</h1>
 
         <h2 style={styles.subtitle}>
-          TOMBANA FANOMBOHANA VTI
+          TOMBANA FANOMBOHANA ID TANORA
         </h2>
 
-        <button style={styles.button} onClick={() => setScreen("identite")}>
+        <button
+          style={styles.button}
+          onClick={() => setScreen("identite")}
+        >
           Hanomboka ny Tombana ID Tanora
         </button>
 
-        <button style={styles.secondaryButton} onClick={() => setScreen("imprimable")}>
+        <button
+          style={styles.secondaryButton}
+          onClick={() => setScreen("imprimable")}
+        >
           Version imprimable vierge ID Tanora
         </button>
 
-        <button style={styles.secondaryButton} onClick={() => setScreen("fiche")}>
+        <button
+          style={styles.secondaryButton}
+          onClick={() => setScreen("fiche")}
+        >
           Fiche remplie par ID Tanora
+        </button>
+
+        <button
+          style={styles.secondaryButton}
+          onClick={() => setScreen("modifier_tanora")}
+        >
+          Modifier / Compléter Fiche ID Tanora
         </button>
 
         <hr />
@@ -105,22 +126,30 @@ export default function HomePage() {
           TOMBANA IOMBONANA AO ANATY VTI
         </h2>
 
-        <button style={styles.button} onClick={() => setScreen("vti_iombonana")}>
+        <button
+          style={styles.button}
+          onClick={() => setScreen("vti_iombonana")}
+        >
           Hanomboka Tombana iombonana VTI
         </button>
 
-        <button style={styles.secondaryButton} onClick={() => setScreen("vti_imprimable")}>
+        <button
+          style={styles.secondaryButton}
+          onClick={() => setScreen("vti_imprimable")}
+        >
           Formulaire vierge VTI
         </button>
 
-        <button style={styles.secondaryButton} onClick={() => setScreen("vti_fiche")}>
+        <button
+          style={styles.secondaryButton}
+          onClick={() => setScreen("vti_fiche")}
+        >
           Fiche remplie VTI par ID VTI
         </button>
       </section>
     </main>
   );
 }
-
 
 function TombanaIombonanaVtiForm({ onBack }: any) {
   const [step, setStep] = useState<
