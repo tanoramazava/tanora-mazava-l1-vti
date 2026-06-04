@@ -2262,19 +2262,29 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
     scores[i].tohana +
     scores[i].economie;
 
+  const getUniteAnnee = (i: number, year: number) => {
+    const f = filieres[i];
+
+    if (f.type === "akoho") {
+      const initialHouses = Number(units[i][0] || 0);
+      if (year === 0) return initialHouses;
+      if (year === 1) return initialHouses * 6;
+      return initialHouses * 36;
+    }
+
+    return Number(units[i][year] || 0);
+  };
+
   const yearData = (i: number, year: number) => {
     const f = filieres[i];
 
     if (f.type === "akoho") {
-      const initialHouses = units[i][0];
-      const activeHouses =
-        year === 0 ? initialHouses : year === 1 ? initialHouses * 6 : initialHouses * 36;
-
+      const activeHouses = getUniteAnnee(i, year);
       const totalPoussins = activeHouses * 160;
       const reinvestis = totalPoussins * 0.25;
       const vendus = totalPoussins * 0.75;
       const ca = vendus * 16000;
-      const dep = vendus * 7000 + (year === 0 ? initialHouses * 430000 : 0);
+      const dep = vendus * 7000 + (year === 0 ? Number(units[i][0] || 0) * 430000 : 0);
 
       return {
         ca,
@@ -2285,8 +2295,8 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
     }
 
     if (f.type === "tantely") {
-      const ruchesActives = units[i][year];
-      const ruchesAvant = year === 0 ? 0 : units[i][year - 1];
+      const ruchesActives = Number(units[i][year] || 0);
+      const ruchesAvant = year === 0 ? 0 : Number(units[i][year - 1] || 0);
       const ruchesNouvelles = Math.max(ruchesActives - ruchesAvant, 0);
       const ruchesAnciennes = ruchesActives - ruchesNouvelles;
 
@@ -2302,7 +2312,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       };
     }
 
-    const n = units[i][year];
+    const n = Number(units[i][year] || 0);
     const ca = n * f.caRef[year];
     const dep = n * f.depRef[year];
 
@@ -2341,7 +2351,12 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
   const totals = {
     ca: voly.ca + vary.ca + akoho.ca + kisoa.ca + tantely.ca,
     dep: voly.dep + vary.dep + akoho.dep + kisoa.dep + tantely.dep,
-    benefice: voly.benefice + vary.benefice + akoho.benefice + kisoa.benefice + tantely.benefice,
+    benefice:
+      voly.benefice +
+      vary.benefice +
+      akoho.benefice +
+      kisoa.benefice +
+      tantely.benefice,
   };
 
   const totalScore = scores.reduce((sum, _s, i) => {
@@ -2418,13 +2433,30 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       .map((f, i) => {
         if (!selected[i]) return null;
 
+        const y1 = yearData(i, 0);
+        const y2 = yearData(i, 1);
+        const y3 = yearData(i, 2);
+
         return {
           tanora_id: tanoraId,
           type_taniketsa: f.type,
           unite_label: f.unitName,
-          unite_annee_1: Number(units[i][0] || 0),
-          unite_annee_2: Number(units[i][1] || 0),
-          unite_annee_3: Number(units[i][2] || 0),
+
+          unite_annee_1: getUniteAnnee(i, 0),
+          unite_annee_2: getUniteAnnee(i, 1),
+          unite_annee_3: getUniteAnnee(i, 2),
+
+          ca_annee_1: y1.ca,
+          depenses_annee_1: y1.dep,
+          benefice_annee_1: y1.benefice,
+
+          ca_annee_2: y2.ca,
+          depenses_annee_2: y2.dep,
+          benefice_annee_2: y2.benefice,
+
+          ca_annee_3: y3.ca,
+          depenses_annee_3: y3.dep,
+          benefice_annee_3: y3.benefice,
         };
       })
       .filter(Boolean);
@@ -2479,7 +2511,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       return;
     }
 
-    alert("Tombana feno voatahiry : scores, économies, unités ary réponses détaillées !");
+    alert("Tombana feno voatahiry : scores, économies, unités, CA isan-taona, bénéfices isan-taona ary réponses détaillées !");
   };
 
   return (
