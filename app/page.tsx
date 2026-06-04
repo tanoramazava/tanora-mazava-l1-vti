@@ -2691,6 +2691,137 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
     </main>
   );
 }
+function ModifierCompleterTanora({ onBack }: any) {
+  const [idTanora, setIdTanora] = useState("");
+  const [tanora, setTanora] = useState<any>(null);
+  const [modeTaniketsa, setModeTaniketsa] = useState(false);
+
+  const chargerTanora = async () => {
+    const id = Number(idTanora);
+
+    if (!id) {
+      alert("Ampidiro aloha ny ID Tanora.");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("tanora")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error || !data) {
+      alert("Tsy hita ny ID Tanora : " + JSON.stringify(error));
+      return;
+    }
+
+    setTanora(data);
+  };
+
+  const ouvrirModificationTaniketsa = async () => {
+    if (!tanora?.id) {
+      alert("ID Tanora tsy hita.");
+      return;
+    }
+
+    const confirmer = confirm(
+      "Hofafana aloha ny anciennes données Taniketsa an’ity ID Tanora ity, dia hosoloina vaovao rehefa vita ny famenoana. Hanohy ve ianao ?"
+    );
+
+    if (!confirmer) return;
+
+    await supabase
+      .from("taniketsa_unites")
+      .delete()
+      .eq("tanora_id", tanora.id);
+
+    await supabase
+      .from("economies_taniketsa")
+      .delete()
+      .eq("tanora_id", tanora.id);
+
+    await supabase
+      .from("reponses_taniketsa_detaillees")
+      .delete()
+      .eq("tanora_id", tanora.id);
+
+    setModeTaniketsa(true);
+  };
+
+  if (modeTaniketsa && tanora?.id) {
+    return (
+      <TaniketsaForm
+        tanoraId={tanora.id}
+        onBack={() => setModeTaniketsa(false)}
+      />
+    );
+  }
+
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>
+          Modifier / Compléter Fiche ID Tanora
+        </h1>
+
+        <label style={styles.label}>Ampidiro ny ID Tanora</label>
+        <input
+          style={styles.input}
+          type="number"
+          value={idTanora}
+          onChange={(e) => setIdTanora(e.target.value)}
+          placeholder="Ohatra : 2"
+        />
+
+        <div style={styles.actions}>
+          <button style={styles.button} onClick={chargerTanora}>
+            Charger ID Tanora
+          </button>
+
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+        </div>
+
+        {tanora && (
+          <>
+            <hr />
+
+            <h2>Fiche hita</h2>
+            <p>
+              <strong>ID Tanora :</strong> {tanora.id}
+            </p>
+            <p>
+              <strong>Anarana :</strong> {tanora.anarana}
+            </p>
+            <p>
+              <strong>Taona :</strong> {tanora.taona}
+            </p>
+            <p>
+              <strong>Lahy / Vavy :</strong> {tanora.sexe}
+            </p>
+            <p>
+              <strong>VTI ID :</strong> {tanora.vti_id}
+            </p>
+            <p>
+              <strong>Anaran’ny VTI :</strong> {tanora.nom_vti}
+            </p>
+            <p>
+              <strong>Vaomiera misy azy :</strong>{" "}
+              {tanora.vaomiera_misy_azy}
+            </p>
+
+            <div style={styles.actions}>
+              <button style={styles.button} onClick={ouvrirModificationTaniketsa}>
+                Modifier / Compléter Taniketsa
+              </button>
+            </div>
+          </>
+        )}
+      </section>
+    </main>
+  );
+}
 function FicheRemplie({ onBack }: any) {
   const [id, setId] = useState("");
   const [tanora, setTanora] = useState<any>(null);
