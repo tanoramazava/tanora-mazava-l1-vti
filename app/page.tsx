@@ -1490,7 +1490,14 @@ function FormulaireViergeVti({ onBack }: any) {
 function ModifierCompleterVti({ onBack }: any) {
   const [idVti, setIdVti] = useState("");
   const [vti, setVti] = useState<any>(null);
-  const [mode, setMode] = useState<"menu" | "identite">("menu");
+  const [mode, setMode] = useState<
+    "menu" | "identite" | "arapanahy" | "toekarena" | "fahasalamana" | "etika"
+  >("menu");
+
+  const [arap, setArap] = useState<any>(null);
+  const [toek, setToek] = useState<any>(null);
+  const [fahas, setFahas] = useState<any>(null);
+  const [etika, setEtika] = useState<any>(null);
 
   const chargerVti = async () => {
     const id = Number(idVti);
@@ -1515,9 +1522,33 @@ function ModifierCompleterVti({ onBack }: any) {
     setMode("menu");
   };
 
-  const enregistrerIdentiteVti = async () => {
+  const chargerVaomiera = async (type: string) => {
     if (!vti?.id) return;
 
+    const tableMap: any = {
+      arapanahy: "vti_vaomiera_arapanahy_fanabeazana",
+      toekarena: "vti_vaomiera_fandraharahana_toekarena",
+      fahasalamana: "vti_vaomiera_fahasalamana_fiarovana",
+      etika: "vti_vaomiera_etika_fampandrosoana",
+    };
+
+    const { data } = await supabase
+      .from(tableMap[type])
+      .select("*")
+      .eq("vti_id", vti.id)
+      .order("id", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (type === "arapanahy") setArap(data || { vti_id: vti.id });
+    if (type === "toekarena") setToek(data || { vti_id: vti.id });
+    if (type === "fahasalamana") setFahas(data || { vti_id: vti.id });
+    if (type === "etika") setEtika(data || { vti_id: vti.id });
+
+    setMode(type as any);
+  };
+
+  const saveIdentite = async () => {
     const { error } = await supabase
       .from("vti")
       .update({
@@ -1540,12 +1571,256 @@ function ModifierCompleterVti({ onBack }: any) {
     setMode("menu");
   };
 
+  const saveVaomiera = async (table: string, data: any, setter: any) => {
+    const payload = { ...data, vti_id: Number(vti.id) };
+
+    if (payload.id) {
+      const { error } = await supabase.from(table).update(payload).eq("id", payload.id);
+      if (error) {
+        alert("Erreur modification Vaomiera : " + JSON.stringify(error));
+        return;
+      }
+    } else {
+      const { data: inserted, error } = await supabase
+        .from(table)
+        .insert([payload])
+        .select()
+        .single();
+
+      if (error) {
+        alert("Erreur insertion Vaomiera : " + JSON.stringify(error));
+        return;
+      }
+
+      setter(inserted);
+    }
+
+    alert("Vaomiera nohavaozina tsara.");
+    setMode("menu");
+  };
+
+  const Field = ({ label, value, onChange, type = "text" }: any) => (
+    <>
+      <label style={styles.label}>{label}</label>
+      <input
+        style={styles.input}
+        type={type}
+        value={value || ""}
+        onChange={(e) => onChange(type === "number" ? Number(e.target.value || 0) : e.target.value)}
+      />
+    </>
+  );
+
+  const Area = ({ label, value, onChange }: any) => (
+    <>
+      <label style={styles.label}>{label}</label>
+      <textarea
+        style={styles.textarea}
+        value={value || ""}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </>
+  );
+
+  if (vti && mode === "identite") {
+    return (
+      <main style={styles.main}>
+        <section style={styles.card}>
+          <h1 style={styles.titleSmall}>Modifier Identité VTI</h1>
+
+          <Field label="Anaran’ny VTI" value={vti.nom_vti} onChange={(v: any) => setVti({ ...vti, nom_vti: v })} />
+          <Field label="Faritra" value={vti.faritra} onChange={(v: any) => setVti({ ...vti, faritra: v })} />
+          <Field label="Distrika" value={vti.distrika} onChange={(v: any) => setVti({ ...vti, distrika: v })} />
+          <Field label="Kaomina" value={vti.kaomina} onChange={(v: any) => setVti({ ...vti, kaomina: v })} />
+
+          <label style={styles.label}>Type de Kaomina</label>
+          <select
+            style={styles.input}
+            value={vti.type_kaomina || ""}
+            onChange={(e) => setVti({ ...vti, type_kaomina: e.target.value })}
+          >
+            <option value="">Safidio</option>
+            <option value="Ambanivohitra">Kaomina Ambanivohitra</option>
+            <option value="Andrenivohitra">Kaomina Andrenivohitra</option>
+          </select>
+
+          <Field label="Fokontany" value={vti.fokontany} onChange={(v: any) => setVti({ ...vti, fokontany: v })} />
+          <Field label="Isan’ny mponina" type="number" value={vti.isan_mponina} onChange={(v: any) => setVti({ ...vti, isan_mponina: v })} />
+
+          <div style={styles.actions}>
+            <button style={styles.button} onClick={saveIdentite}>Enregistrer</button>
+            <button style={styles.secondaryButton} onClick={() => setMode("menu")}>Annuler</button>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  if (vti && mode === "arapanahy") {
+    return (
+      <main style={styles.main}>
+        <section style={styles.card}>
+          <h1 style={styles.titleSmall}>Modifier Vaomiera Ara-panahy sy Fanabeazana</h1>
+
+          <Field label="Score fivoriana" type="number" value={arap?.mivory_score} onChange={(v: any) => setArap({ ...arap, mivory_score: v })} />
+          <Field label="Score ora iasana" type="number" value={arap?.ora_score} onChange={(v: any) => setArap({ ...arap, ora_score: v })} />
+          <Field label="Score herinandro 05" type="number" value={arap?.herinandro_score} onChange={(v: any) => setArap({ ...arap, herinandro_score: v })} />
+          <Area label="Fanaka dimy" value={arap?.fanaka_dimy} onChange={(v: any) => setArap({ ...arap, fanaka_dimy: v })} />
+          <Field label="Score fanaka dimy" type="number" value={arap?.fanaka_score} onChange={(v: any) => setArap({ ...arap, fanaka_score: v })} />
+          <Area label="Fanamby ara-panahy 140 andro" value={arap?.fanamby_140_andro} onChange={(v: any) => setArap({ ...arap, fanamby_140_andro: v })} />
+          <Field label="Score fanamby" type="number" value={arap?.fanamby_score} onChange={(v: any) => setArap({ ...arap, fanamby_score: v })} />
+          <Area label="Olana ara-panabeazana" value={arap?.olana_fanabeazana} onChange={(v: any) => setArap({ ...arap, olana_fanabeazana: v })} />
+          <Field label="Score olana" type="number" value={arap?.olana_score} onChange={(v: any) => setArap({ ...arap, olana_score: v })} />
+          <Area label="Paikady ara-panabeazana 140 andro" value={arap?.paikady_140_andro} onChange={(v: any) => setArap({ ...arap, paikady_140_andro: v })} />
+          <Field label="Score paikady" type="number" value={arap?.paikady_score} onChange={(v: any) => setArap({ ...arap, paikady_score: v })} />
+
+          <div style={styles.actions}>
+            <button
+              style={styles.button}
+              onClick={() =>
+                saveVaomiera("vti_vaomiera_arapanahy_fanabeazana", {
+                  ...arap,
+                  total_score:
+                    Number(arap?.mivory_score || 0) +
+                    Number(arap?.ora_score || 0) +
+                    Number(arap?.herinandro_score || 0) +
+                    Number(arap?.fanaka_score || 0) +
+                    Number(arap?.fanamby_score || 0) +
+                    Number(arap?.olana_score || 0) +
+                    Number(arap?.paikady_score || 0),
+                }, setArap)
+              }
+            >
+              Enregistrer
+            </button>
+            <button style={styles.secondaryButton} onClick={() => setMode("menu")}>Annuler</button>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  if (vti && mode === "toekarena") {
+    return (
+      <main style={styles.main}>
+        <section style={styles.card}>
+          <h1 style={styles.titleSmall}>Modifier Vaomiera Fandraharahana sy Toekarena</h1>
+
+          <Field label="Score fivoriana" type="number" value={toek?.mivory_score} onChange={(v: any) => setToek({ ...toek, mivory_score: v })} />
+          <Field label="Score ora iasana" type="number" value={toek?.ora_score} onChange={(v: any) => setToek({ ...toek, ora_score: v })} />
+          <Area label="Olana ara-toekarena" value={toek?.olana_toekarena} onChange={(v: any) => setToek({ ...toek, olana_toekarena: v })} />
+          <Field label="Score olana" type="number" value={toek?.olana_score} onChange={(v: any) => setToek({ ...toek, olana_score: v })} />
+          <Area label="Paikady ara-toekarena 140 andro" value={toek?.paikady_toekarena} onChange={(v: any) => setToek({ ...toek, paikady_toekarena: v })} />
+          <Field label="Score paikady" type="number" value={toek?.paikady_score} onChange={(v: any) => setToek({ ...toek, paikady_score: v })} />
+
+          <div style={styles.actions}>
+            <button
+              style={styles.button}
+              onClick={() =>
+                saveVaomiera("vti_vaomiera_fandraharahana_toekarena", {
+                  ...toek,
+                  total_score:
+                    Number(toek?.mivory_score || 0) +
+                    Number(toek?.ora_score || 0) +
+                    Number(toek?.olana_score || 0) +
+                    Number(toek?.paikady_score || 0),
+                }, setToek)
+              }
+            >
+              Enregistrer
+            </button>
+            <button style={styles.secondaryButton} onClick={() => setMode("menu")}>Annuler</button>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  if (vti && mode === "fahasalamana") {
+    return (
+      <main style={styles.main}>
+        <section style={styles.card}>
+          <h1 style={styles.titleSmall}>Modifier Vaomiera Fahasalamana sy Fiarovana</h1>
+
+          <Field label="Score fivoriana" type="number" value={fahas?.mivory_score} onChange={(v: any) => setFahas({ ...fahas, mivory_score: v })} />
+          <Field label="Score ora iasana" type="number" value={fahas?.ora_score} onChange={(v: any) => setFahas({ ...fahas, ora_score: v })} />
+          <Area label="Olana ara-pahasalamana" value={fahas?.olana_fahasalamana} onChange={(v: any) => setFahas({ ...fahas, olana_fahasalamana: v })} />
+          <Field label="Score olana fahasalamana" type="number" value={fahas?.olana_fahasalamana_score} onChange={(v: any) => setFahas({ ...fahas, olana_fahasalamana_score: v })} />
+          <Area label="Voina manimba taranaka" value={fahas?.voina_tanora} onChange={(v: any) => setFahas({ ...fahas, voina_tanora: v })} />
+          <Field label="Score voina" type="number" value={fahas?.voina_score} onChange={(v: any) => setFahas({ ...fahas, voina_score: v })} />
+          <Area label="Paikady Fahasalamana sy Fiarovana 140 andro" value={fahas?.paikady_fahasalamana} onChange={(v: any) => setFahas({ ...fahas, paikady_fahasalamana: v })} />
+          <Field label="Score paikady" type="number" value={fahas?.paikady_score} onChange={(v: any) => setFahas({ ...fahas, paikady_score: v })} />
+
+          <div style={styles.actions}>
+            <button
+              style={styles.button}
+              onClick={() =>
+                saveVaomiera("vti_vaomiera_fahasalamana_fiarovana", {
+                  ...fahas,
+                  total_score:
+                    Number(fahas?.mivory_score || 0) +
+                    Number(fahas?.ora_score || 0) +
+                    Number(fahas?.olana_fahasalamana_score || 0) +
+                    Number(fahas?.voina_score || 0) +
+                    Number(fahas?.paikady_score || 0),
+                }, setFahas)
+              }
+            >
+              Enregistrer
+            </button>
+            <button style={styles.secondaryButton} onClick={() => setMode("menu")}>Annuler</button>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  if (vti && mode === "etika") {
+    return (
+      <main style={styles.main}>
+        <section style={styles.card}>
+          <h1 style={styles.titleSmall}>Modifier Vaomiera Etika sy Fampandrosoana Maharitra</h1>
+
+          <Field label="Score fivoriana" type="number" value={etika?.mivory_score} onChange={(v: any) => setEtika({ ...etika, mivory_score: v })} />
+          <Field label="Score ora iasana" type="number" value={etika?.ora_score} onChange={(v: any) => setEtika({ ...etika, ora_score: v })} />
+          <Area label="Olana fandriampahalemana sy kolikoly" value={etika?.olana_fandriampahalemana} onChange={(v: any) => setEtika({ ...etika, olana_fandriampahalemana: v })} />
+          <Field label="Score fandriampahalemana" type="number" value={etika?.olana_fandriampahalemana_score} onChange={(v: any) => setEtika({ ...etika, olana_fandriampahalemana_score: v })} />
+          <Area label="Olana tontolo iainana" value={etika?.olana_tontolo_iainana} onChange={(v: any) => setEtika({ ...etika, olana_tontolo_iainana: v })} />
+          <Field label="Score tontolo iainana" type="number" value={etika?.olana_tontolo_iainana_score} onChange={(v: any) => setEtika({ ...etika, olana_tontolo_iainana_score: v })} />
+          <Area label="Paikady Etika sy Fampandrosoana Maharitra" value={etika?.paikady_etika} onChange={(v: any) => setEtika({ ...etika, paikady_etika: v })} />
+          <Field label="Score paikady" type="number" value={etika?.paikady_score} onChange={(v: any) => setEtika({ ...etika, paikady_score: v })} />
+
+          <div style={styles.actions}>
+            <button
+              style={styles.button}
+              onClick={() =>
+                saveVaomiera("vti_vaomiera_etika_fampandrosoana", {
+                  ...etika,
+                  olana_score:
+                    Number(etika?.olana_fandriampahalemana_score || 0) +
+                    Number(etika?.olana_tontolo_iainana_score || 0),
+                  total_score:
+                    Number(etika?.mivory_score || 0) +
+                    Number(etika?.ora_score || 0) +
+                    Number(etika?.olana_fandriampahalemana_score || 0) +
+                    Number(etika?.olana_tontolo_iainana_score || 0) +
+                    Number(etika?.paikady_score || 0),
+                }, setEtika)
+              }
+            >
+              Enregistrer
+            </button>
+            <button style={styles.secondaryButton} onClick={() => setMode("menu")}>Annuler</button>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Modifier / Compléter Fiche ID VTI
-        </h1>
+        <h1 style={styles.titleSmall}>Modifier / Compléter Fiche ID VTI</h1>
 
         <label style={styles.label}>Ampidiro ny ID VTI</label>
         <input
@@ -1569,7 +1844,6 @@ function ModifierCompleterVti({ onBack }: any) {
         {vti && mode === "menu" && (
           <>
             <hr />
-
             <h2>Fiche VTI hita</h2>
             <p><strong>ID VTI :</strong> {vti.id}</p>
             <p><strong>Anaran’ny VTI :</strong> {vti.nom_vti}</p>
@@ -1585,112 +1859,20 @@ function ModifierCompleterVti({ onBack }: any) {
                 Modifier Identité VTI
               </button>
 
-              <button
-                style={styles.secondaryButton}
-                onClick={() =>
-                  alert("Dingana manaraka: hampidirintsika eto ny modification Vaomiera Ara-panahy sy Fanabeazana.")
-                }
-              >
+              <button style={styles.secondaryButton} onClick={() => chargerVaomiera("arapanahy")}>
                 Modifier Vaomiera Ara-panahy sy Fanabeazana
               </button>
 
-              <button
-                style={styles.secondaryButton}
-                onClick={() =>
-                  alert("Dingana manaraka: hampidirintsika eto ny modification Vaomiera Fandraharahana sy Toekarena.")
-                }
-              >
+              <button style={styles.secondaryButton} onClick={() => chargerVaomiera("toekarena")}>
                 Modifier Vaomiera Fandraharahana sy Toekarena
               </button>
 
-              <button
-                style={styles.secondaryButton}
-                onClick={() =>
-                  alert("Dingana manaraka: hampidirintsika eto ny modification Vaomiera Fahasalamana sy Fiarovana.")
-                }
-              >
+              <button style={styles.secondaryButton} onClick={() => chargerVaomiera("fahasalamana")}>
                 Modifier Vaomiera Fahasalamana sy Fiarovana
               </button>
 
-              <button
-                style={styles.secondaryButton}
-                onClick={() =>
-                  alert("Dingana manaraka: hampidirintsika eto ny modification Vaomiera Etika sy Fampandrosoana Maharitra.")
-                }
-              >
+              <button style={styles.secondaryButton} onClick={() => chargerVaomiera("etika")}>
                 Modifier Vaomiera Etika sy Fampandrosoana Maharitra
-              </button>
-            </div>
-          </>
-        )}
-
-        {vti && mode === "identite" && (
-          <>
-            <hr />
-
-            <h2>Modifier Identité VTI</h2>
-
-            <label style={styles.label}>Anaran’ny VTI</label>
-            <input
-              style={styles.input}
-              value={vti.nom_vti || ""}
-              onChange={(e) => setVti({ ...vti, nom_vti: e.target.value })}
-            />
-
-            <label style={styles.label}>Faritra</label>
-            <input
-              style={styles.input}
-              value={vti.faritra || ""}
-              onChange={(e) => setVti({ ...vti, faritra: e.target.value })}
-            />
-
-            <label style={styles.label}>Distrika</label>
-            <input
-              style={styles.input}
-              value={vti.distrika || ""}
-              onChange={(e) => setVti({ ...vti, distrika: e.target.value })}
-            />
-
-            <label style={styles.label}>Kaomina</label>
-            <input
-              style={styles.input}
-              value={vti.kaomina || ""}
-              onChange={(e) => setVti({ ...vti, kaomina: e.target.value })}
-            />
-
-            <label style={styles.label}>Type de Kaomina</label>
-            <select
-              style={styles.input}
-              value={vti.type_kaomina || ""}
-              onChange={(e) => setVti({ ...vti, type_kaomina: e.target.value })}
-            >
-              <option value="">Safidio</option>
-              <option value="Ambanivohitra">Kaomina Ambanivohitra</option>
-              <option value="Andrenivohitra">Kaomina Andrenivohitra</option>
-            </select>
-
-            <label style={styles.label}>Fokontany</label>
-            <input
-              style={styles.input}
-              value={vti.fokontany || ""}
-              onChange={(e) => setVti({ ...vti, fokontany: e.target.value })}
-            />
-
-            <label style={styles.label}>Isan’ny mponina iandraiketany</label>
-            <input
-              style={styles.input}
-              type="number"
-              value={vti.isan_mponina || ""}
-              onChange={(e) => setVti({ ...vti, isan_mponina: e.target.value })}
-            />
-
-            <div style={styles.actions}>
-              <button style={styles.button} onClick={enregistrerIdentiteVti}>
-                Enregistrer modification VTI
-              </button>
-
-              <button style={styles.secondaryButton} onClick={() => setMode("menu")}>
-                Annuler
               </button>
             </div>
           </>
