@@ -2,7 +2,174 @@
 
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+function DashboardAnalytique({ onBack }: any) {
+  const [loading, setLoading] = useState(false);
+  const [tanora, setTanora] = useState<any[]>([]);
+  const [vti, setVti] = useState<any[]>([]);
+  const [spirituel, setSpirituel] = useState<any[]>([]);
+  const [repVti, setRepVti] = useState<any[]>([]);
+  const [unites, setUnites] = useState<any[]>([]);
+  const [eco, setEco] = useState<any[]>([]);
+  const [repTaniketsa, setRepTaniketsa] = useState<any[]>([]);
 
+  const money = (v: any) => Number(v || 0).toLocaleString("fr-FR") + " Ar";
+  const txt = (v: any) => String(v || "").toLowerCase();
+
+  const countIncludes = (rows: any[], field: string, keys: string[]) =>
+    rows.filter((r) => keys.some((k) => txt(r[field]).includes(k.toLowerCase()))).length;
+
+  const total = (rows: any[], field: string) =>
+    rows.reduce((s, r) => s + Number(r[field] || 0), 0);
+
+  const chargerDashboard = async () => {
+    setLoading(true);
+
+    const { data: tanoraData } = await supabase.from("tanora").select("*");
+    const { data: vtiData } = await supabase.from("vti").select("*");
+    const { data: spirituelData } = await supabase.from("reponses_spirituel").select("*");
+    const { data: repVtiData } = await supabase.from("reponses_vti").select("*");
+    const { data: unitesData } = await supabase.from("taniketsa_unites").select("*");
+    const { data: ecoData } = await supabase.from("economies_taniketsa").select("*");
+    const { data: repTanData } = await supabase.from("reponses_taniketsa_detaillees").select("*");
+
+    setTanora(tanoraData || []);
+    setVti(vtiData || []);
+    setSpirituel(spirituelData || []);
+    setRepVti(repVtiData || []);
+    setUnites(unitesData || []);
+    setEco(ecoData || []);
+    setRepTaniketsa(repTanData || []);
+
+    setLoading(false);
+  };
+
+  const age18 = tanora.filter((t) => Number(t.taona) <= 18).length;
+  const age19_24 = tanora.filter((t) => Number(t.taona) >= 19 && Number(t.taona) <= 24).length;
+  const age25_35 = tanora.filter((t) => Number(t.taona) >= 25 && Number(t.taona) <= 35).length;
+  const age35plus = tanora.filter((t) => Number(t.taona) > 35).length;
+
+  const filieres = [
+    { type: "voly", name: "Voly rakotra 500m²" },
+    { type: "vary", name: "Voly vary 750m²" },
+    { type: "akoho", name: "Akoho gasy" },
+    { type: "kisoa", name: "Fanatavezana kisoa" },
+    { type: "tantely", name: "Fiompiana tantely" },
+  ];
+
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>Dashboard Analytique Tanora Mazava L1</h1>
+
+        <div style={styles.actions}>
+          <button style={styles.button} onClick={chargerDashboard}>
+            Charger / Actualiser Dashboard
+          </button>
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+        </div>
+
+        {loading && <p>Chargement...</p>}
+
+        <hr />
+
+        <h2>1. Dashboard Général</h2>
+        <div style={styles.scoreBox}>
+          <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
+          <p><strong>VTI voasoratra :</strong> {vti.length}</p>
+          <p><strong>Lahy :</strong> {countIncludes(tanora, "sexe", ["lahy"])} | <strong>Vavy :</strong> {countIncludes(tanora, "sexe", ["vavy"])}</p>
+          <p><strong>18 taona midina :</strong> {age18}</p>
+          <p><strong>19–24 taona :</strong> {age19_24}</p>
+          <p><strong>25–35 taona :</strong> {age25_35}</p>
+          <p><strong>Mihoatra ny 35 taona :</strong> {age35plus}</p>
+          <p><strong>Ambanivohitra :</strong> {countIncludes(tanora, "type_kaomina", ["ambanivohitra"])}</p>
+          <p><strong>Andrenivohitra :</strong> {countIncludes(tanora, "type_kaomina", ["andrenivohitra"])}</p>
+        </div>
+
+        <hr />
+
+        <h2>2. Dashboard Ara-panahy Tanora</h2>
+        <div style={styles.miniBox}>
+          <h3>Vavaka Betela</h3>
+          <p><strong>Isan’andro :</strong> {countIncludes(spirituel, "spirituel_q3", ["isan’andro", "isanandro", "andro"])} </p>
+          <p><strong>In-3 isan-kerinandro :</strong> {countIncludes(spirituel, "spirituel_q3", ["in-3", "intelo", "3"])} </p>
+          <p><strong>In-1 isan-kerinandro :</strong> {countIncludes(spirituel, "spirituel_q3", ["in-1", "indray", "1"])} </p>
+          <p><strong>Mbola tsy nanomboka :</strong> {countIncludes(spirituel, "spirituel_q3", ["tsy", "mbola tsy"])} </p>
+
+          <h3>Pratika ara-panahy</h3>
+          <p><strong>Fibebahana sy fiderana :</strong> {countIncludes(spirituel, "spirituel_q4", ["mazava", "voafehy", "eny", "tsara"])} </p>
+          <p><strong>Fanaka dimy / soatoavina :</strong> {countIncludes(spirituel, "spirituel_q5", ["mazava", "voafehy", "eny", "tsara"])} </p>
+          <p><strong>Fandroahana demonia :</strong> {countIncludes(spirituel, "spirituel_q6", ["mazava", "voafehy", "eny", "tsara"])} </p>
+          <p><strong>Vavaka mamindra tendrombohitra :</strong> {countIncludes(spirituel, "spirituel_q7", ["mazava", "voafehy", "eny", "tsara"])} </p>
+        </div>
+
+        <hr />
+
+        <h2>3. Dashboard Engagement VTI Tanora</h2>
+        <div style={styles.miniBox}>
+          <p><strong>Efa nikambana fikambanana taloha :</strong> {countIncludes(repVti, "vti_q1", ["eny", "efa"])} </p>
+          <p><strong>Mahafantatra mazava ny VTI :</strong> {countIncludes(repVti, "vti_q2", ["mazava", "tsara"])} </p>
+          <p><strong>Mandray andraikitra mavitrika :</strong> {countIncludes(repVti, "vti_q3", ["mavitrika", "mandray", "eny"])} </p>
+          <p><strong>Manana anjara biriky :</strong> {countIncludes(repVti, "vti_q4", ["eny", "manana"])} </p>
+          <p><strong>Mahafantatra Vaomiera misy azy :</strong> {countIncludes(repVti, "vti_q5", ["vaomiera", "ara-panahy", "toekarena", "fahasalamana", "etika"])} </p>
+        </div>
+
+        <hr />
+
+        <h2>4. Dashboard Taniketsa Fandraharahana</h2>
+
+        {filieres.map((f) => {
+          const rows = unites.filter((u) => u.type_taniketsa === f.type);
+
+          return (
+            <div key={f.type} style={styles.miniBox}>
+              <h3>{f.name}</h3>
+              <p><strong>Isan’ny Tanora :</strong> {rows.length}</p>
+              <p><strong>Unités Taona 1 :</strong> {total(rows, "unite_annee_1")}</p>
+              <p><strong>Unités Taona 2 :</strong> {total(rows, "unite_annee_2")}</p>
+              <p><strong>Unités Taona 3 :</strong> {total(rows, "unite_annee_3")}</p>
+              <p><strong>CA Taona 1 :</strong> {money(total(rows, "ca_annee_1"))}</p>
+              <p><strong>CA Taona 2 :</strong> {money(total(rows, "ca_annee_2"))}</p>
+              <p><strong>CA Taona 3 :</strong> {money(total(rows, "ca_annee_3"))}</p>
+              <p><strong>Bénéfice Taona 1 :</strong> {money(total(rows, "benefice_annee_1"))}</p>
+              <p><strong>Bénéfice Taona 2 :</strong> {money(total(rows, "benefice_annee_2"))}</p>
+              <p><strong>Bénéfice Taona 3 :</strong> {money(total(rows, "benefice_annee_3"))}</p>
+            </div>
+          );
+        })}
+
+        <div style={styles.scoreBox}>
+          <h3>Synthèse économique globale 3 ans</h3>
+          <p><strong>CA total global :</strong> {money(total(eco, "ca_total"))}</p>
+          <p><strong>Dépenses totales globales :</strong> {money(total(eco, "depenses_total"))}</p>
+          <p><strong>Bénéfice total global :</strong> {money(total(eco, "benefice_total"))}</p>
+        </div>
+
+        <hr />
+
+        <h2>5. Analyse économique qualitative par filière</h2>
+
+        {[
+          ["Voly rakotra", "voly_rakotra"],
+          ["Vary", "vary"],
+          ["Akoho gasy", "akoho_gasy"],
+          ["Kisoa", "kisoa"],
+          ["Tantely", "tantely"],
+        ].map(([label, key]) => (
+          <div key={key} style={styles.miniBox}>
+            <h3>{label}</h3>
+            <p><strong>Fananantany :</strong> {repTaniketsa.map((r) => r[`${key}_fananantany`]).filter(Boolean).join(" | ") || "—"}</p>
+            <p><strong>Fiofanana :</strong> {repTaniketsa.map((r) => r[`${key}_fiofanana`]).filter(Boolean).join(" | ") || "—"}</p>
+            <p><strong>Ezaka / Anjara biriky :</strong> {repTaniketsa.map((r) => r[`${key}_ezaka`]).filter(Boolean).join(" | ") || "—"}</p>
+            <p><strong>Tohana ilaina :</strong> {repTaniketsa.map((r) => r[`${key}_tohana`]).filter(Boolean).join(" | ") || "—"}</p>
+            <p><strong>Diagnostic :</strong> {repTaniketsa.map((r) => r[`${key}_diagnostic`]).filter(Boolean).join(" | ") || "—"}</p>
+          </div>
+        ))}
+      </section>
+    </main>
+  );
+}
 type Screen =
   | "home"
   | "identite"
@@ -15,7 +182,8 @@ type Screen =
   | "vti_iombonana"
   | "vti_imprimable"
   | "vti_fiche"
-  | "modifier_vti";
+  | "modifier_vti"
+  | "dashboard";
 
 export default function HomePage() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -88,81 +256,64 @@ export default function HomePage() {
     return <ModifierCompleterVti onBack={() => setScreen("home")} />;
   }
 
+  if (screen === "dashboard") {
+    return <DashboardAnalytique onBack={() => setScreen("home")} />;
+  }
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
         <h1 style={styles.title}>TOMBANA TANORA MAZAVA L1</h1>
 
-        <h2 style={styles.subtitle}>
-          TOMBANA FANOMBOHANA ID TANORA
-        </h2>
+        <h2 style={styles.subtitle}>TOMBANA FANOMBOHANA ID TANORA</h2>
 
-        <button
-          style={styles.button}
-          onClick={() => setScreen("identite")}
-        >
+        <button style={styles.button} onClick={() => setScreen("identite")}>
           Hanomboka ny Tombana ID Tanora
         </button>
 
-        <button
-          style={styles.secondaryButton}
-          onClick={() => setScreen("imprimable")}
-        >
+        <button style={styles.secondaryButton} onClick={() => setScreen("imprimable")}>
           Version imprimable vierge ID Tanora
         </button>
 
-        <button
-          style={styles.secondaryButton}
-          onClick={() => setScreen("fiche")}
-        >
+        <button style={styles.secondaryButton} onClick={() => setScreen("fiche")}>
           Fiche remplie par ID Tanora
         </button>
 
-        <button
-          style={styles.secondaryButton}
-          onClick={() => setScreen("modifier_tanora")}
-        >
+        <button style={styles.secondaryButton} onClick={() => setScreen("modifier_tanora")}>
           Modifier / Compléter Fiche ID Tanora
         </button>
 
         <hr />
 
-        <h2 style={styles.subtitle}>
-          TOMBANA IOMBONANA AO ANATY VTI
-        </h2>
+        <h2 style={styles.subtitle}>TOMBANA IOMBONANA AO ANATY VTI</h2>
 
-        <button
-          style={styles.button}
-          onClick={() => setScreen("vti_iombonana")}
-        >
+        <button style={styles.button} onClick={() => setScreen("vti_iombonana")}>
           Hanomboka Tombana iombonana VTI
         </button>
 
-        <button
-          style={styles.secondaryButton}
-          onClick={() => setScreen("vti_imprimable")}
-        >
+        <button style={styles.secondaryButton} onClick={() => setScreen("vti_imprimable")}>
           Formulaire vierge VTI
         </button>
 
-        <button
-          style={styles.secondaryButton}
-          onClick={() => setScreen("vti_fiche")}
-        >
+        <button style={styles.secondaryButton} onClick={() => setScreen("vti_fiche")}>
           Fiche remplie VTI par ID VTI
         </button>
 
-        <button
-          style={styles.secondaryButton}
-          onClick={() => setScreen("modifier_vti")}
-        >
+        <button style={styles.secondaryButton} onClick={() => setScreen("modifier_vti")}>
           Modifier / Compléter Fiche ID VTI
+        </button>
+
+        <hr />
+
+        <h2 style={styles.subtitle}>TABLEAU DE BORD ANALYTIQUE</h2>
+
+        <button style={styles.button} onClick={() => setScreen("dashboard")}>
+          Ouvrir Dashboard Analytique
         </button>
       </section>
     </main>
   );
 }
-
 function TombanaIombonanaVtiForm({ onBack }: any) {
   const [step, setStep] = useState<
     "identite" | "arapanahy" | "toekarena" | "fahasalamana" | "etika"
