@@ -2274,7 +2274,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
 
   const updateScore = (i: number, key: string, value: number) => {
     const copy = scores.map((s) => ({ ...s }));
-    copy[i] = { ...copy[i], [key]: value };
+    copy[i] = { ...copy[i], [key]: Number(value || 0) };
     setScores(copy);
   };
 
@@ -2285,11 +2285,11 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
   };
 
   const scoreFiliere = (i: number) =>
-    scores[i].tany +
-    scores[i].fiofanana +
-    scores[i].ezaka +
-    scores[i].tohana +
-    scores[i].economie;
+    Number(scores[i].tany || 0) +
+    Number(scores[i].fiofanana || 0) +
+    Number(scores[i].ezaka || 0) +
+    Number(scores[i].tohana || 0) +
+    Number(scores[i].economie || 0);
 
   const getUniteAnnee = (i: number, year: number) => {
     const f = filieres[i];
@@ -2313,13 +2313,15 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       const reinvestis = totalPoussins * 0.25;
       const vendus = totalPoussins * 0.75;
       const ca = vendus * 16000;
-      const dep = vendus * 7000 + (year === 0 ? Number(units[i][0] || 0) * 430000 : 0);
+      const dep =
+        vendus * 7000 +
+        (year === 0 ? Number(units[i][0] || 0) * 430000 : 0);
 
       return {
         ca,
         dep,
         benefice: ca - dep,
-        detail: `${activeHouses.toLocaleString()} tranon’akoho actifs ; ${totalPoussins.toLocaleString()} poussins ; ${reinvestis.toLocaleString()} réinvestis ; ${vendus.toLocaleString()} amidy ; charges 7 000 Ar/poussin vendu`,
+        detail: `${activeHouses.toLocaleString()} tranon’akoho actifs ; ${totalPoussins.toLocaleString()} poussins ; ${reinvestis.toLocaleString()} réinvestis ; ${vendus.toLocaleString()} amidy`,
       };
     }
 
@@ -2337,7 +2339,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
         ca,
         dep,
         benefice: ca - dep,
-        detail: `${ruchesActives} tohontantely actifs ; ${ruchesNouvelles} vaovao ; ${ruchesAnciennes} efa nisy ; 42 L/an/tohontantely × 9 000 Ar/L ; dépenses vaovao 295 000 Ar, dépenses manaraka 135 000 Ar`,
+        detail: `${ruchesActives} tohontantely actifs ; ${ruchesNouvelles} vaovao ; ${ruchesAnciennes} efa nisy`,
       };
     }
 
@@ -2395,7 +2397,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
 
   const totalEconomie = scores.reduce((sum, s, i) => {
     if (!selected[i]) return sum;
-    return sum + s.economie;
+    return sum + Number(s.economie || 0);
   }, 0);
 
   const sauvegarderScoresTaniketsa = async () => {
@@ -2404,22 +2406,27 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       return;
     }
 
-    const { error: scoreError } = await supabase
-      .from("scores")
-      .upsert(
-        {
-          tanora_id: tanoraId,
-          score_taniketsa: totalScore,
-          score_economie: totalEconomie,
-          score_taniketsa_max: maxScore,
-          score_voly_rakotra: selected[0] ? scoreFiliere(0) : 0,
-          score_vary: selected[1] ? scoreFiliere(1) : 0,
-          score_akoho_gasy: selected[2] ? scoreFiliere(2) : 0,
-          score_kisoa: selected[3] ? scoreFiliere(3) : 0,
-          score_tantely: selected[4] ? scoreFiliere(4) : 0,
-        },
-        { onConflict: "tanora_id" }
-      );
+    await supabase.from("taniketsa_unites").delete().eq("tanora_id", tanoraId);
+    await supabase.from("economies_taniketsa").delete().eq("tanora_id", tanoraId);
+    await supabase
+      .from("reponses_taniketsa_detaillees")
+      .delete()
+      .eq("tanora_id", tanoraId);
+
+    const { error: scoreError } = await supabase.from("scores").upsert(
+      {
+        tanora_id: tanoraId,
+        score_taniketsa: totalScore,
+        score_economie: totalEconomie,
+        score_taniketsa_max: maxScore,
+        score_voly_rakotra: selected[0] ? scoreFiliere(0) : 0,
+        score_vary: selected[1] ? scoreFiliere(1) : 0,
+        score_akoho_gasy: selected[2] ? scoreFiliere(2) : 0,
+        score_kisoa: selected[3] ? scoreFiliere(3) : 0,
+        score_tantely: selected[4] ? scoreFiliere(4) : 0,
+      },
+      { onConflict: "tanora_id" }
+    );
 
     if (scoreError) {
       alert("Erreur Scores : " + JSON.stringify(scoreError));
@@ -2429,27 +2436,21 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
     const { error: ecoError } = await supabase.from("economies_taniketsa").insert([
       {
         tanora_id: tanoraId,
-
         ca_voly_rakotra: voly.ca,
         depenses_voly_rakotra: voly.dep,
         benefice_voly_rakotra: voly.benefice,
-
         ca_vary: vary.ca,
         depenses_vary: vary.dep,
         benefice_vary: vary.benefice,
-
         ca_akoho_gasy: akoho.ca,
         depenses_akoho_gasy: akoho.dep,
         benefice_akoho_gasy: akoho.benefice,
-
         ca_kisoa: kisoa.ca,
         depenses_kisoa: kisoa.dep,
         benefice_kisoa: kisoa.benefice,
-
         ca_tantely: tantely.ca,
         depenses_tantely: tantely.dep,
         benefice_tantely: tantely.benefice,
-
         ca_total: totals.ca,
         depenses_total: totals.dep,
         benefice_total: totals.benefice,
@@ -2473,22 +2474,19 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
           tanora_id: tanoraId,
           type_taniketsa: f.type,
           unite_label: f.unitName,
-
           unite_annee_1: getUniteAnnee(i, 0),
           unite_annee_2: getUniteAnnee(i, 1),
           unite_annee_3: getUniteAnnee(i, 2),
-
           ca_annee_1: y1.ca,
           depenses_annee_1: y1.dep,
           benefice_annee_1: y1.benefice,
-
           ca_annee_2: y2.ca,
           depenses_annee_2: y2.dep,
           benefice_annee_2: y2.benefice,
-
           ca_annee_3: y3.ca,
           depenses_annee_3: y3.dep,
           benefice_annee_3: y3.benefice,
+          score_filiere: scoreFiliere(i),
         };
       })
       .filter(Boolean);
@@ -2502,48 +2500,45 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       return;
     }
 
-    const { error: repError } = await supabase.from("reponses_taniketsa_detaillees").insert([
-      {
-        tanora_id: tanoraId,
-
-        voly_rakotra_fananantany: reponses[0].fananantany,
-        voly_rakotra_fiofanana: reponses[0].fiofanana,
-        voly_rakotra_ezaka: reponses[0].ezaka,
-        voly_rakotra_tohana: reponses[0].tohana,
-        voly_rakotra_diagnostic: reponses[0].diagnostic,
-
-        vary_fananantany: reponses[1].fananantany,
-        vary_fiofanana: reponses[1].fiofanana,
-        vary_ezaka: reponses[1].ezaka,
-        vary_tohana: reponses[1].tohana,
-        vary_diagnostic: reponses[1].diagnostic,
-
-        akoho_gasy_fananantany: reponses[2].fananantany,
-        akoho_gasy_fiofanana: reponses[2].fiofanana,
-        akoho_gasy_ezaka: reponses[2].ezaka,
-        akoho_gasy_tohana: reponses[2].tohana,
-        akoho_gasy_diagnostic: reponses[2].diagnostic,
-
-        kisoa_fananantany: reponses[3].fananantany,
-        kisoa_fiofanana: reponses[3].fiofanana,
-        kisoa_ezaka: reponses[3].ezaka,
-        kisoa_tohana: reponses[3].tohana,
-        kisoa_diagnostic: reponses[3].diagnostic,
-
-        tantely_fananantany: reponses[4].fananantany,
-        tantely_fiofanana: reponses[4].fiofanana,
-        tantely_ezaka: reponses[4].ezaka,
-        tantely_tohana: reponses[4].tohana,
-        tantely_diagnostic: reponses[4].diagnostic,
-      },
-    ]);
+    const { error: repError } = await supabase
+      .from("reponses_taniketsa_detaillees")
+      .insert([
+        {
+          tanora_id: tanoraId,
+          voly_rakotra_fananantany: reponses[0].fananantany,
+          voly_rakotra_fiofanana: reponses[0].fiofanana,
+          voly_rakotra_ezaka: reponses[0].ezaka,
+          voly_rakotra_tohana: reponses[0].tohana,
+          voly_rakotra_diagnostic: reponses[0].diagnostic,
+          vary_fananantany: reponses[1].fananantany,
+          vary_fiofanana: reponses[1].fiofanana,
+          vary_ezaka: reponses[1].ezaka,
+          vary_tohana: reponses[1].tohana,
+          vary_diagnostic: reponses[1].diagnostic,
+          akoho_gasy_fananantany: reponses[2].fananantany,
+          akoho_gasy_fiofanana: reponses[2].fiofanana,
+          akoho_gasy_ezaka: reponses[2].ezaka,
+          akoho_gasy_tohana: reponses[2].tohana,
+          akoho_gasy_diagnostic: reponses[2].diagnostic,
+          kisoa_fananantany: reponses[3].fananantany,
+          kisoa_fiofanana: reponses[3].fiofanana,
+          kisoa_ezaka: reponses[3].ezaka,
+          kisoa_tohana: reponses[3].tohana,
+          kisoa_diagnostic: reponses[3].diagnostic,
+          tantely_fananantany: reponses[4].fananantany,
+          tantely_fiofanana: reponses[4].fiofanana,
+          tantely_ezaka: reponses[4].ezaka,
+          tantely_tohana: reponses[4].tohana,
+          tantely_diagnostic: reponses[4].diagnostic,
+        },
+      ]);
 
     if (repError) {
       alert("Erreur Réponses détaillées : " + JSON.stringify(repError));
       return;
     }
 
-    alert("Tombana feno voatahiry : scores, économies, unités, CA isan-taona, bénéfices isan-taona ary réponses détaillées !");
+    alert("Tombana Taniketsa voatahiry tsara !");
   };
 
   return (
@@ -2596,7 +2591,9 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                         type="number"
                         min="0"
                         placeholder="Ohatra : 1 na 2"
-                        onChange={(e) => updateUnit(i, 0, Number(e.target.value))}
+                        onChange={(e) =>
+                          updateUnit(i, 0, Number(e.target.value))
+                        }
                       />
                     </>
                   )}
@@ -2616,7 +2613,9 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                               type="number"
                               min="0"
                               placeholder={`Isan’ny ${f.unitName}`}
-                              onChange={(e) => updateUnit(i, year, Number(e.target.value))}
+                              onChange={(e) =>
+                                updateUnit(i, year, Number(e.target.value))
+                              }
                             />
                           </>
                         )}
@@ -2637,9 +2636,10 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <h4 style={styles.sectionTitle}>A. Fananantany — 5 points</h4>
                   <textarea
                     style={styles.textarea}
-                    placeholder="An’iza ny tany ? Fanananao ve, an’ny ray aman-dreny, hofaina, sa hafa ? Firy ny refiny ?"
                     value={reponses[i].fananantany}
-                    onChange={(e) => updateReponse(i, "fananantany", e.target.value)}
+                    onChange={(e) =>
+                      updateReponse(i, "fananantany", e.target.value)
+                    }
                   />
                   <ScoreSelect
                     label="Score fananantany"
@@ -2650,9 +2650,10 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <h4 style={styles.sectionTitle}>B. Fiofanana — 15 points</h4>
                   <textarea
                     style={styles.textarea}
-                    placeholder="Efa nahazo fiofanana ve ? Hazavao ny votoatin’ny fiofanana sy izay hainao ampiharina."
                     value={reponses[i].fiofanana}
-                    onChange={(e) => updateReponse(i, "fiofanana", e.target.value)}
+                    onChange={(e) =>
+                      updateReponse(i, "fiofanana", e.target.value)
+                    }
                   />
                   <ScoreSelect
                     label="Score fiofanana"
@@ -2663,9 +2664,10 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <h4 style={styles.sectionTitle}>C. Ezaka sy anjara biriky — 20 points</h4>
                   <textarea
                     style={styles.textarea}
-                    placeholder="Sorito ny ezaka sy anjara biriky: tany, fitaovana, vola, asa tanana, akora, sary, taratasy fanekena."
                     value={reponses[i].ezaka}
-                    onChange={(e) => updateReponse(i, "ezaka", e.target.value)}
+                    onChange={(e) =>
+                      updateReponse(i, "ezaka", e.target.value)
+                    }
                   />
                   <ScoreSelect
                     label="Score ezaka sy anjara biriky"
@@ -2676,9 +2678,10 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <h4 style={styles.sectionTitle}>D. Tohana ilaina — 5 points</h4>
                   <textarea
                     style={styles.textarea}
-                    placeholder="Inona no tohana tena ilaina izay tsy vitanao irery intsony ?"
                     value={reponses[i].tohana}
-                    onChange={(e) => updateReponse(i, "tohana", e.target.value)}
+                    onChange={(e) =>
+                      updateReponse(i, "tohana", e.target.value)
+                    }
                   />
                   <ScoreSelect
                     label="Score tohana ilaina"
@@ -2691,9 +2694,10 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   </h4>
                   <textarea
                     style={styles.textarea}
-                    placeholder="Efa nivarotra zavatra ve ianao tao anatin’ny 3 taona farany ? Fantatrao ve ny dépenses sy tombom-barotra ? Inona ny fiofanana ilainao ?"
                     value={reponses[i].diagnostic}
-                    onChange={(e) => updateReponse(i, "diagnostic", e.target.value)}
+                    onChange={(e) =>
+                      updateReponse(i, "diagnostic", e.target.value)
+                    }
                   />
                   <ScoreSelect
                     label="Score diagnostic ara-toekarena sy ara-pitantanana"
