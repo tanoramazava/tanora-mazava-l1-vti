@@ -1475,6 +1475,218 @@ function FormulaireViergeVti({ onBack }: any) {
     </main>
   );
 }
+function ModifierCompleterVti({ onBack }: any) {
+  const [idVti, setIdVti] = useState("");
+  const [vti, setVti] = useState<any>(null);
+  const [mode, setMode] = useState<"menu" | "identite">("menu");
+
+  const chargerVti = async () => {
+    const id = Number(idVti);
+
+    if (!id) {
+      alert("Ampidiro aloha ny ID VTI.");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("vti")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error || !data) {
+      alert("Tsy hita ny ID VTI : " + JSON.stringify(error));
+      return;
+    }
+
+    setVti(data);
+    setMode("menu");
+  };
+
+  const enregistrerIdentiteVti = async () => {
+    if (!vti?.id) return;
+
+    const { error } = await supabase
+      .from("vti")
+      .update({
+        nom_vti: vti.nom_vti || "",
+        faritra: vti.faritra || "",
+        distrika: vti.distrika || "",
+        kaomina: vti.kaomina || "",
+        type_kaomina: vti.type_kaomina || "",
+        fokontany: vti.fokontany || "",
+        isan_mponina: Number(vti.isan_mponina || 0),
+      })
+      .eq("id", vti.id);
+
+    if (error) {
+      alert("Erreur modification VTI : " + JSON.stringify(error));
+      return;
+    }
+
+    alert("Identité VTI nohavaozina tsara.");
+    setMode("menu");
+  };
+
+  return (
+    <main style={styles.main}>
+      <section style={styles.card}>
+        <h1 style={styles.titleSmall}>
+          Modifier / Compléter Fiche ID VTI
+        </h1>
+
+        <label style={styles.label}>Ampidiro ny ID VTI</label>
+        <input
+          style={styles.input}
+          type="number"
+          value={idVti}
+          onChange={(e) => setIdVti(e.target.value)}
+          placeholder="Ohatra : 1"
+        />
+
+        <div style={styles.actions}>
+          <button style={styles.button} onClick={chargerVti}>
+            Charger ID VTI
+          </button>
+
+          <button style={styles.secondaryButton} onClick={onBack}>
+            Miverina
+          </button>
+        </div>
+
+        {vti && mode === "menu" && (
+          <>
+            <hr />
+
+            <h2>Fiche VTI hita</h2>
+            <p><strong>ID VTI :</strong> {vti.id}</p>
+            <p><strong>Anaran’ny VTI :</strong> {vti.nom_vti}</p>
+            <p><strong>Faritra :</strong> {vti.faritra}</p>
+            <p><strong>Distrika :</strong> {vti.distrika}</p>
+            <p><strong>Kaomina :</strong> {vti.kaomina}</p>
+            <p><strong>Type Kaomina :</strong> {vti.type_kaomina}</p>
+            <p><strong>Fokontany :</strong> {vti.fokontany}</p>
+            <p><strong>Isan’ny mponina :</strong> {vti.isan_mponina}</p>
+
+            <div style={styles.actions}>
+              <button style={styles.button} onClick={() => setMode("identite")}>
+                Modifier Identité VTI
+              </button>
+
+              <button
+                style={styles.secondaryButton}
+                onClick={() =>
+                  alert("Dingana manaraka: hampidirintsika eto ny modification Vaomiera Ara-panahy sy Fanabeazana.")
+                }
+              >
+                Modifier Vaomiera Ara-panahy sy Fanabeazana
+              </button>
+
+              <button
+                style={styles.secondaryButton}
+                onClick={() =>
+                  alert("Dingana manaraka: hampidirintsika eto ny modification Vaomiera Fandraharahana sy Toekarena.")
+                }
+              >
+                Modifier Vaomiera Fandraharahana sy Toekarena
+              </button>
+
+              <button
+                style={styles.secondaryButton}
+                onClick={() =>
+                  alert("Dingana manaraka: hampidirintsika eto ny modification Vaomiera Fahasalamana sy Fiarovana.")
+                }
+              >
+                Modifier Vaomiera Fahasalamana sy Fiarovana
+              </button>
+
+              <button
+                style={styles.secondaryButton}
+                onClick={() =>
+                  alert("Dingana manaraka: hampidirintsika eto ny modification Vaomiera Etika sy Fampandrosoana Maharitra.")
+                }
+              >
+                Modifier Vaomiera Etika sy Fampandrosoana Maharitra
+              </button>
+            </div>
+          </>
+        )}
+
+        {vti && mode === "identite" && (
+          <>
+            <hr />
+
+            <h2>Modifier Identité VTI</h2>
+
+            <label style={styles.label}>Anaran’ny VTI</label>
+            <input
+              style={styles.input}
+              value={vti.nom_vti || ""}
+              onChange={(e) => setVti({ ...vti, nom_vti: e.target.value })}
+            />
+
+            <label style={styles.label}>Faritra</label>
+            <input
+              style={styles.input}
+              value={vti.faritra || ""}
+              onChange={(e) => setVti({ ...vti, faritra: e.target.value })}
+            />
+
+            <label style={styles.label}>Distrika</label>
+            <input
+              style={styles.input}
+              value={vti.distrika || ""}
+              onChange={(e) => setVti({ ...vti, distrika: e.target.value })}
+            />
+
+            <label style={styles.label}>Kaomina</label>
+            <input
+              style={styles.input}
+              value={vti.kaomina || ""}
+              onChange={(e) => setVti({ ...vti, kaomina: e.target.value })}
+            />
+
+            <label style={styles.label}>Type de Kaomina</label>
+            <select
+              style={styles.input}
+              value={vti.type_kaomina || ""}
+              onChange={(e) => setVti({ ...vti, type_kaomina: e.target.value })}
+            >
+              <option value="">Safidio</option>
+              <option value="Ambanivohitra">Kaomina Ambanivohitra</option>
+              <option value="Andrenivohitra">Kaomina Andrenivohitra</option>
+            </select>
+
+            <label style={styles.label}>Fokontany</label>
+            <input
+              style={styles.input}
+              value={vti.fokontany || ""}
+              onChange={(e) => setVti({ ...vti, fokontany: e.target.value })}
+            />
+
+            <label style={styles.label}>Isan’ny mponina iandraiketany</label>
+            <input
+              style={styles.input}
+              type="number"
+              value={vti.isan_mponina || ""}
+              onChange={(e) => setVti({ ...vti, isan_mponina: e.target.value })}
+            />
+
+            <div style={styles.actions}>
+              <button style={styles.button} onClick={enregistrerIdentiteVti}>
+                Enregistrer modification VTI
+              </button>
+
+              <button style={styles.secondaryButton} onClick={() => setMode("menu")}>
+                Annuler
+              </button>
+            </div>
+          </>
+        )}
+      </section>
+    </main>
+  );
+}
 function FicheRemplieVti({ onBack }: any) {
   const [vtiIdInput, setVtiIdInput] = useState("");
   const [vti, setVti] = useState<any>(null);
