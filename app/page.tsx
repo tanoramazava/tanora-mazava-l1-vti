@@ -3032,7 +3032,11 @@ function FicheRemplie({ onBack }: any) {
   };
 
   const getUnites = (type: string) => {
-    return unitesTaniketsa.find((u: any) => u.type_taniketsa === type);
+    const lignes = unitesTaniketsa
+      .filter((u: any) => u.type_taniketsa === type)
+      .sort((a: any, b: any) => Number(b.id || 0) - Number(a.id || 0));
+
+    return lignes[0];
   };
 
   const totalSpirituelCalcule =
@@ -3110,7 +3114,7 @@ function FicheRemplie({ onBack }: any) {
       .from("taniketsa_unites")
       .select("*")
       .eq("tanora_id", tanoraId)
-      .order("id", { ascending: true });
+      .order("id", { ascending: false });
 
     const { data: spirituelData } = await supabase
       .from("reponses_spirituel")
@@ -3281,14 +3285,14 @@ function FicheRemplie({ onBack }: any) {
         <Champ label="Valiny" value={diagnostic} />
 
         <p>
-          <strong>Score filière :</strong> {Number(score || 0)} /{" "}
-          {scoreMax || 55}
+          <strong>Score filière :</strong>{" "}
+          {Number(score || unites?.score_filiere || 0)} / {scoreMax || 55}
         </p>
 
-        <h4>Projection économique 3 ans</h4>
-        <Champ label="CA 3 ans" value={money(ca)} />
-        <Champ label="Dépenses 3 ans" value={money(depenses)} />
-        <Champ label="Bénéfice 3 ans" value={money(benefice)} />
+        <h4>Projection économique globale sur 3 ans</h4>
+        <Champ label="CA total 3 ans" value={money(ca)} />
+        <Champ label="Dépenses totales 3 ans" value={money(depenses)} />
+        <Champ label="Bénéfice total 3 ans" value={money(benefice)} />
       </div>
     );
   };
@@ -3335,120 +3339,15 @@ function FicheRemplie({ onBack }: any) {
           </p>
         )}
 
-        {annexeVaomiera && annexeType === "arapanahy" && (
+        {annexeVaomiera && (
           <div style={styles.miniBox}>
             <Champ
               label="Total score Vaomiera"
-              value={`${annexeVaomiera.total_score || 0} / 70`}
+              value={`${annexeVaomiera.total_score || 0}`}
             />
-            <Champ
-              label="Fivoriana"
-              value={`${annexeVaomiera.mivory_score || 0} points`}
-            />
-            <Champ
-              label="Ora iasana"
-              value={`${annexeVaomiera.ora_score || 0} points`}
-            />
-            <Champ
-              label="Herinandro dimy"
-              value={`${annexeVaomiera.herinandro_score || 0} points`}
-            />
-            <Champ label="Fanaka dimy" value={annexeVaomiera.fanaka_dimy} />
-            <Champ
-              label="Fanamby 140 andro"
-              value={annexeVaomiera.fanamby_140_andro}
-            />
-            <Champ
-              label="Olana ara-panabeazana"
-              value={annexeVaomiera.olana_fanabeazana}
-            />
-            <Champ
-              label="Paikady ara-panabeazana 140 andro"
-              value={annexeVaomiera.paikady_140_andro}
-            />
-          </div>
-        )}
-
-        {annexeVaomiera && annexeType === "toekarena" && (
-          <div style={styles.miniBox}>
-            <Champ
-              label="Total score Vaomiera"
-              value={`${annexeVaomiera.total_score || 0} / 40`}
-            />
-            <Champ
-              label="Fivoriana"
-              value={`${annexeVaomiera.mivory_score || 0} points`}
-            />
-            <Champ
-              label="Ora iasana"
-              value={`${annexeVaomiera.ora_score || 0} points`}
-            />
-            <Champ
-              label="Olana ara-toekarena"
-              value={annexeVaomiera.olana_toekarena}
-            />
-            <Champ
-              label="Paikady ara-toekarena 140 andro"
-              value={annexeVaomiera.paikady_toekarena}
-            />
-          </div>
-        )}
-
-        {annexeVaomiera && annexeType === "fahasalamana" && (
-          <div style={styles.miniBox}>
-            <Champ
-              label="Total score Vaomiera"
-              value={`${annexeVaomiera.total_score || 0} / 50`}
-            />
-            <Champ
-              label="Fivoriana"
-              value={`${annexeVaomiera.mivory_score || 0} points`}
-            />
-            <Champ
-              label="Ora iasana"
-              value={`${annexeVaomiera.ora_score || 0} points`}
-            />
-            <Champ
-              label="Olana ara-pahasalamana"
-              value={annexeVaomiera.olana_fahasalamana}
-            />
-            <Champ
-              label="Voina manimba taranaka"
-              value={annexeVaomiera.voina_tanora}
-            />
-            <Champ
-              label="Paikady Fahasalamana sy Fiarovana 140 andro"
-              value={annexeVaomiera.paikady_fahasalamana}
-            />
-          </div>
-        )}
-
-        {annexeVaomiera && annexeType === "etika" && (
-          <div style={styles.miniBox}>
-            <Champ
-              label="Total score Vaomiera"
-              value={`${annexeVaomiera.total_score || 0} / 50`}
-            />
-            <Champ
-              label="Fivoriana"
-              value={`${annexeVaomiera.mivory_score || 0} points`}
-            />
-            <Champ
-              label="Ora iasana"
-              value={`${annexeVaomiera.ora_score || 0} points`}
-            />
-            <Champ
-              label="Olana Fandriampahalemana sy kolikoly"
-              value={annexeVaomiera.olana_fandriampahalemana}
-            />
-            <Champ
-              label="Olana Tontolo iainana"
-              value={annexeVaomiera.olana_tontolo_iainana}
-            />
-            <Champ
-              label="Paikady Etika sy fampandrosoana maharitra"
-              value={annexeVaomiera.paikady_etika}
-            />
+            <Champ label="Fivoriana" value={annexeVaomiera.mivory_score} />
+            <Champ label="Ora iasana" value={annexeVaomiera.ora_score} />
+            <Champ label="Données Vaomiera" value="Voatahiry ao amin’ny Fiche VTI" />
           </div>
         )}
       </>
@@ -3522,15 +3421,11 @@ function FicheRemplie({ onBack }: any) {
             <LigneQuestion numero="4" question="Manana anjara biriky ve izy ?" reponse={repVti?.vti_q4} />
             <LigneQuestion numero="5" question="Vaomiera misy azy" reponse={repVti?.vti_q5 || tanora.vaomiera_misy_azy} />
 
-            <h3>Total VTI : {scores?.score_vti || totalVtiCalcule || 0} / 55</h3>
+            <h3>Total VTI : {scores?.score_vti || totalVtiCalcule || 0} / 29</h3>
 
             <hr />
 
             <h2>4. Taniketsa Fandraharahana</h2>
-
-            {!rep && !eco && (
-              <p>Tsy mbola hita ny valiny détaillées Taniketsa ho an’ity ID Tanora ity.</p>
-            )}
 
             {(rep || eco) && (
               <>
