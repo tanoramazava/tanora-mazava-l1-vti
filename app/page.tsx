@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 function DashboardAnalytique({ onBack }: any) {
   const [loading, setLoading] = useState(false);
+
   const [tanora, setTanora] = useState<any[]>([]);
   const [vti, setVti] = useState<any[]>([]);
   const [spirituel, setSpirituel] = useState<any[]>([]);
@@ -12,14 +13,24 @@ function DashboardAnalytique({ onBack }: any) {
   const [eco, setEco] = useState<any[]>([]);
   const [repTaniketsa, setRepTaniketsa] = useState<any[]>([]);
 
+  const [vtiArap, setVtiArap] = useState<any[]>([]);
+  const [vtiToek, setVtiToek] = useState<any[]>([]);
+  const [vtiFahas, setVtiFahas] = useState<any[]>([]);
+  const [vtiEtika, setVtiEtika] = useState<any[]>([]);
+
   const money = (v: any) => Number(v || 0).toLocaleString("fr-FR") + " Ar";
   const txt = (v: any) => String(v || "").toLowerCase();
 
   const countIncludes = (rows: any[], field: string, keys: string[]) =>
-    rows.filter((r) => keys.some((k) => txt(r[field]).includes(k.toLowerCase()))).length;
+    rows.filter((r) =>
+      keys.some((k) => txt(r[field]).includes(k.toLowerCase()))
+    ).length;
 
   const total = (rows: any[], field: string) =>
     rows.reduce((s, r) => s + Number(r[field] || 0), 0);
+
+  const concatText = (rows: any[], field: string) =>
+    rows.map((r) => r[field]).filter(Boolean).join(" | ") || "—";
 
   const chargerDashboard = async () => {
     setLoading(true);
@@ -32,6 +43,11 @@ function DashboardAnalytique({ onBack }: any) {
     const { data: ecoData } = await supabase.from("economies_taniketsa").select("*");
     const { data: repTanData } = await supabase.from("reponses_taniketsa_detaillees").select("*");
 
+    const { data: arapData } = await supabase.from("vti_vaomiera_arapanahy_fanabeazana").select("*");
+    const { data: toekData } = await supabase.from("vti_vaomiera_fandraharahana_toekarena").select("*");
+    const { data: fahasData } = await supabase.from("vti_vaomiera_fahasalamana_fiarovana").select("*");
+    const { data: etikaData } = await supabase.from("vti_vaomiera_etika_fampandrosoana").select("*");
+
     setTanora(tanoraData || []);
     setVti(vtiData || []);
     setSpirituel(spirituelData || []);
@@ -39,6 +55,11 @@ function DashboardAnalytique({ onBack }: any) {
     setUnites(unitesData || []);
     setEco(ecoData || []);
     setRepTaniketsa(repTanData || []);
+
+    setVtiArap(arapData || []);
+    setVtiToek(toekData || []);
+    setVtiFahas(fahasData || []);
+    setVtiEtika(etikaData || []);
 
     setLoading(false);
   };
@@ -65,6 +86,7 @@ function DashboardAnalytique({ onBack }: any) {
           <button style={styles.button} onClick={chargerDashboard}>
             Charger / Actualiser Dashboard
           </button>
+
           <button style={styles.secondaryButton} onClick={onBack}>
             Miverina
           </button>
@@ -78,7 +100,8 @@ function DashboardAnalytique({ onBack }: any) {
         <div style={styles.scoreBox}>
           <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
           <p><strong>VTI voasoratra :</strong> {vti.length}</p>
-          <p><strong>Lahy :</strong> {countIncludes(tanora, "sexe", ["lahy"])} | <strong>Vavy :</strong> {countIncludes(tanora, "sexe", ["vavy"])}</p>
+          <p><strong>Lahy :</strong> {countIncludes(tanora, "sexe", ["lahy"])}</p>
+          <p><strong>Vavy :</strong> {countIncludes(tanora, "sexe", ["vavy"])}</p>
           <p><strong>18 taona midina :</strong> {age18}</p>
           <p><strong>19–24 taona :</strong> {age19_24}</p>
           <p><strong>25–35 taona :</strong> {age25_35}</p>
@@ -92,27 +115,27 @@ function DashboardAnalytique({ onBack }: any) {
         <h2>2. Dashboard Ara-panahy Tanora</h2>
         <div style={styles.miniBox}>
           <h3>Vavaka Betela</h3>
-          <p><strong>Isan’andro :</strong> {countIncludes(spirituel, "spirituel_q3", ["isan’andro", "isanandro", "andro"])} </p>
-          <p><strong>In-3 isan-kerinandro :</strong> {countIncludes(spirituel, "spirituel_q3", ["in-3", "intelo", "3"])} </p>
-          <p><strong>In-1 isan-kerinandro :</strong> {countIncludes(spirituel, "spirituel_q3", ["in-1", "indray", "1"])} </p>
-          <p><strong>Mbola tsy nanomboka :</strong> {countIncludes(spirituel, "spirituel_q3", ["tsy", "mbola tsy"])} </p>
+          <p><strong>Isan’andro :</strong> {countIncludes(spirituel, "spirituel_q3", ["isan’andro", "isanandro", "andro"])}</p>
+          <p><strong>In-3 isan-kerinandro :</strong> {countIncludes(spirituel, "spirituel_q3", ["in-3", "intelo", "3"])}</p>
+          <p><strong>In-1 isan-kerinandro :</strong> {countIncludes(spirituel, "spirituel_q3", ["in-1", "indray", "1"])}</p>
+          <p><strong>Mbola tsy nanomboka :</strong> {countIncludes(spirituel, "spirituel_q3", ["mbola tsy", "tsy nanomboka"])}</p>
 
           <h3>Pratika ara-panahy</h3>
-          <p><strong>Fibebahana sy fiderana :</strong> {countIncludes(spirituel, "spirituel_q4", ["mazava", "voafehy", "eny", "tsara"])} </p>
-          <p><strong>Fanaka dimy / soatoavina :</strong> {countIncludes(spirituel, "spirituel_q5", ["mazava", "voafehy", "eny", "tsara"])} </p>
-          <p><strong>Fandroahana demonia :</strong> {countIncludes(spirituel, "spirituel_q6", ["mazava", "voafehy", "eny", "tsara"])} </p>
-          <p><strong>Vavaka mamindra tendrombohitra :</strong> {countIncludes(spirituel, "spirituel_q7", ["mazava", "voafehy", "eny", "tsara"])} </p>
+          <p><strong>Fibebahana sy fiderana :</strong> {countIncludes(spirituel, "spirituel_q4", ["mazava", "voafehy", "eny", "tsara"])}</p>
+          <p><strong>Fanaka dimy / Soatoavina :</strong> {countIncludes(spirituel, "spirituel_q5", ["mazava", "voafehy", "eny", "tsara"])}</p>
+          <p><strong>Fandroahana demonia :</strong> {countIncludes(spirituel, "spirituel_q6", ["mazava", "voafehy", "eny", "tsara"])}</p>
+          <p><strong>Vavaka mamindra tendrombohitra :</strong> {countIncludes(spirituel, "spirituel_q7", ["mazava", "voafehy", "eny", "tsara"])}</p>
         </div>
 
         <hr />
 
         <h2>3. Dashboard Engagement VTI Tanora</h2>
         <div style={styles.miniBox}>
-          <p><strong>Efa nikambana fikambanana taloha :</strong> {countIncludes(repVti, "vti_q1", ["eny", "efa"])} </p>
-          <p><strong>Mahafantatra mazava ny VTI :</strong> {countIncludes(repVti, "vti_q2", ["mazava", "tsara"])} </p>
-          <p><strong>Mandray andraikitra mavitrika :</strong> {countIncludes(repVti, "vti_q3", ["mavitrika", "mandray", "eny"])} </p>
-          <p><strong>Manana anjara biriky :</strong> {countIncludes(repVti, "vti_q4", ["eny", "manana"])} </p>
-          <p><strong>Mahafantatra Vaomiera misy azy :</strong> {countIncludes(repVti, "vti_q5", ["vaomiera", "ara-panahy", "toekarena", "fahasalamana", "etika"])} </p>
+          <p><strong>Efa nikambana fikambanana taloha :</strong> {countIncludes(repVti, "vti_q1", ["eny", "efa"])}</p>
+          <p><strong>Mahafantatra mazava ny VTI :</strong> {countIncludes(repVti, "vti_q2", ["mazava", "tsara"])}</p>
+          <p><strong>Mandray andraikitra mavitrika :</strong> {countIncludes(repVti, "vti_q3", ["mavitrika", "mandray", "eny"])}</p>
+          <p><strong>Manana anjara biriky :</strong> {countIncludes(repVti, "vti_q4", ["eny", "manana"])}</p>
+          <p><strong>Mahafantatra Vaomiera misy azy :</strong> {countIncludes(repVti, "vti_q5", ["ara-panahy", "toekarena", "fahasalamana", "etika"])}</p>
         </div>
 
         <hr />
@@ -159,13 +182,85 @@ function DashboardAnalytique({ onBack }: any) {
         ].map(([label, key]) => (
           <div key={key} style={styles.miniBox}>
             <h3>{label}</h3>
-            <p><strong>Fananantany :</strong> {repTaniketsa.map((r) => r[`${key}_fananantany`]).filter(Boolean).join(" | ") || "—"}</p>
-            <p><strong>Fiofanana :</strong> {repTaniketsa.map((r) => r[`${key}_fiofanana`]).filter(Boolean).join(" | ") || "—"}</p>
-            <p><strong>Ezaka / Anjara biriky :</strong> {repTaniketsa.map((r) => r[`${key}_ezaka`]).filter(Boolean).join(" | ") || "—"}</p>
-            <p><strong>Tohana ilaina :</strong> {repTaniketsa.map((r) => r[`${key}_tohana`]).filter(Boolean).join(" | ") || "—"}</p>
-            <p><strong>Diagnostic :</strong> {repTaniketsa.map((r) => r[`${key}_diagnostic`]).filter(Boolean).join(" | ") || "—"}</p>
+            <p><strong>Fananantany :</strong> {concatText(repTaniketsa, `${key}_fananantany`)}</p>
+            <p><strong>Fiofanana :</strong> {concatText(repTaniketsa, `${key}_fiofanana`)}</p>
+            <p><strong>Ezaka / Anjara biriky :</strong> {concatText(repTaniketsa, `${key}_ezaka`)}</p>
+            <p><strong>Tohana ilaina :</strong> {concatText(repTaniketsa, `${key}_tohana`)}</p>
+            <p><strong>Diagnostic :</strong> {concatText(repTaniketsa, `${key}_diagnostic`)}</p>
           </div>
         ))}
+
+        <hr />
+
+        <h2>6. Dashboard Identité VTI</h2>
+
+        {vti.map((v) => {
+          const tanoraVti = tanora.filter((t) => Number(t.vti_id) === Number(v.id));
+
+          return (
+            <div key={v.id} style={styles.miniBox}>
+              <h3>{v.nom_vti || "VTI sans nom"}</h3>
+              <p><strong>ID VTI :</strong> {v.id}</p>
+              <p><strong>Faritra :</strong> {v.faritra}</p>
+              <p><strong>Distrika :</strong> {v.distrika}</p>
+              <p><strong>Kaomina :</strong> {v.kaomina}</p>
+              <p><strong>Type Kaomina :</strong> {v.type_kaomina}</p>
+              <p><strong>Fokontany :</strong> {v.fokontany}</p>
+              <p><strong>Isan’ny mponina iandraiketany :</strong> {v.isan_mponina}</p>
+              <p><strong>Tanora mifandray amin’ity VTI ity :</strong> {tanoraVti.length}</p>
+              <p><strong>Lahy :</strong> {countIncludes(tanoraVti, "sexe", ["lahy"])}</p>
+              <p><strong>Vavy :</strong> {countIncludes(tanoraVti, "sexe", ["vavy"])}</p>
+            </div>
+          );
+        })}
+
+        <hr />
+
+        <h2>7. Dashboard Vaomiera Ara-panahy sy Fanabeazana</h2>
+        <div style={styles.miniBox}>
+          <p><strong>VTI manana données :</strong> {vtiArap.length}</p>
+          <p><strong>Total fivoriana :</strong> {total(vtiArap, "mivory_score")}</p>
+          <p><strong>Total ora iasana :</strong> {total(vtiArap, "ora_score")}</p>
+          <p><strong>Fanaka dimy / soatoavina :</strong> {concatText(vtiArap, "fanaka_dimy")}</p>
+          <p><strong>Fanamby ara-panahy 140 andro :</strong> {concatText(vtiArap, "fanamby_140_andro")}</p>
+          <p><strong>Olana ara-panabeazana :</strong> {concatText(vtiArap, "olana_fanabeazana")}</p>
+          <p><strong>Paikady ara-panabeazana :</strong> {concatText(vtiArap, "paikady_140_andro")}</p>
+        </div>
+
+        <hr />
+
+        <h2>8. Dashboard Vaomiera Fandraharahana sy Toekarena</h2>
+        <div style={styles.miniBox}>
+          <p><strong>VTI manana données :</strong> {vtiToek.length}</p>
+          <p><strong>Total fivoriana :</strong> {total(vtiToek, "mivory_score")}</p>
+          <p><strong>Total ora iasana :</strong> {total(vtiToek, "ora_score")}</p>
+          <p><strong>Olana ara-toekarena :</strong> {concatText(vtiToek, "olana_toekarena")}</p>
+          <p><strong>Paikady ara-toekarena 140 andro :</strong> {concatText(vtiToek, "paikady_toekarena")}</p>
+        </div>
+
+        <hr />
+
+        <h2>9. Dashboard Vaomiera Fahasalamana sy Fiarovana</h2>
+        <div style={styles.miniBox}>
+          <p><strong>VTI manana données :</strong> {vtiFahas.length}</p>
+          <p><strong>Total fivoriana :</strong> {total(vtiFahas, "mivory_score")}</p>
+          <p><strong>Total ora iasana :</strong> {total(vtiFahas, "ora_score")}</p>
+          <p><strong>Olana ara-pahasalamana :</strong> {concatText(vtiFahas, "olana_fahasalamana")}</p>
+          <p><strong>Voina manimba taranaka :</strong> {concatText(vtiFahas, "voina_tanora")}</p>
+          <p><strong>Paikady Fahasalamana sy Fiarovana :</strong> {concatText(vtiFahas, "paikady_fahasalamana")}</p>
+        </div>
+
+        <hr />
+
+        <h2>10. Dashboard Vaomiera Etika sy Fampandrosoana Maharitra</h2>
+        <div style={styles.miniBox}>
+          <p><strong>VTI manana données :</strong> {vtiEtika.length}</p>
+          <p><strong>Total fivoriana :</strong> {total(vtiEtika, "mivory_score")}</p>
+          <p><strong>Total ora iasana :</strong> {total(vtiEtika, "ora_score")}</p>
+          <p><strong>Olana fandriampahalemana sy kolikoly :</strong> {concatText(vtiEtika, "olana_fandriampahalemana")}</p>
+          <p><strong>Olana tontolo iainana :</strong> {concatText(vtiEtika, "olana_tontolo_iainana")}</p>
+          <p><strong>Paikady Etika sy Fampandrosoana :</strong> {concatText(vtiEtika, "paikady_etika")}</p>
+        </div>
       </section>
     </main>
   );
