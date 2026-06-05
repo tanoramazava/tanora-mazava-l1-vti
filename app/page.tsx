@@ -2406,17 +2406,20 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
 
     const { error: scoreError } = await supabase
       .from("scores")
-      .update({
-        score_taniketsa: totalScore,
-        score_economie: totalEconomie,
-        score_taniketsa_max: maxScore,
-        score_voly_rakotra: selected[0] ? scoreFiliere(0) : 0,
-        score_vary: selected[1] ? scoreFiliere(1) : 0,
-        score_akoho_gasy: selected[2] ? scoreFiliere(2) : 0,
-        score_kisoa: selected[3] ? scoreFiliere(3) : 0,
-        score_tantely: selected[4] ? scoreFiliere(4) : 0,
-      })
-      .eq("tanora_id", tanoraId);
+      .upsert(
+        {
+          tanora_id: tanoraId,
+          score_taniketsa: totalScore,
+          score_economie: totalEconomie,
+          score_taniketsa_max: maxScore,
+          score_voly_rakotra: selected[0] ? scoreFiliere(0) : 0,
+          score_vary: selected[1] ? scoreFiliere(1) : 0,
+          score_akoho_gasy: selected[2] ? scoreFiliere(2) : 0,
+          score_kisoa: selected[3] ? scoreFiliere(3) : 0,
+          score_tantely: selected[4] ? scoreFiliere(4) : 0,
+        },
+        { onConflict: "tanora_id" }
+      );
 
     if (scoreError) {
       alert("Erreur Scores : " + JSON.stringify(scoreError));
