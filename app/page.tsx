@@ -2723,11 +2723,10 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
 function ModifierCompleterTanora({ onBack }: any) {
   const [idTanora, setIdTanora] = useState("");
   const [tanora, setTanora] = useState<any>(null);
-  const [modeTaniketsa, setModeTaniketsa] = useState(false);
+  const [mode, setMode] = useState<"menu" | "identite" | "spirituel" | "vti" | "taniketsa">("menu");
 
   const chargerTanora = async () => {
     const id = Number(idTanora);
-
     if (!id) {
       alert("Ampidiro aloha ny ID Tanora.");
       return;
@@ -2745,43 +2744,90 @@ function ModifierCompleterTanora({ onBack }: any) {
     }
 
     setTanora(data);
+    setMode("menu");
   };
 
-  const ouvrirModificationTaniketsa = async () => {
-    if (!tanora?.id) {
-      alert("ID Tanora tsy hita.");
+  const ouvrirSpirituel = async () => {
+    if (!tanora?.id) return;
+    await supabase.from("reponses_spirituel").delete().eq("tanora_id", tanora.id);
+    setMode("spirituel");
+  };
+
+  const ouvrirVti = async () => {
+    if (!tanora?.id) return;
+    await supabase.from("reponses_vti").delete().eq("tanora_id", tanora.id);
+    setMode("vti");
+  };
+
+  const ouvrirTaniketsa = async () => {
+    if (!tanora?.id) return;
+
+    const ok = confirm(
+      "Hofafana aloha ny anciennes données Taniketsa an’ity ID Tanora ity, dia hosoloina vaovao. Hanohy ve ianao ?"
+    );
+    if (!ok) return;
+
+    await supabase.from("taniketsa_unites").delete().eq("tanora_id", tanora.id);
+    await supabase.from("economies_taniketsa").delete().eq("tanora_id", tanora.id);
+    await supabase.from("reponses_taniketsa_detaillees").delete().eq("tanora_id", tanora.id);
+
+    setMode("taniketsa");
+  };
+
+  const enregistrerIdentite = async () => {
+    if (!tanora?.id) return;
+
+    const { error } = await supabase
+      .from("tanora")
+      .update({
+        anarana: tanora.anarana,
+        taona: Number(tanora.taona || 0),
+        sexe: tanora.sexe,
+        faritra: tanora.faritra,
+        distrika: tanora.distrika,
+        type_kaomina: tanora.type_kaomina,
+        kaomina: tanora.kaomina,
+        fokontany: tanora.fokontany,
+        vti_id: tanora.vti_id ? Number(tanora.vti_id) : null,
+        nom_vti: tanora.nom_vti || "",
+        vaomiera_misy_azy: tanora.vaomiera_misy_azy || "",
+      })
+      .eq("id", tanora.id);
+
+    if (error) {
+      alert("Erreur modification identité : " + JSON.stringify(error));
       return;
     }
 
-    const confirmer = confirm(
-      "Hofafana aloha ny anciennes données Taniketsa an’ity ID Tanora ity, dia hosoloina vaovao rehefa vita ny famenoana. Hanohy ve ianao ?"
-    );
-
-    if (!confirmer) return;
-
-    await supabase
-      .from("taniketsa_unites")
-      .delete()
-      .eq("tanora_id", tanora.id);
-
-    await supabase
-      .from("economies_taniketsa")
-      .delete()
-      .eq("tanora_id", tanora.id);
-
-    await supabase
-      .from("reponses_taniketsa_detaillees")
-      .delete()
-      .eq("tanora_id", tanora.id);
-
-    setModeTaniketsa(true);
+    alert("Identité Tanora nohavaozina tsara.");
+    setMode("menu");
   };
 
-  if (modeTaniketsa && tanora?.id) {
+  if (mode === "spirituel" && tanora?.id) {
+    return (
+      <SpirituelForm
+        tanoraId={tanora.id}
+        onBack={() => setMode("menu")}
+        onNext={() => setMode("menu")}
+      />
+    );
+  }
+
+  if (mode === "vti" && tanora?.id) {
+    return (
+      <VtiForm
+        tanoraId={tanora.id}
+        onBack={() => setMode("menu")}
+        onNext={() => setMode("menu")}
+      />
+    );
+  }
+
+  if (mode === "taniketsa" && tanora?.id) {
     return (
       <TaniketsaForm
         tanoraId={tanora.id}
-        onBack={() => setModeTaniketsa(false)}
+        onBack={() => setMode("menu")}
       />
     );
   }
@@ -2789,9 +2835,7 @@ function ModifierCompleterTanora({ onBack }: any) {
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>
-          Modifier / Compléter Fiche ID Tanora
-        </h1>
+        <h1 style={styles.titleSmall}>Modifier / Compléter Fiche ID Tanora</h1>
 
         <label style={styles.label}>Ampidiro ny ID Tanora</label>
         <input
@@ -2812,37 +2856,139 @@ function ModifierCompleterTanora({ onBack }: any) {
           </button>
         </div>
 
-        {tanora && (
+        {tanora && mode === "menu" && (
           <>
             <hr />
 
             <h2>Fiche hita</h2>
-            <p>
-              <strong>ID Tanora :</strong> {tanora.id}
-            </p>
-            <p>
-              <strong>Anarana :</strong> {tanora.anarana}
-            </p>
-            <p>
-              <strong>Taona :</strong> {tanora.taona}
-            </p>
-            <p>
-              <strong>Lahy / Vavy :</strong> {tanora.sexe}
-            </p>
-            <p>
-              <strong>VTI ID :</strong> {tanora.vti_id}
-            </p>
-            <p>
-              <strong>Anaran’ny VTI :</strong> {tanora.nom_vti}
-            </p>
-            <p>
-              <strong>Vaomiera misy azy :</strong>{" "}
-              {tanora.vaomiera_misy_azy}
-            </p>
+            <p><strong>ID Tanora :</strong> {tanora.id}</p>
+            <p><strong>Anarana :</strong> {tanora.anarana}</p>
+            <p><strong>Taona :</strong> {tanora.taona}</p>
+            <p><strong>Lahy / Vavy :</strong> {tanora.sexe}</p>
+            <p><strong>VTI ID :</strong> {tanora.vti_id}</p>
+            <p><strong>Anaran’ny VTI :</strong> {tanora.nom_vti}</p>
+            <p><strong>Vaomiera misy azy :</strong> {tanora.vaomiera_misy_azy}</p>
 
             <div style={styles.actions}>
-              <button style={styles.button} onClick={ouvrirModificationTaniketsa}>
+              <button style={styles.button} onClick={() => setMode("identite")}>
+                Modifier Identité Tanora
+              </button>
+
+              <button style={styles.secondaryButton} onClick={ouvrirSpirituel}>
+                Modifier Ara-panahy
+              </button>
+
+              <button style={styles.secondaryButton} onClick={ouvrirVti}>
+                Modifier Function VTI
+              </button>
+
+              <button style={styles.secondaryButton} onClick={ouvrirTaniketsa}>
                 Modifier / Compléter Taniketsa
+              </button>
+            </div>
+          </>
+        )}
+
+        {tanora && mode === "identite" && (
+          <>
+            <hr />
+            <h2>Modifier Identité Tanora</h2>
+
+            <label style={styles.label}>Anarana</label>
+            <input
+              style={styles.input}
+              value={tanora.anarana || ""}
+              onChange={(e) => setTanora({ ...tanora, anarana: e.target.value })}
+            />
+
+            <label style={styles.label}>Taona</label>
+            <input
+              style={styles.input}
+              type="number"
+              value={tanora.taona || ""}
+              onChange={(e) => setTanora({ ...tanora, taona: e.target.value })}
+            />
+
+            <label style={styles.label}>Lahy / Vavy</label>
+            <select
+              style={styles.input}
+              value={tanora.sexe || ""}
+              onChange={(e) => setTanora({ ...tanora, sexe: e.target.value })}
+            >
+              <option value="">Safidio</option>
+              <option value="Lahy">Lahy</option>
+              <option value="Vavy">Vavy</option>
+            </select>
+
+            <label style={styles.label}>Faritra</label>
+            <input
+              style={styles.input}
+              value={tanora.faritra || ""}
+              onChange={(e) => setTanora({ ...tanora, faritra: e.target.value })}
+            />
+
+            <label style={styles.label}>Distrika</label>
+            <input
+              style={styles.input}
+              value={tanora.distrika || ""}
+              onChange={(e) => setTanora({ ...tanora, distrika: e.target.value })}
+            />
+
+            <label style={styles.label}>Type de Kaomina</label>
+            <select
+              style={styles.input}
+              value={tanora.type_kaomina || ""}
+              onChange={(e) => setTanora({ ...tanora, type_kaomina: e.target.value })}
+            >
+              <option value="Ambanivohitra">Kaomina Ambanivohitra</option>
+              <option value="Andrenivohitra">Kaomina Andrenivohitra</option>
+            </select>
+
+            <label style={styles.label}>Kaomina</label>
+            <input
+              style={styles.input}
+              value={tanora.kaomina || ""}
+              onChange={(e) => setTanora({ ...tanora, kaomina: e.target.value })}
+            />
+
+            <label style={styles.label}>Fokontany</label>
+            <input
+              style={styles.input}
+              value={tanora.fokontany || ""}
+              onChange={(e) => setTanora({ ...tanora, fokontany: e.target.value })}
+            />
+
+            <label style={styles.label}>ID VTI</label>
+            <input
+              style={styles.input}
+              type="number"
+              value={tanora.vti_id || ""}
+              onChange={(e) => setTanora({ ...tanora, vti_id: e.target.value })}
+            />
+
+            <label style={styles.label}>Anaran’ny VTI</label>
+            <input
+              style={styles.input}
+              value={tanora.nom_vti || ""}
+              onChange={(e) => setTanora({ ...tanora, nom_vti: e.target.value })}
+            />
+
+            <label style={styles.label}>Vaomiera misy azy</label>
+            <input
+              style={styles.input}
+              value={tanora.vaomiera_misy_azy || ""}
+              onChange={(e) =>
+                setTanora({ ...tanora, vaomiera_misy_azy: e.target.value })
+              }
+            />
+
+            <div style={styles.actions}>
+              <button style={styles.button} onClick={enregistrerIdentite}>
+                Enregistrer modification identité
+              </button>
+
+              <button style={styles.secondaryButton} onClick={() => setMode("menu")}>
+                Annuler
               </button>
             </div>
           </>
