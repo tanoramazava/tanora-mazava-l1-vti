@@ -14,7 +14,8 @@ type Screen =
   | "modifier_tanora"
   | "vti_iombonana"
   | "vti_imprimable"
-  | "vti_fiche";
+  | "vti_fiche"
+  | "modifier_vti";
 
 export default function HomePage() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -83,6 +84,10 @@ export default function HomePage() {
     return <FicheRemplieVti onBack={() => setScreen("home")} />;
   }
 
+  if (screen === "modifier_vti") {
+    return <ModifierCompleterVti onBack={() => setScreen("home")} />;
+  }
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
@@ -145,6 +150,13 @@ export default function HomePage() {
           onClick={() => setScreen("vti_fiche")}
         >
           Fiche remplie VTI par ID VTI
+        </button>
+
+        <button
+          style={styles.secondaryButton}
+          onClick={() => setScreen("modifier_vti")}
+        >
+          Modifier / Compléter Fiche ID VTI
         </button>
       </section>
     </main>
