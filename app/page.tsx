@@ -21,16 +21,79 @@ function DashboardAnalytique({ onBack }: any) {
   const money = (v: any) => Number(v || 0).toLocaleString("fr-FR") + " Ar";
   const txt = (v: any) => String(v || "").toLowerCase();
 
-  const countIncludes = (rows: any[], field: string, keys: string[]) =>
-    rows.filter((r) =>
-      keys.some((k) => txt(r[field]).includes(k.toLowerCase()))
-    ).length;
-
   const total = (rows: any[], field: string) =>
     rows.reduce((s, r) => s + Number(r[field] || 0), 0);
 
-  const concatText = (rows: any[], field: string) =>
-    rows.map((r) => r[field]).filter(Boolean).join(" | ") || "—";
+  const latestByKey = (rows: any[], key: string) => {
+    const map = new Map();
+    rows.forEach((r) => {
+      const k = r[key];
+      if (!k) return;
+      const old = map.get(k);
+      if (!old || Number(r.id || 0) > Number(old.id || 0)) map.set(k, r);
+    });
+    return Array.from(map.values());
+  };
+
+  const latestByTanoraId = (rows: any[]) => latestByKey(rows, "tanora_id");
+  const latestByVtiId = (rows: any[]) => latestByKey(rows, "vti_id");
+
+  const countTheme = (rows: any[], field: string, keys: string[]) =>
+    rows.filter((r) => keys.some((k) => txt(r[field]).includes(k))).length;
+
+  const extractTexts = (rows: any[], field: string) =>
+    rows.map((r) => r[field]).filter(Boolean);
+
+  const thematicSummary = (title: string, texts: string[]) => {
+    const all = texts.join(" | ").toLowerCase();
+
+    const themes = [
+      { label: "Manana tany / tany azo ampiasaina", keys: ["manana tany", "taniko", "ahy", "tany misy"] },
+      { label: "Tanin’ny ray aman-dreny / fianakaviana", keys: ["ray aman-dreny", "fianakaviana", "lova", "havana"] },
+      { label: "Tsy manana tany / mila tany", keys: ["tsy manana", "mila tany", "tsy misy tany"] },
+      { label: "Misy taratasy ara-dalàna", keys: ["titre", "certificat", "voasoratra", "ara-dalàna"] },
+      { label: "Tsy mbola misy taratasy", keys: ["tsy misy taratasy", "tsy voasoratra", "mbola tsy"] },
+      { label: "Mila fiofanana", keys: ["mila fiofanana", "tsy mbola niofana", "fanofanana"] },
+      { label: "Efa nahazo fiofanana", keys: ["efa niofana", "nahazo fiofanana", "mahafehy"] },
+      { label: "Mila renivola / financement", keys: ["renivola", "vola", "financement", "tosika"] },
+      { label: "Mila fitaovana / akora", keys: ["fitaovana", "akora", "masomboly", "zezika"] },
+      { label: "Mila tsena / lalambarotra", keys: ["tsena", "lalambarotra", "varotra"] },
+      { label: "Mila fanaraha-maso teknika", keys: ["fanaraha-maso", "teknika", "encadrement"] },
+      { label: "Mila gestion / comptabilité", keys: ["gestion", "bokim-bola", "dépenses", "tombom-barotra", "comptabilité"] },
+    ];
+
+    const found = themes
+      .map((t) => ({
+        label: t.label,
+        count: texts.filter((x) => t.keys.some((k) => txt(x).includes(k))).length,
+      }))
+      .filter((t) => t.count > 0)
+      .sort((a, b) => b.count - a.count);
+
+    return (
+      <div style={styles.miniBox}>
+        <h4>{title}</h4>
+        <p><strong>Isan’ny valiny voaray :</strong> {texts.length}</p>
+
+        {found.length === 0 && <p>Tsy mbola ampy ny valiny hanaovana regroupement thématique.</p>}
+
+        {found.map((f) => (
+          <p key={f.label}>
+            <strong>{f.label} :</strong> {f.count}
+          </p>
+        ))}
+
+        {texts.length > 0 && (
+          <p>
+            <strong>Synthèse intelligente :</strong>{" "}
+            {found.length > 0
+              ? `Lohahevitra miverimberina indrindra: ${found[0].label}. Ity no tokony hodinihina ho laharam-pahamehana amin’ny fanapahan-kevitra.`
+              : "Mbola mila valiny maromaro kokoa vao afaka mamoaka fehin-kevitra matanjaka."}
+          </p>
+        )}
+      </div>
+    );
+  };
 
   const chargerDashboard = async () => {
     setLoading(true);
@@ -50,16 +113,16 @@ function DashboardAnalytique({ onBack }: any) {
 
     setTanora(tanoraData || []);
     setVti(vtiData || []);
-    setSpirituel(spirituelData || []);
-    setRepVti(repVtiData || []);
+    setSpirituel(latestByTanoraId(spirituelData || []));
+    setRepVti(latestByTanoraId(repVtiData || []));
     setUnites(unitesData || []);
-    setEco(ecoData || []);
-    setRepTaniketsa(repTanData || []);
+    setEco(latestByTanoraId(ecoData || []));
+    setRepTaniketsa(latestByTanoraId(repTanData || []));
 
-    setVtiArap(arapData || []);
-    setVtiToek(toekData || []);
-    setVtiFahas(fahasData || []);
-    setVtiEtika(etikaData || []);
+    setVtiArap(latestByVtiId(arapData || []));
+    setVtiToek(latestByVtiId(toekData || []));
+    setVtiFahas(latestByVtiId(fahasData || []));
+    setVtiEtika(latestByVtiId(etikaData || []));
 
     setLoading(false);
   };
@@ -80,13 +143,12 @@ function DashboardAnalytique({ onBack }: any) {
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Dashboard Analytique Tanora Mazava L1</h1>
+        <h1 style={styles.titleSmall}>Dashboard Analytique Tanora Mazava L1 — V3</h1>
 
         <div style={styles.actions}>
           <button style={styles.button} onClick={chargerDashboard}>
             Charger / Actualiser Dashboard
           </button>
-
           <button style={styles.secondaryButton} onClick={onBack}>
             Miverina
           </button>
@@ -100,55 +162,76 @@ function DashboardAnalytique({ onBack }: any) {
         <div style={styles.scoreBox}>
           <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
           <p><strong>VTI voasoratra :</strong> {vti.length}</p>
-          <p><strong>Lahy :</strong> {countIncludes(tanora, "sexe", ["lahy"])}</p>
-          <p><strong>Vavy :</strong> {countIncludes(tanora, "sexe", ["vavy"])}</p>
+          <p><strong>Lahy :</strong> {countTheme(tanora, "sexe", ["lahy"])}</p>
+          <p><strong>Vavy :</strong> {countTheme(tanora, "sexe", ["vavy"])}</p>
           <p><strong>18 taona midina :</strong> {age18}</p>
           <p><strong>19–24 taona :</strong> {age19_24}</p>
           <p><strong>25–35 taona :</strong> {age25_35}</p>
           <p><strong>Mihoatra ny 35 taona :</strong> {age35plus}</p>
-          <p><strong>Ambanivohitra :</strong> {countIncludes(tanora, "type_kaomina", ["ambanivohitra"])}</p>
-          <p><strong>Andrenivohitra :</strong> {countIncludes(tanora, "type_kaomina", ["andrenivohitra"])}</p>
+          <p><strong>Ambanivohitra :</strong> {countTheme(tanora, "type_kaomina", ["ambanivohitra"])}</p>
+          <p><strong>Andrenivohitra :</strong> {countTheme(tanora, "type_kaomina", ["andrenivohitra"])}</p>
         </div>
 
         <hr />
 
-        <h2>2. Dashboard Ara-panahy Tanora</h2>
+        <h2>2. Dashboard Ara-panahy Tanora — Informations qualitatives</h2>
         <div style={styles.miniBox}>
+          <p><strong>Fiches ara-panahy farany raisina :</strong> {spirituel.length}</p>
+
           <h3>Vavaka Betela</h3>
-          <p><strong>Isan’andro :</strong> {countIncludes(spirituel, "spirituel_q3", ["isan’andro", "isanandro", "andro"])}</p>
-          <p><strong>In-3 isan-kerinandro :</strong> {countIncludes(spirituel, "spirituel_q3", ["in-3", "intelo", "3"])}</p>
-          <p><strong>In-1 isan-kerinandro :</strong> {countIncludes(spirituel, "spirituel_q3", ["in-1", "indray", "1"])}</p>
-          <p><strong>Mbola tsy nanomboka :</strong> {countIncludes(spirituel, "spirituel_q3", ["mbola tsy", "tsy nanomboka"])}</p>
+          <p><strong>Isan’andro :</strong> {countTheme(spirituel, "spirituel_q3", ["isan’andro", "isanandro"])}</p>
+          <p><strong>In-3 isan-kerinandro :</strong> {countTheme(spirituel, "spirituel_q3", ["in-3", "intelo"])}</p>
+          <p><strong>In-1 isan-kerinandro :</strong> {countTheme(spirituel, "spirituel_q3", ["in-1", "indray"])}</p>
+          <p><strong>Mbola tsy nanomboka :</strong> {countTheme(spirituel, "spirituel_q3", ["mbola tsy", "tsy nanomboka"])}</p>
 
-          <h3>Pratika ara-panahy</h3>
-          <p><strong>Fibebahana sy fiderana :</strong> {countIncludes(spirituel, "spirituel_q4", ["mazava", "voafehy", "eny", "tsara"])}</p>
-          <p><strong>Fanaka dimy / Soatoavina :</strong> {countIncludes(spirituel, "spirituel_q5", ["mazava", "voafehy", "eny", "tsara"])}</p>
-          <p><strong>Fandroahana demonia :</strong> {countIncludes(spirituel, "spirituel_q6", ["mazava", "voafehy", "eny", "tsara"])}</p>
-          <p><strong>Vavaka mamindra tendrombohitra :</strong> {countIncludes(spirituel, "spirituel_q7", ["mazava", "voafehy", "eny", "tsara"])}</p>
+          <h3>Pratika ara-panahy — qualité des réponses</h3>
+          <p><strong>Fibebahana sy fiderana mahafapo :</strong> {countTheme(spirituel, "spirituel_q4", ["mahafapo", "mazava", "voafehy", "tsara"])}</p>
+          <p><strong>Fanaka dimy / Soatoavina mahafapo :</strong> {countTheme(spirituel, "spirituel_q5", ["mahafapo", "mazava", "voafehy", "tsara"])}</p>
+          <p><strong>Fandroahana demonia mahafapo :</strong> {countTheme(spirituel, "spirituel_q6", ["mahafapo", "mazava", "voafehy", "tsara"])}</p>
+          <p><strong>Vavaka mamindra tendrombohitra mahafapo :</strong> {countTheme(spirituel, "spirituel_q7", ["mahafapo", "mazava", "voafehy", "tsara"])}</p>
         </div>
+
+        {thematicSummary("Synthèse ara-panahy — regroupement des réponses", [
+          ...extractTexts(spirituel, "spirituel_q4"),
+          ...extractTexts(spirituel, "spirituel_q5"),
+          ...extractTexts(spirituel, "spirituel_q6"),
+          ...extractTexts(spirituel, "spirituel_q7"),
+        ])}
 
         <hr />
 
-        <h2>3. Dashboard Engagement VTI Tanora</h2>
+        <h2>3. Dashboard Engagement VTI Tanora — Informations qualitatives</h2>
         <div style={styles.miniBox}>
-          <p><strong>Efa nikambana fikambanana taloha :</strong> {countIncludes(repVti, "vti_q1", ["eny", "efa"])}</p>
-          <p><strong>Mahafantatra mazava ny VTI :</strong> {countIncludes(repVti, "vti_q2", ["mazava", "tsara"])}</p>
-          <p><strong>Mandray andraikitra mavitrika :</strong> {countIncludes(repVti, "vti_q3", ["mavitrika", "mandray", "eny"])}</p>
-          <p><strong>Manana anjara biriky :</strong> {countIncludes(repVti, "vti_q4", ["eny", "manana"])}</p>
-          <p><strong>Mahafantatra Vaomiera misy azy :</strong> {countIncludes(repVti, "vti_q5", ["ara-panahy", "toekarena", "fahasalamana", "etika"])}</p>
+          <p><strong>Fiches VTI Tanora farany raisina :</strong> {repVti.length}</p>
+          <p><strong>Efa nikambana fikambanana taloha :</strong> {countTheme(repVti, "vti_q1", ["eny", "efa"])}</p>
+          <p><strong>Mahafantatra mazava ny VTI :</strong> {countTheme(repVti, "vti_q2", ["mazava", "tsara"])}</p>
+          <p><strong>Mandray andraikitra mavitrika :</strong> {countTheme(repVti, "vti_q3", ["mavitrika", "mandray", "eny"])}</p>
+          <p><strong>Manana anjara biriky :</strong> {countTheme(repVti, "vti_q4", ["eny", "manana"])}</p>
+          <p><strong>Mahafantatra Vaomiera misy azy :</strong> {countTheme(repVti, "vti_q5", ["ara-panahy", "toekarena", "fahasalamana", "etika"])}</p>
         </div>
+
+        {thematicSummary("Synthèse engagement VTI — regroupement des réponses", [
+          ...extractTexts(repVti, "vti_q1"),
+          ...extractTexts(repVti, "vti_q2"),
+          ...extractTexts(repVti, "vti_q3"),
+          ...extractTexts(repVti, "vti_q4"),
+          ...extractTexts(repVti, "vti_q5"),
+        ])}
 
         <hr />
 
-        <h2>4. Dashboard Taniketsa Fandraharahana</h2>
+        <h2>4. Dashboard Taniketsa Fandraharahana — Données économiques</h2>
 
         {filieres.map((f) => {
-          const rows = unites.filter((u) => u.type_taniketsa === f.type);
+          const rows = latestByKey(
+            unites.filter((u) => u.type_taniketsa === f.type),
+            "tanora_id"
+          );
 
           return (
             <div key={f.type} style={styles.miniBox}>
               <h3>{f.name}</h3>
-              <p><strong>Isan’ny Tanora :</strong> {rows.length}</p>
+              <p><strong>Tanora farany raisina :</strong> {rows.length}</p>
               <p><strong>Unités Taona 1 :</strong> {total(rows, "unite_annee_1")}</p>
               <p><strong>Unités Taona 2 :</strong> {total(rows, "unite_annee_2")}</p>
               <p><strong>Unités Taona 3 :</strong> {total(rows, "unite_annee_3")}</p>
@@ -179,16 +262,29 @@ function DashboardAnalytique({ onBack }: any) {
           ["Akoho gasy", "akoho_gasy"],
           ["Kisoa", "kisoa"],
           ["Tantely", "tantely"],
-        ].map(([label, key]) => (
-          <div key={key} style={styles.miniBox}>
-            <h3>{label}</h3>
-            <p><strong>Fananantany :</strong> {concatText(repTaniketsa, `${key}_fananantany`)}</p>
-            <p><strong>Fiofanana :</strong> {concatText(repTaniketsa, `${key}_fiofanana`)}</p>
-            <p><strong>Ezaka / Anjara biriky :</strong> {concatText(repTaniketsa, `${key}_ezaka`)}</p>
-            <p><strong>Tohana ilaina :</strong> {concatText(repTaniketsa, `${key}_tohana`)}</p>
-            <p><strong>Diagnostic :</strong> {concatText(repTaniketsa, `${key}_diagnostic`)}</p>
-          </div>
-        ))}
+        ].map(([label, key]) => {
+          const texts = [
+            ...extractTexts(repTaniketsa, `${key}_fananantany`),
+            ...extractTexts(repTaniketsa, `${key}_fiofanana`),
+            ...extractTexts(repTaniketsa, `${key}_ezaka`),
+            ...extractTexts(repTaniketsa, `${key}_tohana`),
+            ...extractTexts(repTaniketsa, `${key}_diagnostic`),
+          ];
+
+          return (
+            <div key={key} style={styles.miniBox}>
+              <h3>{label}</h3>
+
+              {thematicSummary("Fananantany", extractTexts(repTaniketsa, `${key}_fananantany`))}
+              {thematicSummary("Fiofanana", extractTexts(repTaniketsa, `${key}_fiofanana`))}
+              {thematicSummary("Anjara biriky", extractTexts(repTaniketsa, `${key}_ezaka`))}
+              {thematicSummary("Tohana ilaina", extractTexts(repTaniketsa, `${key}_tohana`))}
+              {thematicSummary("Diagnostic ara-toekarena sy ara-pitantanana", extractTexts(repTaniketsa, `${key}_diagnostic`))}
+
+              {thematicSummary("Synthèse globale de la filière", texts)}
+            </div>
+          );
+        })}
 
         <hr />
 
@@ -208,8 +304,8 @@ function DashboardAnalytique({ onBack }: any) {
               <p><strong>Fokontany :</strong> {v.fokontany}</p>
               <p><strong>Isan’ny mponina iandraiketany :</strong> {v.isan_mponina}</p>
               <p><strong>Tanora mifandray amin’ity VTI ity :</strong> {tanoraVti.length}</p>
-              <p><strong>Lahy :</strong> {countIncludes(tanoraVti, "sexe", ["lahy"])}</p>
-              <p><strong>Vavy :</strong> {countIncludes(tanoraVti, "sexe", ["vavy"])}</p>
+              <p><strong>Lahy :</strong> {countTheme(tanoraVti, "sexe", ["lahy"])}</p>
+              <p><strong>Vavy :</strong> {countTheme(tanoraVti, "sexe", ["vavy"])}</p>
             </div>
           );
         })}
@@ -217,50 +313,30 @@ function DashboardAnalytique({ onBack }: any) {
         <hr />
 
         <h2>7. Dashboard Vaomiera Ara-panahy sy Fanabeazana</h2>
-        <div style={styles.miniBox}>
-          <p><strong>VTI manana données :</strong> {vtiArap.length}</p>
-          <p><strong>Total fivoriana :</strong> {total(vtiArap, "mivory_score")}</p>
-          <p><strong>Total ora iasana :</strong> {total(vtiArap, "ora_score")}</p>
-          <p><strong>Fanaka dimy / soatoavina :</strong> {concatText(vtiArap, "fanaka_dimy")}</p>
-          <p><strong>Fanamby ara-panahy 140 andro :</strong> {concatText(vtiArap, "fanamby_140_andro")}</p>
-          <p><strong>Olana ara-panabeazana :</strong> {concatText(vtiArap, "olana_fanabeazana")}</p>
-          <p><strong>Paikady ara-panabeazana :</strong> {concatText(vtiArap, "paikady_140_andro")}</p>
-        </div>
+        {thematicSummary("Fanaka dimy / soatoavina", extractTexts(vtiArap, "fanaka_dimy"))}
+        {thematicSummary("Fanamby ara-panahy 140 andro", extractTexts(vtiArap, "fanamby_140_andro"))}
+        {thematicSummary("Olana ara-panabeazana", extractTexts(vtiArap, "olana_fanabeazana"))}
+        {thematicSummary("Paikady ara-panabeazana", extractTexts(vtiArap, "paikady_140_andro"))}
 
         <hr />
 
         <h2>8. Dashboard Vaomiera Fandraharahana sy Toekarena</h2>
-        <div style={styles.miniBox}>
-          <p><strong>VTI manana données :</strong> {vtiToek.length}</p>
-          <p><strong>Total fivoriana :</strong> {total(vtiToek, "mivory_score")}</p>
-          <p><strong>Total ora iasana :</strong> {total(vtiToek, "ora_score")}</p>
-          <p><strong>Olana ara-toekarena :</strong> {concatText(vtiToek, "olana_toekarena")}</p>
-          <p><strong>Paikady ara-toekarena 140 andro :</strong> {concatText(vtiToek, "paikady_toekarena")}</p>
-        </div>
+        {thematicSummary("Olana ara-toekarena", extractTexts(vtiToek, "olana_toekarena"))}
+        {thematicSummary("Paikady ara-toekarena 140 andro", extractTexts(vtiToek, "paikady_toekarena"))}
 
         <hr />
 
         <h2>9. Dashboard Vaomiera Fahasalamana sy Fiarovana</h2>
-        <div style={styles.miniBox}>
-          <p><strong>VTI manana données :</strong> {vtiFahas.length}</p>
-          <p><strong>Total fivoriana :</strong> {total(vtiFahas, "mivory_score")}</p>
-          <p><strong>Total ora iasana :</strong> {total(vtiFahas, "ora_score")}</p>
-          <p><strong>Olana ara-pahasalamana :</strong> {concatText(vtiFahas, "olana_fahasalamana")}</p>
-          <p><strong>Voina manimba taranaka :</strong> {concatText(vtiFahas, "voina_tanora")}</p>
-          <p><strong>Paikady Fahasalamana sy Fiarovana :</strong> {concatText(vtiFahas, "paikady_fahasalamana")}</p>
-        </div>
+        {thematicSummary("Olana ara-pahasalamana", extractTexts(vtiFahas, "olana_fahasalamana"))}
+        {thematicSummary("Voina manimba taranaka", extractTexts(vtiFahas, "voina_tanora"))}
+        {thematicSummary("Paikady Fahasalamana sy Fiarovana", extractTexts(vtiFahas, "paikady_fahasalamana"))}
 
         <hr />
 
         <h2>10. Dashboard Vaomiera Etika sy Fampandrosoana Maharitra</h2>
-        <div style={styles.miniBox}>
-          <p><strong>VTI manana données :</strong> {vtiEtika.length}</p>
-          <p><strong>Total fivoriana :</strong> {total(vtiEtika, "mivory_score")}</p>
-          <p><strong>Total ora iasana :</strong> {total(vtiEtika, "ora_score")}</p>
-          <p><strong>Olana fandriampahalemana sy kolikoly :</strong> {concatText(vtiEtika, "olana_fandriampahalemana")}</p>
-          <p><strong>Olana tontolo iainana :</strong> {concatText(vtiEtika, "olana_tontolo_iainana")}</p>
-          <p><strong>Paikady Etika sy Fampandrosoana :</strong> {concatText(vtiEtika, "paikady_etika")}</p>
-        </div>
+        {thematicSummary("Olana fandriampahalemana sy kolikoly", extractTexts(vtiEtika, "olana_fandriampahalemana"))}
+        {thematicSummary("Olana tontolo iainana", extractTexts(vtiEtika, "olana_tontolo_iainana"))}
+        {thematicSummary("Paikady Etika sy Fampandrosoana", extractTexts(vtiEtika, "paikady_etika"))}
       </section>
     </main>
   );
