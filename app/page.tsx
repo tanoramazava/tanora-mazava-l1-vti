@@ -2996,7 +2996,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
 
   const updateUnit = (i: number, year: number, value: number) => {
     const copy = units.map((row) => [...row]);
-    copy[i][year] = value;
+    copy[i][year] = Number(value || 0);
     setUnits(copy);
   };
 
@@ -3134,16 +3134,15 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       return;
     }
 
-    await supabase.from("taniketsa_unites").delete().eq("tanora_id", tanoraId);
-    await supabase.from("economies_taniketsa").delete().eq("tanora_id", tanoraId);
-    await supabase
-      .from("reponses_taniketsa_detaillees")
-      .delete()
-      .eq("tanora_id", tanoraId);
+    const id = Number(tanoraId);
+
+    await supabase.from("taniketsa_unites").delete().eq("tanora_id", id);
+    await supabase.from("economies_taniketsa").delete().eq("tanora_id", id);
+    await supabase.from("reponses_taniketsa_detaillees").delete().eq("tanora_id", id);
 
     const { error: scoreError } = await supabase.from("scores").upsert(
       {
-        tanora_id: tanoraId,
+        tanora_id: id,
         score_taniketsa: totalScore,
         score_economie: totalEconomie,
         score_taniketsa_max: maxScore,
@@ -3163,22 +3162,28 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
 
     const { error: ecoError } = await supabase.from("economies_taniketsa").insert([
       {
-        tanora_id: tanoraId,
+        tanora_id: id,
+
         ca_voly_rakotra: voly.ca,
         depenses_voly_rakotra: voly.dep,
         benefice_voly_rakotra: voly.benefice,
+
         ca_vary: vary.ca,
         depenses_vary: vary.dep,
         benefice_vary: vary.benefice,
+
         ca_akoho_gasy: akoho.ca,
         depenses_akoho_gasy: akoho.dep,
         benefice_akoho_gasy: akoho.benefice,
+
         ca_kisoa: kisoa.ca,
         depenses_kisoa: kisoa.dep,
         benefice_kisoa: kisoa.benefice,
+
         ca_tantely: tantely.ca,
         depenses_tantely: tantely.dep,
         benefice_tantely: tantely.benefice,
+
         ca_total: totals.ca,
         depenses_total: totals.dep,
         benefice_total: totals.benefice,
@@ -3199,21 +3204,26 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
         const y3 = yearData(i, 2);
 
         return {
-          tanora_id: tanoraId,
+          tanora_id: id,
           type_taniketsa: f.type,
           unite_label: f.unitName,
+
           unite_annee_1: getUniteAnnee(i, 0),
           unite_annee_2: getUniteAnnee(i, 1),
           unite_annee_3: getUniteAnnee(i, 2),
+
           ca_annee_1: y1.ca,
           depenses_annee_1: y1.dep,
           benefice_annee_1: y1.benefice,
+
           ca_annee_2: y2.ca,
           depenses_annee_2: y2.dep,
           benefice_annee_2: y2.benefice,
+
           ca_annee_3: y3.ca,
           depenses_annee_3: y3.dep,
           benefice_annee_3: y3.benefice,
+
           score_filiere: scoreFiliere(i),
         };
       })
@@ -3232,27 +3242,32 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       .from("reponses_taniketsa_detaillees")
       .insert([
         {
-          tanora_id: tanoraId,
+          tanora_id: id,
+
           voly_rakotra_fananantany: reponses[0].fananantany,
           voly_rakotra_fiofanana: reponses[0].fiofanana,
           voly_rakotra_ezaka: reponses[0].ezaka,
           voly_rakotra_tohana: reponses[0].tohana,
           voly_rakotra_diagnostic: reponses[0].diagnostic,
+
           vary_fananantany: reponses[1].fananantany,
           vary_fiofanana: reponses[1].fiofanana,
           vary_ezaka: reponses[1].ezaka,
           vary_tohana: reponses[1].tohana,
           vary_diagnostic: reponses[1].diagnostic,
+
           akoho_gasy_fananantany: reponses[2].fananantany,
           akoho_gasy_fiofanana: reponses[2].fiofanana,
           akoho_gasy_ezaka: reponses[2].ezaka,
           akoho_gasy_tohana: reponses[2].tohana,
           akoho_gasy_diagnostic: reponses[2].diagnostic,
+
           kisoa_fananantany: reponses[3].fananantany,
           kisoa_fiofanana: reponses[3].fiofanana,
           kisoa_ezaka: reponses[3].ezaka,
           kisoa_tohana: reponses[3].tohana,
           kisoa_diagnostic: reponses[3].diagnostic,
+
           tantely_fananantany: reponses[4].fananantany,
           tantely_fiofanana: reponses[4].fiofanana,
           tantely_ezaka: reponses[4].ezaka,
@@ -3266,7 +3281,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       return;
     }
 
-    alert("Tombana Taniketsa voatahiry tsara !");
+    alert("Tombana Taniketsa voatahiry tsara, sans doublon !");
   };
 
   return (
@@ -3319,9 +3334,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                         type="number"
                         min="0"
                         placeholder="Ohatra : 1 na 2"
-                        onChange={(e) =>
-                          updateUnit(i, 0, Number(e.target.value))
-                        }
+                        onChange={(e) => updateUnit(i, 0, Number(e.target.value))}
                       />
                     </>
                   )}
@@ -3341,9 +3354,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                               type="number"
                               min="0"
                               placeholder={`Isan’ny ${f.unitName}`}
-                              onChange={(e) =>
-                                updateUnit(i, year, Number(e.target.value))
-                              }
+                              onChange={(e) => updateUnit(i, year, Number(e.target.value))}
                             />
                           </>
                         )}
@@ -3365,9 +3376,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <textarea
                     style={styles.textarea}
                     value={reponses[i].fananantany}
-                    onChange={(e) =>
-                      updateReponse(i, "fananantany", e.target.value)
-                    }
+                    onChange={(e) => updateReponse(i, "fananantany", e.target.value)}
                   />
                   <ScoreSelect
                     label="Score fananantany"
@@ -3379,9 +3388,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <textarea
                     style={styles.textarea}
                     value={reponses[i].fiofanana}
-                    onChange={(e) =>
-                      updateReponse(i, "fiofanana", e.target.value)
-                    }
+                    onChange={(e) => updateReponse(i, "fiofanana", e.target.value)}
                   />
                   <ScoreSelect
                     label="Score fiofanana"
@@ -3393,9 +3400,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <textarea
                     style={styles.textarea}
                     value={reponses[i].ezaka}
-                    onChange={(e) =>
-                      updateReponse(i, "ezaka", e.target.value)
-                    }
+                    onChange={(e) => updateReponse(i, "ezaka", e.target.value)}
                   />
                   <ScoreSelect
                     label="Score ezaka sy anjara biriky"
@@ -3407,9 +3412,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <textarea
                     style={styles.textarea}
                     value={reponses[i].tohana}
-                    onChange={(e) =>
-                      updateReponse(i, "tohana", e.target.value)
-                    }
+                    onChange={(e) => updateReponse(i, "tohana", e.target.value)}
                   />
                   <ScoreSelect
                     label="Score tohana ilaina"
@@ -3423,9 +3426,7 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
                   <textarea
                     style={styles.textarea}
                     value={reponses[i].diagnostic}
-                    onChange={(e) =>
-                      updateReponse(i, "diagnostic", e.target.value)
-                    }
+                    onChange={(e) => updateReponse(i, "diagnostic", e.target.value)}
                   />
                   <ScoreSelect
                     label="Score diagnostic ara-toekarena sy ara-pitantanana"
