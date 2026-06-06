@@ -497,9 +497,151 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 
         <hr />
 
-        <h2>8. Dashboard Vaomiera Fandraharahana sy Toekarena</h2>
-        {thematicSummary("Olana ara-toekarena", extractTexts(vtiToek, "olana_toekarena"))}
-        {thematicSummary("Paikady ara-toekarena 140 andro", extractTexts(vtiToek, "paikady_toekarena"))}
+       <h2>8. Dashboard Fandraharahana sy Toekarena</h2>
+
+<div style={styles.miniBox}>
+  <h4>Références officielles — Olana ara-toekarena</h4>
+  <p>1. Tsy fananana kolontsain’ny fandraharahana sy tsy fisian’ny torohay</p>
+  <p>2. Famokarana tsy mitodika amin’ny varotra</p>
+  <p>3. Olana fananantany</p>
+  <p>4. Tsy fahampian’ny fiofanana sy fanaraha-maso teknika</p>
+  <p>5. Tsy fahampian’ny tosika ara-pitaovana sy akora</p>
+  <p>6. Tsy fahampian’ny fotodrafitrasa iombonana</p>
+  <p>7. Tsy fisian’ny lalambarotra</p>
+  <p>8. Tsy fisian’ny fiarovana ny mpamokatra</p>
+  <p>9. Fihenan’ny fahefa-mividy sy fiankinan-doha amin’ny PPN</p>
+  <p>10. Olana hafa</p>
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Valiny détaillées — Fiches remplies</h4>
+  {vtiToek.map((r: any) => (
+    <p key={`toek-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong> {r.olana_toekarena || "—"}
+    </p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Synthèse intelligente — Priorisation</h4>
+
+  <h5>Sokajy voalohany : Olana tena mafy, miantraika amin’ny daholobe / ankamaroany</h5>
+
+  {priorityLine(
+    "Tsy fananana kolontsain’ny fandraharahana sy tsy fisian’ny torohay",
+    vtiToek,
+    "olana_toekarena",
+    ["kolontsain", "fandraharahana", "torohay"]
+  )}
+
+  {priorityLine(
+    "Famokarana tsy mitodika amin’ny varotra",
+    vtiToek,
+    "olana_toekarena",
+    ["famokarana", "varotra"]
+  )}
+
+  {priorityLine(
+    "Olana fananantany",
+    vtiToek,
+    "olana_toekarena",
+    ["fananantany"]
+  )}
+
+  {priorityLine(
+    "Tsy fahampian’ny fiofanana sy fanaraha-maso teknika",
+    vtiToek,
+    "olana_toekarena",
+    ["fiofanana", "fanaraha-maso", "teknika"]
+  )}
+
+  {priorityLine(
+    "Tsy fahampian’ny tosika ara-pitaovana sy akora",
+    vtiToek,
+    "olana_toekarena",
+    ["tosika", "fitaovana", "akora"]
+  )}
+
+  {priorityLine(
+    "Tsy fahampian’ny fotodrafitrasa iombonana",
+    vtiToek,
+    "olana_toekarena",
+    ["fotodrafitrasa"]
+  )}
+
+  {priorityLine(
+    "Tsy fisian’ny lalambarotra",
+    vtiToek,
+    "olana_toekarena",
+    ["lalambarotra", "tsena"]
+  )}
+
+  {priorityLine(
+    "Tsy fisian’ny fiarovana ny mpamokatra",
+    vtiToek,
+    "olana_toekarena",
+    ["fiarovana", "mpamokatra"]
+  )}
+
+  {priorityLine(
+    "Fihenan’ny fahefa-mividy sy fiankinan-doha amin’ny PPN",
+    vtiToek,
+    "olana_toekarena",
+    ["fahefa-mividy", "ppn", "fiankinan-doha"]
+  )}
+
+  <h5>Sokajy faharoa : Olana misy hafa, tranga vitsy na mbola azo leferina</h5>
+
+  {vtiToek.map((r: any) => (
+    <p key={`toek-2-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {String(r.olana_toekarena || "").includes("OLANA MAFY, MBOLA AZO LEFERINA")
+        ? String(r.olana_toekarena).split("OLANA MAFY, MBOLA AZO LEFERINA")[1]
+        : "—"}
+    </p>
+  ))}
+
+  <h5>Valiny hafa / valiny manokana</h5>
+
+  {otherResponses(vtiToek, "olana_toekarena", [
+    "kolontsain",
+    "fandraharahana",
+    "torohay",
+    "famokarana",
+    "varotra",
+    "fananantany",
+    "fiofanana",
+    "fanaraha-maso",
+    "teknika",
+    "tosika",
+    "fitaovana",
+    "akora",
+    "fotodrafitrasa",
+    "lalambarotra",
+    "tsena",
+    "fiarovana",
+    "mpamokatra",
+    "fahefa-mividy",
+    "ppn",
+    "fiankinan-doha"
+  ]).map((v, i) => (
+    <p key={`toek-other-${i}`}>{v}</p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Paikady ara-toekarena ao anatin’ny 140 andro</h4>
+
+  <p>
+    <strong>Références :</strong> 1-Fametrahana Saha Sekoly ; 2-Paikady fananantany miaraka amin’ny servisy fananantany sy Kaomina ; 3-Fanohanana ny Taniketsa Fandraharahana ; 4-Lalambarotra sy famatsiana ara-tsakafo/PPN maharitra ; 5-Fotodrafitrasa maika voalohany ; 6-Fotodrafitrasa maika faharoa ; 7-Paikady iombonana hafa ; 8-Paikady iombonana hafa.
+  </p>
+
+  {vtiToek.map((r: any) => (
+    <p key={`toek-paikady-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong> {r.paikady_toekarena || "—"}
+    </p>
+  ))}
+</div>
 
         <hr />
 
