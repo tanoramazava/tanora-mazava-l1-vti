@@ -503,10 +503,240 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 
         <hr />
 
-        <h2>9. Dashboard Vaomiera Fahasalamana sy Fiarovana</h2>
-        {thematicSummary("Olana ara-pahasalamana", extractTexts(vtiFahas, "olana_fahasalamana"))}
-        {thematicSummary("Voina manimba taranaka", extractTexts(vtiFahas, "voina_tanora"))}
-        {thematicSummary("Paikady Fahasalamana sy Fiarovana", extractTexts(vtiFahas, "paikady_fahasalamana"))}
+       <h2>9. Dashboard Fahasalamana</h2>
+
+<div style={styles.miniBox}>
+  <h4>Références officielles — Formulaire VTI</h4>
+
+  <p>1- Tazo moka</p>
+  <p>2- Aretim-pivalanana</p>
+  <p>3- VIH/SIDA sy IST</p>
+  <p>4- Tsy fahampian-tsakafo</p>
+  <p>5- Tosidra</p>
+  <p>6- Diabeta</p>
+  <p>7- Homamiadana</p>
+  <p>8- Fahasembanana</p>
+  <p>9- Fahasalamana ara-tsaina</p>
+  <p>10- Olana hafa</p>
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Valiny détaillées — Fiches remplies</h4>
+
+  {vtiFahas.map((r: any) => (
+    <p key={`fahas-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {r.olana_fahasalamana || "—"}
+    </p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Synthèse intelligente — Priorisation</h4>
+
+  <h5>Sokajy voalohany : Olana tena mafy</h5>
+
+  {priorityLine(
+    "Tazo moka",
+    vtiFahas,
+    "olana_fahasalamana",
+    ["tazo moka"]
+  )}
+
+  {priorityLine(
+    "Aretim-pivalanana",
+    vtiFahas,
+    "olana_fahasalamana",
+    ["aretim-pivalanana"]
+  )}
+
+  {priorityLine(
+    "VIH/SIDA sy IST",
+    vtiFahas,
+    "olana_fahasalamana",
+    ["vih", "sida", "ist"]
+  )}
+
+  {priorityLine(
+    "Tsy fahampian-tsakafo",
+    vtiFahas,
+    "olana_fahasalamana",
+    ["tsy fahampian-tsakafo"]
+  )}
+
+  {priorityLine(
+    "Tosidra",
+    vtiFahas,
+    "olana_fahasalamana",
+    ["tosidra"]
+  )}
+
+  {priorityLine(
+    "Diabeta",
+    vtiFahas,
+    "olana_fahasalamana",
+    ["diabeta"]
+  )}
+
+  {priorityLine(
+    "Homamiadana",
+    vtiFahas,
+    "olana_fahasalamana",
+    ["homamiadana"]
+  )}
+
+  {priorityLine(
+    "Fahasembanana",
+    vtiFahas,
+    "olana_fahasalamana",
+    ["fahasembanana"]
+  )}
+
+  {priorityLine(
+    "Fahasalamana ara-tsaina",
+    vtiFahas,
+    "olana_fahasalamana",
+    ["ara-tsaina"]
+  )}
+
+  <h5>Sokajy faharoa : Olana misy fa mbola tranga vitsy</h5>
+
+  {vtiFahas.map((r: any) => (
+    <p key={`fahas-2-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {String(r.olana_fahasalamana || "").includes("OLANA MBOLA AZO LEFERINA")
+        ? String(r.olana_fahasalamana).split("OLANA MBOLA AZO LEFERINA")[1]
+        : "—"}
+    </p>
+  ))}
+
+  <h5>Valiny hafa / valiny manokana</h5>
+
+  {otherResponses(vtiFahas, "olana_fahasalamana", [
+    "tazo moka",
+    "aretim-pivalanana",
+    "vih",
+    "sida",
+    "ist",
+    "tsy fahampian-tsakafo",
+    "tosidra",
+    "diabeta",
+    "homamiadana",
+    "fahasembanana",
+    "ara-tsaina"
+  ]).map((v, i) => (
+    <p key={`fahas-other-${i}`}>{v}</p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Paikady 140 andro — Fahasalamana</h4>
+
+  <p>
+    1-Fahadiovana sy rano fisotro madio<br />
+    2-Fisorohana tazo moka<br />
+    3-Ady amin'ny VIH/SIDA sy IST<br />
+    4-Fanatsarana ny sakafo<br />
+    5-Fanaraha-maso tosidra sy diabeta<br />
+    6-Fanentanana ara-pahasalamana<br />
+    7-Vahaolana hafa
+  </p>
+
+  {vtiFahas.map((r: any) => (
+    <p key={`fahas-paikady-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {r.paikady_fahasalamana || "—"}
+    </p>
+  ))}
+</div>
+
+<hr />
+
+<h2>10. Dashboard Fiarovana ny Tanora</h2>
+
+<div style={styles.miniBox}>
+  <h4>Références officielles — Formulaire VTI</h4>
+
+  <p>1- Vohoka aloha loatra</p>
+  <p>2- Mariazin'ny ankizy</p>
+  <p>3- Zava-mahadomelina</p>
+  <p>4- Herisetra</p>
+  <p>5- Fahaverezan'ny fanantenana</p>
+  <p>6- Olana hafa</p>
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Valiny détaillées — Fiches remplies</h4>
+
+  {vtiFahas.map((r: any) => (
+    <p key={`voina-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {r.voina_tanora || "—"}
+    </p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Synthèse intelligente — Priorisation</h4>
+
+  {priorityLine(
+    "Vohoka aloha loatra",
+    vtiFahas,
+    "voina_tanora",
+    ["vohoka"]
+  )}
+
+  {priorityLine(
+    "Mariazin'ny ankizy",
+    vtiFahas,
+    "voina_tanora",
+    ["mariazy"]
+  )}
+
+  {priorityLine(
+    "Zava-mahadomelina",
+    vtiFahas,
+    "voina_tanora",
+    ["mahadomelina"]
+  )}
+
+  {priorityLine(
+    "Herisetra",
+    vtiFahas,
+    "voina_tanora",
+    ["herisetra"]
+  )}
+
+  {priorityLine(
+    "Fahaverezan'ny fanantenana",
+    vtiFahas,
+    "voina_tanora",
+    ["fanantenana"]
+  )}
+
+  <h5>Valiny hafa / valiny manokana</h5>
+
+  {otherResponses(vtiFahas, "voina_tanora", [
+    "vohoka",
+    "mariazy",
+    "mahadomelina",
+    "herisetra",
+    "fanantenana"
+  ]).map((v, i) => (
+    <p key={`voina-other-${i}`}>{v}</p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Paikady 140 andro — Fiarovana ny Tanora</h4>
+
+  {vtiFahas.map((r: any) => (
+    <p key={`voina-paikady-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {r.paikady_fahasalamana || "—"}
+    </p>
+  ))}
+</div>
 
         <hr />
 
