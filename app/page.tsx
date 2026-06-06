@@ -10,6 +10,7 @@ function DashboardAnalytique({ onBack }: any) {
   const [spirituel, setSpirituel] = useState<any[]>([]);
   const [repVti, setRepVti] = useState<any[]>([]);
   const [unites, setUnites] = useState<any[]>([]);
+  const [eco, setEco] = useState<any[]>([]);
   const [repTaniketsa, setRepTaniketsa] = useState<any[]>([]);
 
   const [vtiArap, setVtiArap] = useState<any[]>([]);
@@ -25,12 +26,17 @@ function DashboardAnalytique({ onBack }: any) {
 
   const latestByKey = (rows: any[], key: string) => {
     const map = new Map();
+
     rows.forEach((r) => {
       const k = r[key];
       if (!k) return;
+
       const old = map.get(k);
-      if (!old || Number(r.id || 0) > Number(old.id || 0)) map.set(k, r);
+      if (!old || Number(r.id || 0) > Number(old.id || 0)) {
+        map.set(k, r);
+      }
     });
+
     return Array.from(map.values());
   };
 
@@ -122,6 +128,7 @@ function DashboardAnalytique({ onBack }: any) {
     const { data: spirituelData } = await supabase.from("reponses_spirituel").select("*");
     const { data: repVtiData } = await supabase.from("reponses_vti").select("*");
     const { data: unitesData } = await supabase.from("taniketsa_unites").select("*");
+    const { data: ecoData } = await supabase.from("economies_taniketsa").select("*");
     const { data: repTanData } = await supabase.from("reponses_taniketsa_detaillees").select("*");
 
     const { data: arapData } = await supabase.from("vti_vaomiera_arapanahy_fanabeazana").select("*");
@@ -135,6 +142,7 @@ function DashboardAnalytique({ onBack }: any) {
     setSpirituel(latestByTanoraId(spirituelData || []));
     setRepVti(latestByTanoraId(repVtiData || []));
     setUnites(latestByTanoraAndFiliere(unitesData || []));
+    setEco(latestByTanoraId(ecoData || []));
     setRepTaniketsa(latestByTanoraId(repTanData || []));
 
     setVtiArap(latestByVtiId(arapData || []));
@@ -151,32 +159,111 @@ function DashboardAnalytique({ onBack }: any) {
   const age35plus = tanora.filter((t) => Number(t.taona) > 35).length;
 
   const filieres = [
-    { type: "voly", name: "Voly rakotra 500m²" },
-    { type: "vary", name: "Voly vary 750m²" },
-    { type: "akoho", name: "Akoho gasy" },
-    { type: "kisoa", name: "Fanatavezana kisoa" },
-    { type: "tantely", name: "Fiompiana tantely" },
+    {
+      type: "voly",
+      name: "Voly rakotra 500m²",
+      ca: "ca_voly_rakotra",
+      dep: "depenses_voly_rakotra",
+      ben: "benefice_voly_rakotra",
+    },
+    {
+      type: "vary",
+      name: "Voly vary 750m²",
+      ca: "ca_vary",
+      dep: "depenses_vary",
+      ben: "benefice_vary",
+    },
+    {
+      type: "akoho",
+      name: "Akoho gasy",
+      ca: "ca_akoho_gasy",
+      dep: "depenses_akoho_gasy",
+      ben: "benefice_akoho_gasy",
+    },
+    {
+      type: "kisoa",
+      name: "Fanatavezana kisoa",
+      ca: "ca_kisoa",
+      dep: "depenses_kisoa",
+      ben: "benefice_kisoa",
+    },
+    {
+      type: "tantely",
+      name: "Fiompiana tantely",
+      ca: "ca_tantely",
+      dep: "depenses_tantely",
+      ben: "benefice_tantely",
+    },
   ];
 
-  const caGlobal =
-    total(unites, "ca_annee_1") +
-    total(unites, "ca_annee_2") +
-    total(unites, "ca_annee_3");
+  const getEcoByTanora = (tanoraId: any) =>
+    eco.find((e) => Number(e.tanora_id) === Number(tanoraId));
 
-  const depensesGlobal =
-    total(unites, "depenses_annee_1") +
-    total(unites, "depenses_annee_2") +
-    total(unites, "depenses_annee_3");
+  const getUnitsByTanoraAndType = (tanoraId: any, type: string) =>
+    unites.find(
+      (u) =>
+        Number(u.tanora_id) === Number(tanoraId) &&
+        String(u.type_taniketsa || "") === type
+    );
 
-  const beneficeGlobal =
-    total(unites, "benefice_annee_1") +
-    total(unites, "benefice_annee_2") +
-    total(unites, "benefice_annee_3");
+  const getFiliereRows = (f: any) => {
+    const ids = new Set<number>();
+
+    eco.forEach((e) => {
+      if (
+        Number(e[f.ca] || 0) !== 0 ||
+        Number(e[f.dep] || 0) !== 0 ||
+        Number(e[f.ben] || 0) !== 0
+      ) {
+        ids.add(Number(e.tanora_id));
+      }
+    });
+
+    unites
+      .filter((u) => u.type_taniketsa === f.type)
+      .forEach((u) => ids.add(Number(u.tanora_id)));
+
+    return Array.from(ids).map((tanoraId) => {
+      const unit = getUnitsByTanoraAndType(tanoraId, f.type);
+      const ecoRow = getEcoByTanora(tanoraId);
+
+      const caFromUnits =
+        Number(unit?.ca_annee_1 || 0) +
+        Number(unit?.ca_annee_2 || 0) +
+        Number(unit?.ca_annee_3 || 0);
+
+      const depFromUnits =
+        Number(unit?.depenses_annee_1 || 0) +
+        Number(unit?.depenses_annee_2 || 0) +
+        Number(unit?.depenses_annee_3 || 0);
+
+      const benFromUnits =
+        Number(unit?.benefice_annee_1 || 0) +
+        Number(unit?.benefice_annee_2 || 0) +
+        Number(unit?.benefice_annee_3 || 0);
+
+      return {
+        tanora_id: tanoraId,
+        unite_annee_1: Number(unit?.unite_annee_1 || 0),
+        unite_annee_2: Number(unit?.unite_annee_2 || 0),
+        unite_annee_3: Number(unit?.unite_annee_3 || 0),
+        ca_total: caFromUnits || Number(ecoRow?.[f.ca] || 0),
+        dep_total: depFromUnits || Number(ecoRow?.[f.dep] || 0),
+        ben_total: benFromUnits || Number(ecoRow?.[f.ben] || 0),
+      };
+    });
+  };
+
+  const allFiliereRows = filieres.flatMap((f) => getFiliereRows(f));
+
+  const caGlobal = allFiliereRows.reduce((s, r) => s + Number(r.ca_total || 0), 0);
+  const depensesGlobal = allFiliereRows.reduce((s, r) => s + Number(r.dep_total || 0), 0);
+  const beneficeGlobal = allFiliereRows.reduce((s, r) => s + Number(r.ben_total || 0), 0);
 
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Dashboard Analytique Tanora Mazava L1 — V4</h1>
+        <h1 style={styles.titleSmall}>Dashboard Analytique Tanora Mazava L1 — V5</h1>
 
         <div style={styles.actions}>
           <button style={styles.button} onClick={chargerDashboard}>
@@ -256,22 +343,7 @@ function DashboardAnalytique({ onBack }: any) {
         <h2>4. Dashboard Taniketsa Fandraharahana — Données économiques corrigées</h2>
 
         {filieres.map((f) => {
-          const rows = unites.filter((u) => u.type_taniketsa === f.type);
-
-          const caFiliere =
-            total(rows, "ca_annee_1") +
-            total(rows, "ca_annee_2") +
-            total(rows, "ca_annee_3");
-
-          const depFiliere =
-            total(rows, "depenses_annee_1") +
-            total(rows, "depenses_annee_2") +
-            total(rows, "depenses_annee_3");
-
-          const benFiliere =
-            total(rows, "benefice_annee_1") +
-            total(rows, "benefice_annee_2") +
-            total(rows, "benefice_annee_3");
+          const rows = getFiliereRows(f);
 
           return (
             <div key={f.type} style={styles.miniBox}>
@@ -280,9 +352,9 @@ function DashboardAnalytique({ onBack }: any) {
               <p><strong>Unités Taona 1 :</strong> {total(rows, "unite_annee_1")}</p>
               <p><strong>Unités Taona 2 :</strong> {total(rows, "unite_annee_2")}</p>
               <p><strong>Unités Taona 3 :</strong> {total(rows, "unite_annee_3")}</p>
-              <p><strong>CA total 3 ans :</strong> {money(caFiliere)}</p>
-              <p><strong>Dépenses totales 3 ans :</strong> {money(depFiliere)}</p>
-              <p><strong>Bénéfice total 3 ans :</strong> {money(benFiliere)}</p>
+              <p><strong>CA total 3 ans :</strong> {money(total(rows, "ca_total"))}</p>
+              <p><strong>Dépenses totales 3 ans :</strong> {money(total(rows, "dep_total"))}</p>
+              <p><strong>Bénéfice total 3 ans :</strong> {money(total(rows, "ben_total"))}</p>
             </div>
           );
         })}
@@ -293,7 +365,7 @@ function DashboardAnalytique({ onBack }: any) {
           <p><strong>Dépenses totales globales :</strong> {money(depensesGlobal)}</p>
           <p><strong>Bénéfice total global :</strong> {money(beneficeGlobal)}</p>
           <p>
-            <strong>Base de calcul :</strong> dernières lignes enregistrées par ID Tanora et par filière dans taniketsa_unites.
+            <strong>Base de calcul :</strong> dernières données par ID Tanora et par filière, avec récupération complémentaire depuis economies_taniketsa si taniketsa_unites est incomplet.
           </p>
         </div>
 
