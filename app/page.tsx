@@ -10,7 +10,6 @@ function DashboardAnalytique({ onBack }: any) {
   const [spirituel, setSpirituel] = useState<any[]>([]);
   const [repVti, setRepVti] = useState<any[]>([]);
   const [unites, setUnites] = useState<any[]>([]);
-  const [eco, setEco] = useState<any[]>([]);
   const [repTaniketsa, setRepTaniketsa] = useState<any[]>([]);
 
   const [vtiArap, setVtiArap] = useState<any[]>([]);
@@ -38,6 +37,26 @@ function DashboardAnalytique({ onBack }: any) {
   const latestByTanoraId = (rows: any[]) => latestByKey(rows, "tanora_id");
   const latestByVtiId = (rows: any[]) => latestByKey(rows, "vti_id");
 
+  const latestByTanoraAndFiliere = (rows: any[]) => {
+    const map = new Map();
+
+    rows.forEach((r) => {
+      const tanoraId = r.tanora_id;
+      const type = r.type_taniketsa;
+
+      if (!tanoraId || !type) return;
+
+      const key = `${tanoraId}_${type}`;
+      const old = map.get(key);
+
+      if (!old || Number(r.id || 0) > Number(old.id || 0)) {
+        map.set(key, r);
+      }
+    });
+
+    return Array.from(map.values());
+  };
+
   const countTheme = (rows: any[], field: string, keys: string[]) =>
     rows.filter((r) => keys.some((k) => txt(r[field]).includes(k))).length;
 
@@ -45,8 +64,6 @@ function DashboardAnalytique({ onBack }: any) {
     rows.map((r) => r[field]).filter(Boolean);
 
   const thematicSummary = (title: string, texts: string[]) => {
-    const all = texts.join(" | ").toLowerCase();
-
     const themes = [
       { label: "Manana tany / tany azo ampiasaina", keys: ["manana tany", "taniko", "ahy", "tany misy"] },
       { label: "Tanin’ny ray aman-dreny / fianakaviana", keys: ["ray aman-dreny", "fianakaviana", "lova", "havana"] },
@@ -75,7 +92,9 @@ function DashboardAnalytique({ onBack }: any) {
         <h4>{title}</h4>
         <p><strong>Isan’ny valiny voaray :</strong> {texts.length}</p>
 
-        {found.length === 0 && <p>Tsy mbola ampy ny valiny hanaovana regroupement thématique.</p>}
+        {found.length === 0 && (
+          <p>Tsy mbola ampy ny valiny hanaovana regroupement thématique.</p>
+        )}
 
         {found.map((f) => (
           <p key={f.label}>
@@ -103,7 +122,6 @@ function DashboardAnalytique({ onBack }: any) {
     const { data: spirituelData } = await supabase.from("reponses_spirituel").select("*");
     const { data: repVtiData } = await supabase.from("reponses_vti").select("*");
     const { data: unitesData } = await supabase.from("taniketsa_unites").select("*");
-    const { data: ecoData } = await supabase.from("economies_taniketsa").select("*");
     const { data: repTanData } = await supabase.from("reponses_taniketsa_detaillees").select("*");
 
     const { data: arapData } = await supabase.from("vti_vaomiera_arapanahy_fanabeazana").select("*");
@@ -113,10 +131,10 @@ function DashboardAnalytique({ onBack }: any) {
 
     setTanora(tanoraData || []);
     setVti(vtiData || []);
+
     setSpirituel(latestByTanoraId(spirituelData || []));
     setRepVti(latestByTanoraId(repVtiData || []));
-    setUnites(unitesData || []);
-    setEco(latestByTanoraId(ecoData || []));
+    setUnites(latestByTanoraAndFiliere(unitesData || []));
     setRepTaniketsa(latestByTanoraId(repTanData || []));
 
     setVtiArap(latestByVtiId(arapData || []));
@@ -140,10 +158,25 @@ function DashboardAnalytique({ onBack }: any) {
     { type: "tantely", name: "Fiompiana tantely" },
   ];
 
+  const caGlobal =
+    total(unites, "ca_annee_1") +
+    total(unites, "ca_annee_2") +
+    total(unites, "ca_annee_3");
+
+  const depensesGlobal =
+    total(unites, "depenses_annee_1") +
+    total(unites, "depenses_annee_2") +
+    total(unites, "depenses_annee_3");
+
+  const beneficeGlobal =
+    total(unites, "benefice_annee_1") +
+    total(unites, "benefice_annee_2") +
+    total(unites, "benefice_annee_3");
+
   return (
     <main style={styles.main}>
       <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Dashboard Analytique Tanora Mazava L1 — V3</h1>
+        <h1 style={styles.titleSmall}>Dashboard Analytique Tanora Mazava L1 — V4</h1>
 
         <div style={styles.actions}>
           <button style={styles.button} onClick={chargerDashboard}>
@@ -176,7 +209,7 @@ function DashboardAnalytique({ onBack }: any) {
 
         <h2>2. Dashboard Ara-panahy Tanora — Informations qualitatives</h2>
         <div style={styles.miniBox}>
-          <p><strong>Fiches ara-panahy farany raisina :</strong> {spirituel.length}</p>
+          <p><strong>Fiches ara-panahy finales raisina :</strong> {spirituel.length}</p>
 
           <h3>Vavaka Betela</h3>
           <p><strong>Isan’andro :</strong> {countTheme(spirituel, "spirituel_q3", ["isan’andro", "isanandro"])}</p>
@@ -202,7 +235,7 @@ function DashboardAnalytique({ onBack }: any) {
 
         <h2>3. Dashboard Engagement VTI Tanora — Informations qualitatives</h2>
         <div style={styles.miniBox}>
-          <p><strong>Fiches VTI Tanora farany raisina :</strong> {repVti.length}</p>
+          <p><strong>Fiches VTI Tanora finales raisina :</strong> {repVti.length}</p>
           <p><strong>Efa nikambana fikambanana taloha :</strong> {countTheme(repVti, "vti_q1", ["eny", "efa"])}</p>
           <p><strong>Mahafantatra mazava ny VTI :</strong> {countTheme(repVti, "vti_q2", ["mazava", "tsara"])}</p>
           <p><strong>Mandray andraikitra mavitrika :</strong> {countTheme(repVti, "vti_q3", ["mavitrika", "mandray", "eny"])}</p>
@@ -220,36 +253,48 @@ function DashboardAnalytique({ onBack }: any) {
 
         <hr />
 
-        <h2>4. Dashboard Taniketsa Fandraharahana — Données économiques</h2>
+        <h2>4. Dashboard Taniketsa Fandraharahana — Données économiques corrigées</h2>
 
         {filieres.map((f) => {
-          const rows = latestByKey(
-            unites.filter((u) => u.type_taniketsa === f.type),
-            "tanora_id"
-          );
+          const rows = unites.filter((u) => u.type_taniketsa === f.type);
+
+          const caFiliere =
+            total(rows, "ca_annee_1") +
+            total(rows, "ca_annee_2") +
+            total(rows, "ca_annee_3");
+
+          const depFiliere =
+            total(rows, "depenses_annee_1") +
+            total(rows, "depenses_annee_2") +
+            total(rows, "depenses_annee_3");
+
+          const benFiliere =
+            total(rows, "benefice_annee_1") +
+            total(rows, "benefice_annee_2") +
+            total(rows, "benefice_annee_3");
 
           return (
             <div key={f.type} style={styles.miniBox}>
               <h3>{f.name}</h3>
-              <p><strong>Tanora farany raisina :</strong> {rows.length}</p>
+              <p><strong>Tanora concernés :</strong> {rows.length}</p>
               <p><strong>Unités Taona 1 :</strong> {total(rows, "unite_annee_1")}</p>
               <p><strong>Unités Taona 2 :</strong> {total(rows, "unite_annee_2")}</p>
               <p><strong>Unités Taona 3 :</strong> {total(rows, "unite_annee_3")}</p>
-              <p><strong>CA Taona 1 :</strong> {money(total(rows, "ca_annee_1"))}</p>
-              <p><strong>CA Taona 2 :</strong> {money(total(rows, "ca_annee_2"))}</p>
-              <p><strong>CA Taona 3 :</strong> {money(total(rows, "ca_annee_3"))}</p>
-              <p><strong>Bénéfice Taona 1 :</strong> {money(total(rows, "benefice_annee_1"))}</p>
-              <p><strong>Bénéfice Taona 2 :</strong> {money(total(rows, "benefice_annee_2"))}</p>
-              <p><strong>Bénéfice Taona 3 :</strong> {money(total(rows, "benefice_annee_3"))}</p>
+              <p><strong>CA total 3 ans :</strong> {money(caFiliere)}</p>
+              <p><strong>Dépenses totales 3 ans :</strong> {money(depFiliere)}</p>
+              <p><strong>Bénéfice total 3 ans :</strong> {money(benFiliere)}</p>
             </div>
           );
         })}
 
         <div style={styles.scoreBox}>
           <h3>Synthèse économique globale 3 ans</h3>
-          <p><strong>CA total global :</strong> {money(total(eco, "ca_total"))}</p>
-          <p><strong>Dépenses totales globales :</strong> {money(total(eco, "depenses_total"))}</p>
-          <p><strong>Bénéfice total global :</strong> {money(total(eco, "benefice_total"))}</p>
+          <p><strong>CA total global :</strong> {money(caGlobal)}</p>
+          <p><strong>Dépenses totales globales :</strong> {money(depensesGlobal)}</p>
+          <p><strong>Bénéfice total global :</strong> {money(beneficeGlobal)}</p>
+          <p>
+            <strong>Base de calcul :</strong> dernières lignes enregistrées par ID Tanora et par filière dans taniketsa_unites.
+          </p>
         </div>
 
         <hr />
