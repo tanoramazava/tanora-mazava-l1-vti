@@ -545,7 +545,17 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
       <strong>ID VTI {r.vti_id} :</strong> {r.fanamby_140_andro || "—"}
     </p>
   ))}
+<h5>Synthèse intelligente — Priorisation des fanamby ara-panahy</h5>
 
+{priorityLine("Fahamasinana", vtiArap, "fanamby_140_andro", ["fahamasinana"])}
+{priorityLine("Fanetre-tena", vtiArap, "fanamby_140_andro", ["fanetre-tena", "fanetretena"])}
+{priorityLine("Fandeferana", vtiArap, "fanamby_140_andro", ["fandeferana"])}
+{priorityLine("Fahaizana mamela heloka", vtiArap, "fanamby_140_andro", ["mamela heloka", "famelan-keloka"])}
+{priorityLine("Fiantrana ny madiniky ny Tompo", vtiArap, "fanamby_140_andro", ["fiantrana", "madiniky"])}
+
+<p>
+  <strong>Fehin-kevitra :</strong> Ny fanamby ara-panahy 140 andro dia asongadina araka ny priorisation napetraky ny VTI, mba hahitana izay soatoavina mila hamafisina voalohany.
+</p>
   <h5>Valiny hafa / fanamby manokana</h5>
   {otherResponses(vtiArap, "fanamby_140_andro", [
     "fahamasinana",
