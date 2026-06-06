@@ -493,52 +493,103 @@ function DashboardAnalytique({ onBack }: any) {
 
         <hr />
 
-       <h2>10. Dashboard Fandriampahalemana sy Ady amin'ny Kolikoly</h2>
+      <h2>10. Dashboard Fandriampahalemana sy Ady amin'ny Kolikoly</h2>
 
-{thematicSummary(
-  "Olana Fandriampahalemana sy Kolikoly",
-  extractTexts(vtiEtika, "olana_fandriampahalemana")
-)}
+<div style={styles.miniBox}>
+  <h4>Références officielles du formulaire</h4>
+  <p>1. Halatra be vava miaraka amin’ny vono olona</p>
+  <p>2. Halabotry</p>
+  <p>3. Disadisa ara-piarahamonina</p>
+  <p>4. Ady lahy sy fizarazarana ara-politika</p>
+  <p>5. Kolikoly sy fahalovana miantraika amin’ny fiainam-piaraha-monina</p>
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Valiny voasoratra ao amin’ny fiches remplies</h4>
+  {vtiEtika.map((r: any) => (
+    <p key={r.id}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {r.olana_fandriampahalemana || "—"}
+    </p>
+  ))}
+</div>
 
 <div style={styles.miniBox}>
   <h4>Regroupement intelligent</h4>
-
-  <p><strong>Halatra be vava :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["halatra", "dahalo"])}</p>
+  <p><strong>Halatra be vava / halatra :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["halatra", "dahalo"])}</p>
   <p><strong>Halabotry :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["halabotry"])}</p>
   <p><strong>Disadisa ara-piarahamonina :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["disadisa"])}</p>
-  <p><strong>Ady lahy / fizarazarana :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["ady lahy", "politika", "fizarazarana"])}</p>
-  <p><strong>Kolikoly sy fahalovana :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["kolikoly", "fahalovana"])}</p>
+  <p><strong>Ady lahy / fizarazarana politika :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["ady lahy", "fizarazarana", "politika"])}</p>
+  <p><strong>Kolikoly / fahalovana :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["kolikoly", "fahalovana"])}</p>
+
+  <p>
+    <strong>Synthèse intelligente :</strong>{" "}
+    Ny Dashboard dia mampitaha ny valiny voaray amin’ireo références ofisialy, ary mamoaka izay olana miverimberina indrindra ho laharam-pahamehana amin’ny fanapahan-kevitra.
+  </p>
 </div>
 
-{thematicSummary(
-  "Paikady Fandriampahalemana sy Ady amin'ny Kolikoly",
-  extractTexts(vtiEtika, "paikady_etika")
-)}
+<div style={styles.miniBox}>
+  <h4>Vahaolana 140 andro — Fandriampahalemana sy ady amin’ny kolikoly</h4>
+  <p><strong>Références :</strong> Fanamafisana fihavanana ; fandriampahalemana maharitra ; fisorohana sy ady amin’ny fahalovana ; fanabeazana olom-pirenena ; dina sy fitsipika iombonana.</p>
+
+  {vtiEtika.map((r: any) => (
+    <p key={`paikady-fand-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {String(r.paikady_etika || "").includes("FANDRIAMPAHALEMANA")
+        ? String(r.paikady_etika).split("VAHAOLANA 140 ANDRO — TONTOLO IAINANA:")[0]
+        : r.paikady_etika || "—"}
+    </p>
+  ))}
+</div>
 
 <hr />
 
 <h2>11. Dashboard Tontolo Iainana sy Harena Voajanahary</h2>
 
-{thematicSummary(
-  "Olana Tontolo Iainana",
-  extractTexts(vtiEtika, "olana_tontolo_iainana")
-)}
+<div style={styles.miniBox}>
+  <h4>Références officielles du formulaire</h4>
+  <p>1. Doro tanety</p>
+  <p>2. Fandripahana ala</p>
+  <p>3. Fandrobana harena voajanahary sy loharanon-karena iombonana</p>
+  <p>4. Faharitry ny loharano sy haintany</p>
+  <p>5. Fiankinandoha amin’ny saribao sy kitay</p>
+  <p>6. Loza voajanahary : rivo-doza, tondradrano</p>
+  <p>7. Olana hafa</p>
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Valiny voasoratra ao amin’ny fiches remplies</h4>
+  {vtiEtika.map((r: any) => (
+    <p key={`env-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {r.olana_tontolo_iainana || "—"}
+    </p>
+  ))}
+</div>
 
 <div style={styles.miniBox}>
   <h4>Regroupement intelligent</h4>
-
-  <p><strong>Doro tanety :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["doro tanety", "afo"])}</p>
-  <p><strong>Fandripahana ala :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["ala", "fandripahana"])}</p>
-  <p><strong>Fandrobana harena voajanahary :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["harena voajanahary", "fandrobana"])}</p>
-  <p><strong>Faharitry ny loharano / haintany :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["loharano", "haintany"])}</p>
-  <p><strong>Saribao sy kitay :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["saribao", "kitay"])}</p>
+  <p><strong>Doro tanety :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["doro tanety"])}</p>
+  <p><strong>Fandripahana ala :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["fandripahana", "ala"])}</p>
+  <p><strong>Harena voajanahary / loharanon-karena :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["harena voajanahary", "loharanon-karena", "fandrobana"])}</p>
+  <p><strong>Loharano / haintany :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["loharano", "haintany"])}</p>
+  <p><strong>Saribao / kitay :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["saribao", "kitay"])}</p>
   <p><strong>Loza voajanahary :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["rivo-doza", "tondradrano", "loza"])}</p>
 </div>
 
-{thematicSummary(
-  "Paikady Tontolo Iainana",
-  extractTexts(vtiEtika, "paikady_etika")
-)}
+<div style={styles.miniBox}>
+  <h4>Vahaolana 140 andro — Tontolo iainana</h4>
+  <p><strong>Références :</strong> Fambolena hazo/ala ; fefy velona ; ady amin’ny doro tanety ; angovo maintso ; famokarana biolojika ; fanodinana fako.</p>
+
+  {vtiEtika.map((r: any) => (
+    <p key={`paikady-env-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {String(r.paikady_etika || "").includes("TONTOLO IAINANA")
+        ? "VAHAOLANA 140 ANDRO — TONTOLO IAINANA:" + String(r.paikady_etika).split("VAHAOLANA 140 ANDRO — TONTOLO IAINANA:")[1]
+        : r.paikady_etika || "—"}
+    </p>
+  ))}
+</div> 
       </section>
     </main>
   );
