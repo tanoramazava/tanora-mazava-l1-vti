@@ -633,19 +633,13 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
   <h4>Paikady 140 andro — Fahasalamana</h4>
 
   <p>
-    1-Fahadiovana sy rano fisotro madio<br />
-    2-Fisorohana tazo moka<br />
-    3-Ady amin'ny VIH/SIDA sy IST<br />
-    4-Fanatsarana ny sakafo<br />
-    5-Fanaraha-maso tosidra sy diabeta<br />
-    6-Fanentanana ara-pahasalamana<br />
-    7-Vahaolana hafa
+    <strong>Références :</strong> 1-Ady amin’ny tazo moka ; 2-Ady amin’ny aretim-pivalanana ; 3-Vaksiny ; 4-Fanjarian-tsakafo ; 5-Fampiroboroboana fanatanjahantena sy fialamboly ho an’ny fahasalamana ara-batana sy ara-tsaina.
   </p>
 
   {vtiFahas.map((r: any) => (
     <p key={`fahas-paikady-${r.id}`}>
       <strong>ID VTI {r.vti_id} :</strong>{" "}
-      {r.paikady_fahasalamana || "—"}
+      {String(r.paikady_fahasalamana || "").split("FIAROVANA")[0] || "—"}
     </p>
   ))}
 </div>
@@ -730,10 +724,16 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 <div style={styles.miniBox}>
   <h4>Paikady 140 andro — Fiarovana ny Tanora</h4>
 
+  <p>
+    <strong>Références :</strong> 1-Fisorohana vohoka aloha loatra ; 2-Fisorohana mariazin’ny ankizy ; 3-Fisorohana fidorohana zava-mahadomelina ; 4-Fisorohana herisetra ; 5-Paikady iombonana hafa ; 6-Paikady iombonana hafa.
+  </p>
+
   {vtiFahas.map((r: any) => (
     <p key={`voina-paikady-${r.id}`}>
       <strong>ID VTI {r.vti_id} :</strong>{" "}
-      {r.paikady_fahasalamana || "—"}
+      {String(r.paikady_fahasalamana || "").includes("FIAROVANA")
+        ? "FIAROVANA" + String(r.paikady_fahasalamana).split("FIAROVANA")[1]
+        : "—"}
     </p>
   ))}
 </div>
