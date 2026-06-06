@@ -489,11 +489,181 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 
         <hr />
 
-        <h2>7. Dashboard Vaomiera Ara-panahy sy Fanabeazana</h2>
-        {thematicSummary("Fanaka dimy / soatoavina", extractTexts(vtiArap, "fanaka_dimy"))}
-        {thematicSummary("Fanamby ara-panahy 140 andro", extractTexts(vtiArap, "fanamby_140_andro"))}
-        {thematicSummary("Olana ara-panabeazana", extractTexts(vtiArap, "olana_fanabeazana"))}
-        {thematicSummary("Paikady ara-panabeazana", extractTexts(vtiArap, "paikady_140_andro"))}
+       <h2>7. Dashboard Ara-panahy sy Fanabeazana</h2>
+
+<div style={styles.miniBox}>
+  <h4>Références officielles — Fanaka masina dimy / Soatoavina dimy</h4>
+  <p>1. Fahamasinana</p>
+  <p>2. Fanetre-tena</p>
+  <p>3. Fandeferana</p>
+  <p>4. Fahaizana mamela heloka</p>
+  <p>5. Fiantrana ny madiniky ny Tompo</p>
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Valiny détaillées — Fanaka dimy / Soatoavina</h4>
+  {vtiArap.map((r: any) => (
+    <p key={`fanaka-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong> {r.fanaka_dimy || "—"}
+    </p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Synthèse intelligente — Priorisation des soatoavina sarotra ampiharina</h4>
+
+  {priorityLine("Fahamasinana", vtiArap, "fanaka_dimy", ["fahamasinana"])}
+  {priorityLine("Fanetre-tena", vtiArap, "fanaka_dimy", ["fanetre-tena", "fanetretena"])}
+  {priorityLine("Fandeferana", vtiArap, "fanaka_dimy", ["fandeferana"])}
+  {priorityLine("Fahaizana mamela heloka", vtiArap, "fanaka_dimy", ["mamela heloka", "famelan-keloka"])}
+  {priorityLine("Fiantrana ny madiniky ny Tompo", vtiArap, "fanaka_dimy", ["fiantrana", "madiniky"])}
+
+  <h5>Valiny hafa / valiny manokana</h5>
+  {otherResponses(vtiArap, "fanaka_dimy", [
+    "fahamasinana",
+    "fanetre-tena",
+    "fanetretena",
+    "fandeferana",
+    "mamela heloka",
+    "famelan-keloka",
+    "fiantrana",
+    "madiniky"
+  ]).map((v, i) => (
+    <p key={`fanaka-other-${i}`}>{v}</p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Fanamby ara-panahy ao anatin’ny 140 andro</h4>
+
+  <p>
+    <strong>Référence :</strong> Ny fanamby dia apetraka amin’ny laharam-pahamehana mazava araka izay tena sarotra sy tena ilain’ny VTI hatsaraina ao anatin’ny 140 andro.
+  </p>
+
+  {vtiArap.map((r: any) => (
+    <p key={`fanamby-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong> {r.fanamby_140_andro || "—"}
+    </p>
+  ))}
+
+  <h5>Valiny hafa / fanamby manokana</h5>
+  {otherResponses(vtiArap, "fanamby_140_andro", [
+    "fahamasinana",
+    "fanetre-tena",
+    "fanetretena",
+    "fandeferana",
+    "mamela heloka",
+    "famelan-keloka",
+    "fiantrana",
+    "madiniky"
+  ]).map((v, i) => (
+    <p key={`fanamby-other-${i}`}>{v}</p>
+  ))}
+</div>
+
+<hr />
+
+<h2>7B. Dashboard Fanabeazana</h2>
+
+<div style={styles.miniBox}>
+  <h4>Références officielles — Olana ara-panabeazana</h4>
+  <p>1. Fahabadoana : tsy fahaizana mamaky teny, manoratra ary manisa</p>
+  <p>2. Fahantrana ara-panabeazana / pauvreté d’apprentissage</p>
+  <p>3. Fitsoahana na fialana an-tsekoly</p>
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Valiny détaillées — Olana ara-panabeazana</h4>
+  {vtiArap.map((r: any) => (
+    <p key={`fanab-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong> {r.olana_fanabeazana || "—"}
+    </p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Synthèse intelligente — Priorisation</h4>
+
+  <h5>Sokajy voalohany : olana tena mafy, miantraika amin’ny daholobe / ankamaroany</h5>
+
+  {priorityLine(
+    "Fahabadoana : tsy fahaizana mamaky teny, manoratra ary manisa",
+    vtiArap,
+    "olana_fanabeazana",
+    ["fahabadoana", "mamaky teny", "manoratra", "manisa"]
+  )}
+
+  {priorityLine(
+    "Fahantrana ara-panabeazana / pauvreté d’apprentissage",
+    vtiArap,
+    "olana_fanabeazana",
+    ["fahantrana ara-panabeazana", "pauvreté", "apprentissage"]
+  )}
+
+  {priorityLine(
+    "Fitsoahana na fialana an-tsekoly",
+    vtiArap,
+    "olana_fanabeazana",
+    ["fitsoahana", "fialana", "an-tsekoly"]
+  )}
+
+  <h5>Sokajy faharoa : olana misy hafa, tranga vitsy na mbola azo leferina</h5>
+  {vtiArap.map((r: any) => (
+    <p key={`fanab2-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong>{" "}
+      {String(r.olana_fanabeazana || "").includes("OLANA MAFY, MBOLA AZO LEFERINA")
+        ? String(r.olana_fanabeazana).split("OLANA MAFY, MBOLA AZO LEFERINA")[1]
+        : "—"}
+    </p>
+  ))}
+
+  <h5>Valiny hafa / valiny manokana</h5>
+  {otherResponses(vtiArap, "olana_fanabeazana", [
+    "fahabadoana",
+    "mamaky teny",
+    "manoratra",
+    "manisa",
+    "fahantrana ara-panabeazana",
+    "pauvreté",
+    "apprentissage",
+    "fitsoahana",
+    "fialana",
+    "an-tsekoly"
+  ]).map((v, i) => (
+    <p key={`fanab-other-${i}`}>{v}</p>
+  ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h4>Paikady ara-panabeazana ao anatin’ny 140 andro</h4>
+
+  <p>
+    <strong>Références :</strong> 1-Paikady iombonana ho fampianarana mamaky teny sy manoratra, ady amin’ny habadoana ; 2-Paikady iombonana ho tohana pedagojika ho an’ny tanora nitsoaka an-daharana na niala an-tsekoly ; 3-Paikady iombonana ho fametrahana “Sekoly Tsara Kalitao” miaraka amin’ny Kaomina, ZAP, ray aman-dreny, Fokonolona ary Vaomiera/VTI.
+  </p>
+
+  {vtiArap.map((r: any) => (
+    <p key={`paikady-fanab-${r.id}`}>
+      <strong>ID VTI {r.vti_id} :</strong> {r.paikady_140_andro || "—"}
+    </p>
+  ))}
+
+  <h5>Valiny hafa / paikady manokana</h5>
+  {otherResponses(vtiArap, "paikady_140_andro", [
+    "mamaky teny",
+    "manoratra",
+    "habadoana",
+    "tohana pedagojika",
+    "nitsoaka",
+    "niala an-tsekoly",
+    "sekoly tsara kalitao",
+    "kaomina",
+    "zap",
+    "ray aman-dreny",
+    "fokonolona"
+  ]).map((v, i) => (
+    <p key={`paikady-fanab-other-${i}`}>{v}</p>
+  ))}
+</div>
 
         <hr />
 
