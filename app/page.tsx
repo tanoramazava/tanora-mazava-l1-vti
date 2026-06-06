@@ -493,10 +493,52 @@ function DashboardAnalytique({ onBack }: any) {
 
         <hr />
 
-        <h2>10. Dashboard Vaomiera Etika sy Fampandrosoana Maharitra</h2>
-        {thematicSummary("Olana fandriampahalemana sy kolikoly", extractTexts(vtiEtika, "olana_fandriampahalemana"))}
-        {thematicSummary("Olana tontolo iainana", extractTexts(vtiEtika, "olana_tontolo_iainana"))}
-        {thematicSummary("Paikady Etika sy Fampandrosoana", extractTexts(vtiEtika, "paikady_etika"))}
+       <h2>10. Dashboard Fandriampahalemana sy Ady amin'ny Kolikoly</h2>
+
+{thematicSummary(
+  "Olana Fandriampahalemana sy Kolikoly",
+  extractTexts(vtiEtika, "olana_fandriampahalemana")
+)}
+
+<div style={styles.miniBox}>
+  <h4>Regroupement intelligent</h4>
+
+  <p><strong>Halatra be vava :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["halatra", "dahalo"])}</p>
+  <p><strong>Halabotry :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["halabotry"])}</p>
+  <p><strong>Disadisa ara-piarahamonina :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["disadisa"])}</p>
+  <p><strong>Ady lahy / fizarazarana :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["ady lahy", "politika", "fizarazarana"])}</p>
+  <p><strong>Kolikoly sy fahalovana :</strong> {countTheme(vtiEtika, "olana_fandriampahalemana", ["kolikoly", "fahalovana"])}</p>
+</div>
+
+{thematicSummary(
+  "Paikady Fandriampahalemana sy Ady amin'ny Kolikoly",
+  extractTexts(vtiEtika, "paikady_etika")
+)}
+
+<hr />
+
+<h2>11. Dashboard Tontolo Iainana sy Harena Voajanahary</h2>
+
+{thematicSummary(
+  "Olana Tontolo Iainana",
+  extractTexts(vtiEtika, "olana_tontolo_iainana")
+)}
+
+<div style={styles.miniBox}>
+  <h4>Regroupement intelligent</h4>
+
+  <p><strong>Doro tanety :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["doro tanety", "afo"])}</p>
+  <p><strong>Fandripahana ala :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["ala", "fandripahana"])}</p>
+  <p><strong>Fandrobana harena voajanahary :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["harena voajanahary", "fandrobana"])}</p>
+  <p><strong>Faharitry ny loharano / haintany :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["loharano", "haintany"])}</p>
+  <p><strong>Saribao sy kitay :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["saribao", "kitay"])}</p>
+  <p><strong>Loza voajanahary :</strong> {countTheme(vtiEtika, "olana_tontolo_iainana", ["rivo-doza", "tondradrano", "loza"])}</p>
+</div>
+
+{thematicSummary(
+  "Paikady Tontolo Iainana",
+  extractTexts(vtiEtika, "paikady_etika")
+)}
       </section>
     </main>
   );
