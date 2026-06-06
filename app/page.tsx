@@ -207,52 +207,95 @@ function DashboardAnalytique({ onBack }: any) {
     );
 
   const getFiliereRows = (f: any) => {
-    const ids = new Set<number>();
+  const ids = new Set<number>();
 
-    eco.forEach((e) => {
-      if (
-        Number(e[f.ca] || 0) !== 0 ||
-        Number(e[f.dep] || 0) !== 0 ||
-        Number(e[f.ben] || 0) !== 0
-      ) {
-        ids.add(Number(e.tanora_id));
+  eco.forEach((e) => {
+    if (
+      Number(e[f.ca] || 0) !== 0 ||
+      Number(e[f.dep] || 0) !== 0 ||
+      Number(e[f.ben] || 0) !== 0
+    ) {
+      ids.add(Number(e.tanora_id));
+    }
+  });
+
+  unites
+    .filter((u) => u.type_taniketsa === f.type)
+    .forEach((u) => ids.add(Number(u.tanora_id)));
+
+  return Array.from(ids).map((tanoraId) => {
+    const unit = getUnitsByTanoraAndType(tanoraId, f.type);
+    const ecoRow = getEcoByTanora(tanoraId);
+
+    const caEco = Number(ecoRow?.[f.ca] || 0);
+    const depEco = Number(ecoRow?.[f.dep] || 0);
+    const benEco = Number(ecoRow?.[f.ben] || 0);
+
+    const caFromUnits =
+      Number(unit?.ca_annee_1 || 0) +
+      Number(unit?.ca_annee_2 || 0) +
+      Number(unit?.ca_annee_3 || 0);
+
+    const depFromUnits =
+      Number(unit?.depenses_annee_1 || 0) +
+      Number(unit?.depenses_annee_2 || 0) +
+      Number(unit?.depenses_annee_3 || 0);
+
+    const benFromUnits =
+      Number(unit?.benefice_annee_1 || 0) +
+      Number(unit?.benefice_annee_2 || 0) +
+      Number(unit?.benefice_annee_3 || 0);
+
+    let u1 = Number(unit?.unite_annee_1 || 0);
+    let u2 = Number(unit?.unite_annee_2 || 0);
+    let u3 = Number(unit?.unite_annee_3 || 0);
+
+    if ((!u1 && !u2 && !u3) && caEco > 0) {
+      if (f.type === "akoho") {
+        const caParTokatrano3Ans = 82560000;
+        const initial = Math.round(caEco / caParTokatrano3Ans);
+
+        u1 = initial;
+        u2 = initial * 6;
+        u3 = initial * 36;
       }
-    });
 
-    unites
-      .filter((u) => u.type_taniketsa === f.type)
-      .forEach((u) => ids.add(Number(u.tanora_id)));
+      if (f.type === "voly") {
+        u1 = Math.round(caEco / (754800 + 876800 + 876800));
+        u2 = u1;
+        u3 = u1;
+      }
 
-    return Array.from(ids).map((tanoraId) => {
-      const unit = getUnitsByTanoraAndType(tanoraId, f.type);
-      const ecoRow = getEcoByTanora(tanoraId);
+      if (f.type === "vary") {
+        u1 = Math.round(caEco / (450000 + 600000 + 600000));
+        u2 = u1;
+        u3 = u1;
+      }
 
-      const caFromUnits =
-        Number(unit?.ca_annee_1 || 0) +
-        Number(unit?.ca_annee_2 || 0) +
-        Number(unit?.ca_annee_3 || 0);
+      if (f.type === "kisoa") {
+        u1 = Math.round(caEco / (1400000 * 3));
+        u2 = u1;
+        u3 = u1;
+      }
 
-      const depFromUnits =
-        Number(unit?.depenses_annee_1 || 0) +
-        Number(unit?.depenses_annee_2 || 0) +
-        Number(unit?.depenses_annee_3 || 0);
+      if (f.type === "tantely") {
+        u1 = Math.round(caEco / (378000 * 3));
+        u2 = u1;
+        u3 = u1;
+      }
+    }
 
-      const benFromUnits =
-        Number(unit?.benefice_annee_1 || 0) +
-        Number(unit?.benefice_annee_2 || 0) +
-        Number(unit?.benefice_annee_3 || 0);
-
-      return {
-        tanora_id: tanoraId,
-        unite_annee_1: Number(unit?.unite_annee_1 || 0),
-        unite_annee_2: Number(unit?.unite_annee_2 || 0),
-        unite_annee_3: Number(unit?.unite_annee_3 || 0),
-        ca_total: caFromUnits || Number(ecoRow?.[f.ca] || 0),
-        dep_total: depFromUnits || Number(ecoRow?.[f.dep] || 0),
-        ben_total: benFromUnits || Number(ecoRow?.[f.ben] || 0),
-      };
-    });
-  };
+    return {
+      tanora_id: tanoraId,
+      unite_annee_1: u1,
+      unite_annee_2: u2,
+      unite_annee_3: u3,
+      ca_total: caFromUnits || caEco,
+      dep_total: depFromUnits || depEco,
+      ben_total: benFromUnits || benEco,
+    };
+  });
+};
 
   const allFiliereRows = filieres.flatMap((f) => getFiliereRows(f));
 
