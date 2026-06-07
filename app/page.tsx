@@ -4331,7 +4331,11 @@ function TaniketsaForm({ tanoraId, onBack }: any) {
       })
       .filter(Boolean);
 
-    const { error: unitesError } = await supabase.from("taniketsa_unites").insert(unitesPayload);
+    const { error: unitesError } = await supabase
+  .from("taniketsa_unites")
+  .upsert(unitesPayload, {
+    onConflict: "tanora_id,type_taniketsa",
+  });
 
     if (unitesError) {
       alert("Erreur Unités Taniketsa : " + JSON.stringify(unitesError));
