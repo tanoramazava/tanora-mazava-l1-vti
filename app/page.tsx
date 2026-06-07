@@ -530,157 +530,121 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 
 <h2>5B. Dashboard Production & Valeur Ajoutée</h2>
 
-<div style={styles.miniBox}>
-  <h3>Voly Rakotra</h3>
+{(() => {
+  const volyRows = getFiliereRows({
+    type: "voly",
+    ca: "ca_voly_rakotra",
+    dep: "depenses_voly_rakotra",
+    ben: "benefice_voly_rakotra",
+  });
 
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[0]).length}</p>
+  const varyRows = getFiliereRows({
+    type: "vary",
+    ca: "ca_vary",
+    dep: "depenses_vary",
+    ben: "benefice_vary",
+  });
 
-  <p><strong>Parcelles total A1 :</strong> {
-    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
-  }</p>
+  const akohoRows = getFiliereRows({
+    type: "akoho",
+    ca: "ca_akoho_gasy",
+    dep: "depenses_akoho_gasy",
+    ben: "benefice_akoho_gasy",
+  });
 
-  <p><strong>Surface totale A1 :</strong> {
-    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 500
-  } m²</p>
+  const kisoaRows = getFiliereRows({
+    type: "kisoa",
+    ca: "ca_kisoa",
+    dep: "depenses_kisoa",
+    ben: "benefice_kisoa",
+  });
 
-  <h4>Karazam-bokatra estimée / an</h4>
+  const tantelyRows = getFiliereRows({
+    type: "tantely",
+    ca: "ca_tantely",
+    dep: "depenses_tantely",
+    ben: "benefice_tantely",
+  });
 
-  <p><strong>Katsaka estimée :</strong> {
-    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 120
-  } kg/an</p>
+  const sum = (rows: any[], field: string) =>
+    rows.reduce((s, r) => s + Number(r[field] || 0), 0);
 
-  <p><strong>Tsaramaso estimée :</strong> {
-    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 60
-  } kg/an</p>
+  const volyA1 = sum(volyRows, "unite_annee_1");
+  const varyA1 = sum(varyRows, "unite_annee_1");
 
-  <p><strong>Voanjo estimée :</strong> {
-    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 50
-  } kg/an</p>
+  const akohoA1 = sum(akohoRows, "unite_annee_1");
+  const akohoA2 = sum(akohoRows, "unite_annee_2");
+  const akohoA3 = sum(akohoRows, "unite_annee_3");
+  const totalTranoAkoho = akohoA1 + akohoA2 + akohoA3;
+  const totalAkohoVelona = totalTranoAkoho * 160;
 
-  <p><strong>Anana / legioma estimée :</strong> {
-    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 80
-  } kg/an</p>
+  const kisoaA1 = sum(kisoaRows, "unite_annee_1");
+  const tantelyA1 = sum(tantelyRows, "unite_annee_1");
 
-  <p><strong>Karazam-bokatra hafa :</strong> azo ampidirina araka ny zava-misy eny ifotony.</p>
-</div>
+  return (
+    <>
+      <div style={styles.miniBox}>
+        <h3>Voly Rakotra</h3>
 
-<div style={styles.miniBox}>
-  <h3>Vary</h3>
+        <p><strong>Isan'ny tanora :</strong> {volyRows.length}</p>
+        <p><strong>Parcelles total A1 :</strong> {volyA1}</p>
+        <p><strong>Surface totale A1 :</strong> {volyA1 * 500} m²</p>
 
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[1]).length}</p>
+        <h4>Karazam-bokatra estimée / an</h4>
+        <p><strong>Katsaka estimée :</strong> {volyA1 * 120} kg/an</p>
+        <p><strong>Tsaramaso estimée :</strong> {volyA1 * 60} kg/an</p>
+        <p><strong>Voanjo estimée :</strong> {volyA1 * 50} kg/an</p>
+        <p><strong>Anana / legioma estimée :</strong> {volyA1 * 80} kg/an</p>
+        <p><strong>Karazam-bokatra hafa :</strong> azo ampidirina araka ny zava-misy eny ifotony.</p>
+      </div>
 
-  <p><strong>Parcelles total A1 :</strong> {
-    getFiliereRows(filieres[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
-  }</p>
+      <div style={styles.miniBox}>
+        <h3>Vary</h3>
 
-  <p><strong>Surface totale A1 :</strong> {
-    getFiliereRows(filieres[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 750
-  } m²</p>
+        <p><strong>Isan'ny tanora :</strong> {varyRows.length}</p>
+        <p><strong>Parcelles total A1 :</strong> {varyA1}</p>
+        <p><strong>Surface totale A1 :</strong> {varyA1 * 750} m²</p>
+        <p><strong>Production estimée :</strong> {varyA1 * 300} kg/an</p>
+        <p><strong>Production estimée :</strong> {(varyA1 * 300 / 1000).toLocaleString("fr-FR")} tonne/an</p>
+      </div>
 
-  <p><strong>Production estimée :</strong> {
-    getFiliereRows(filieres[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 300
-  } kg/an</p>
+      <div style={styles.miniBox}>
+        <h3>Akoho Gasy</h3>
 
-  <p><strong>Production estimée :</strong> {
-    (
-      getFiliereRows(filieres[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 300 / 1000
-    ).toLocaleString("fr-FR")
-  } tonne/an</p>
-</div>
+        <p><strong>Isan'ny tanora :</strong> {akohoRows.length}</p>
+        <p><strong>Tokatran'akoho A1 :</strong> {akohoA1}</p>
+        <p><strong>Tokatran'akoho A2 :</strong> {akohoA2}</p>
+        <p><strong>Tokatran'akoho A3 :</strong> {akohoA3}</p>
 
-<div style={styles.miniBox}>
-  <h3>Akoho Gasy</h3>
+        <p><strong>Akoho velona A1 :</strong> {akohoA1 * 160}</p>
+        <p><strong>Akoho velona A2 :</strong> {akohoA2 * 160}</p>
+        <p><strong>Akoho velona A3 :</strong> {akohoA3 * 160}</p>
 
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[2]).length}</p>
+        <p><strong>Total akoho velona 3 ans :</strong> {totalAkohoVelona}</p>
+        <p><strong>Akoho amidy estimés :</strong> {(totalAkohoVelona * 0.75).toLocaleString("fr-FR")}</p>
+        <p><strong>Akoho tazonina fanitarana :</strong> {(totalAkohoVelona * 0.25).toLocaleString("fr-FR")}</p>
+      </div>
 
-  <p><strong>Tokatran'akoho A1 :</strong> {
-    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
-  }</p>
+      <div style={styles.miniBox}>
+        <h3>Kisoa</h3>
 
-  <p><strong>Tokatran'akoho A2 :</strong> {
-    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0)
-  }</p>
+        <p><strong>Isan'ny tanora :</strong> {kisoaRows.length}</p>
+        <p><strong>Kisoa total A1 :</strong> {kisoaA1}</p>
+        <p><strong>Lanja estimée A1 :</strong> {kisoaA1 * 80} kg</p>
+        <p><strong>Lanja estimée A1 :</strong> {(kisoaA1 * 80 / 1000).toLocaleString("fr-FR")} tonne</p>
+      </div>
 
-  <p><strong>Tokatran'akoho A3 :</strong> {
-    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
-  }</p>
+      <div style={styles.miniBox}>
+        <h3>Tantely</h3>
 
-  <p><strong>Akoho velona A1 :</strong> {
-    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 160
-  }</p>
-
-  <p><strong>Akoho velona A2 :</strong> {
-    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) * 160
-  }</p>
-
-  <p><strong>Akoho velona A3 :</strong> {
-    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0) * 160
-  }</p>
-
-  <p><strong>Total akoho velona 3 ans :</strong> {
-    (
-      getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) +
-      getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) +
-      getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
-    ) * 160
-  }</p>
-
-  <p><strong>Akoho amidy estimés :</strong> {
-    (
-      (
-        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) +
-        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) +
-        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
-      ) * 160 * 0.75
-    ).toLocaleString("fr-FR")
-  }</p>
-
-  <p><strong>Akoho tazonina fanitarana :</strong> {
-    (
-      (
-        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) +
-        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) +
-        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
-      ) * 160 * 0.25
-    ).toLocaleString("fr-FR")
-  }</p>
-</div>
-
-<div style={styles.miniBox}>
-  <h3>Kisoa</h3>
-
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[3]).length}</p>
-
-  <p><strong>Kisoa total A1 :</strong> {
-    getFiliereRows(filieres[3]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
-  }</p>
-
-  <p><strong>Lanja estimée A1 :</strong> {
-    getFiliereRows(filieres[3]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 80
-  } kg</p>
-
-  <p><strong>Lanja estimée A1 :</strong> {
-    (
-      getFiliereRows(filieres[3]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 80 / 1000
-    ).toLocaleString("fr-FR")
-  } tonne</p>
-</div>
-
-<div style={styles.miniBox}>
-  <h3>Tantely</h3>
-
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[4]).length}</p>
-
-  <p><strong>Tohotantely A1 :</strong> {
-    getFiliereRows(filieres[4]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
-  }</p>
-
-  <p><strong>Production estimée A1 :</strong> {
-    getFiliereRows(filieres[4]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 7 * 6
-  } litres/an</p>
-
-  <p><strong>Base de calcul :</strong> 7 litres × 6 saisons/an × nombre de tohotantely.</p>
-</div>
+        <p><strong>Isan'ny tanora :</strong> {tantelyRows.length}</p>
+        <p><strong>Tohotantely A1 :</strong> {tantelyA1}</p>
+        <p><strong>Production estimée A1 :</strong> {tantelyA1 * 7 * 6} litres/an</p>
+        <p><strong>Base de calcul :</strong> 7 litres × 6 saisons/an × nombre de tohotantely.</p>
+      </div>
+    </>
+  );
+})()}
 
 <hr />
         <h2>6. Dashboard Identité VTI</h2>
