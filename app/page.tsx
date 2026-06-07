@@ -82,6 +82,80 @@ function DashboardAnalytique({ onBack }: any) {
       <strong>{label} :</strong> {countPriority(rows, field, keys)}
     </p>
   );
+  const syntheseAutomatique = (
+  titre: string,
+  rows: any[],
+  field: string,
+  themes: { label: string; keys: string[]; conseil?: string }[]
+) => {
+  const totalReponses = rows.filter((r) => String(r[field] || "").trim()).length;
+
+  const resultats = themes
+    .map((theme) => ({
+      ...theme,
+      count: countPriority(rows, field, theme.keys),
+    }))
+    .filter((theme) => theme.count > 0)
+    .sort((a, b) => b.count - a.count);
+
+  if (totalReponses === 0) {
+    return (
+      <div style={styles.miniBox}>
+        <h4>{titre}</h4>
+        <p>Aucune réponse détaillée enregistrée pour le moment.</p>
+      </div>
+    );
+  }
+
+  if (resultats.length === 0) {
+    return (
+      <div style={styles.miniBox}>
+        <h4>{titre}</h4>
+        <p>
+          Les réponses existent, mais elles ne correspondent pas encore clairement
+          aux références prévues. Elles doivent être analysées comme valiny hafa /
+          cas particuliers.
+        </p>
+      </div>
+    );
+  }
+
+  const priorite1 = resultats[0];
+
+  return (
+    <div style={styles.miniBox}>
+      <h4>{titre}</h4>
+
+      <p>
+        <strong>Nombre de fiches analysées :</strong> {totalReponses}
+      </p>
+
+      <p>
+        <strong>Priorité principale :</strong> {priorite1.label}{" "}
+        ({priorite1.count} réponse(s)).
+      </p>
+
+      <p>
+        <strong>Synthèse :</strong> D’après les réponses détaillées enregistrées,
+        le thème le plus récurrent est <strong>{priorite1.label}</strong>. Il
+        doit être considéré comme une priorité d’intervention ou de décision.
+      </p>
+
+      {priorite1.conseil && (
+        <p>
+          <strong>Orientation proposée :</strong> {priorite1.conseil}
+        </p>
+      )}
+
+      <h5>Classement automatique des thèmes</h5>
+      {resultats.map((r, i) => (
+        <p key={`${field}-${r.label}`}>
+          <strong>Priorité {i + 1} :</strong> {r.label} — {r.count} réponse(s)
+        </p>
+      ))}
+    </div>
+  );
+};
 
   const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
     rows
