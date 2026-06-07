@@ -86,6 +86,22 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
   rows
     .map((r) => String(r[field] || ""))
     .filter((v) => v && !knownKeys.some((k) => txt(v).includes(k)));
+ const extractNumbers = (texts: string[]) =>
+  texts
+    .flatMap((t) => String(t).match(/\d+([.,]\d+)?/g) || [])
+    .map((n) => Number(String(n).replace(",", ".")))
+    .filter((n) => !isNaN(n) && n > 0);
+
+const surfaceStats = (texts: string[]) => {
+  const nums = extractNumbers(texts);
+  if (nums.length === 0) return { min: 0, max: 0, avg: 0 };
+
+  return {
+    min: Math.min(...nums),
+    max: Math.max(...nums),
+    avg: Math.round(nums.reduce((a, b) => a + b, 0) / nums.length),
+  };
+}; 
   const thematicSummary = (title: string, texts: string[]) => {
     const themes = [
       { label: "Manana tany / tany azo ampiasaina", keys: ["manana tany", "taniko", "ahy", "tany misy"] },
