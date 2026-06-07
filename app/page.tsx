@@ -108,12 +108,11 @@ const extractSurfacesM2 = (texts: string[]) =>
 
 const surfaceStats = (texts: string[]) => {
   const nums = extractSurfacesM2(texts);
-  if (nums.length === 0) return { min: 0, max: 0, avg: 0 };
+  if (nums.length === 0) return { min: 0, max: 0 };
 
   return {
     min: Math.min(...nums),
     max: Math.max(...nums),
-    avg: Math.round(nums.reduce((a, b) => a + b, 0) / nums.length),
   };
 };
 
@@ -487,6 +486,14 @@ const surfaceLabel = (m2: number) => {
   const fananantanyTexts = extractTexts(repTaniketsa, `${key}_fananantany`);
   const stats = surfaceStats(fananantanyTexts);
 
+  const totalSurface = extractSurfacesM2(fananantanyTexts).reduce(
+    (a, b) => a + b,
+    0
+  );
+
+  const nombreJeunes = fananantanyTexts.length || 1;
+  const surfaceMoyenne = Math.round(totalSurface / nombreJeunes);
+
   return (
     <>
       {fananantanyTexts.map((v, i) => (
@@ -494,9 +501,10 @@ const surfaceLabel = (m2: number) => {
       ))}
 
       <h5>Statistiques surface</h5>
-<p><strong>Refy ambany indrindra :</strong> {surfaceLabel(stats.min)}</p>
-<p><strong>Refy ambony indrindra :</strong> {surfaceLabel(stats.max)}</p>
-<p><strong>Moyenne :</strong> {surfaceLabel(stats.avg)}</p>
+      <p><strong>Refy ambany indrindra :</strong> {surfaceLabel(stats.min)}</p>
+      <p><strong>Refy ambony indrindra :</strong> {surfaceLabel(stats.max)}</p>
+      <p><strong>Surface totale :</strong> {surfaceLabel(totalSurface)}</p>
+      <p><strong>Surface moyenne par Tanora :</strong> {surfaceLabel(surfaceMoyenne)}</p>
     </>
   );
 })()}
