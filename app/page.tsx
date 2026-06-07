@@ -1277,7 +1277,6 @@ function DashboardAnalytique({ onBack }: any) {
 
 <div style={styles.miniBox}>
   <h4>Références officielles — Formulaire VTI</h4>
-
   <p>1- Vohoka aloha loatra</p>
   <p>2- Mariazin'ny ankizy</p>
   <p>3- Zava-mahadomelina</p>
@@ -1288,61 +1287,66 @@ function DashboardAnalytique({ onBack }: any) {
 
 <div style={styles.miniBox}>
   <h4>Valiny détaillées — Fiches remplies</h4>
-
   {vtiFahas.map((r: any) => (
     <p key={`voina-${r.id}`}>
-      <strong>ID VTI {r.vti_id} :</strong>{" "}
-      {r.voina_tanora || "—"}
+      <strong>ID VTI {r.vti_id} :</strong> {r.voina_tanora || "—"}
     </p>
   ))}
 </div>
 
+{syntheseAutomatique(
+  "Synthèse automatique — Fiarovana ny Tanora",
+  vtiFahas,
+  "voina_tanora",
+  [
+    {
+      label: "Vohoka aloha loatra",
+      keys: ["vohoka"],
+      conseil: "Hamafisina ny fanabeazana sy fisorohana vohoka aloha loatra amin’ny tanora.",
+    },
+    {
+      label: "Mariazin'ny ankizy",
+      keys: ["mariazy", "mariazin"],
+      conseil: "Atao laharam-pahamehana ny fanentanana sy fiarovana ny ankizy amin’ny fanambadiana aloha loatra.",
+    },
+    {
+      label: "Zava-mahadomelina",
+      keys: ["mahadomelina", "fidorohana"],
+      conseil: "Hatsangana ny fanentanana, fanaraha-maso ary hetsika fisorohana fidorohana zava-mahadomelina.",
+    },
+    {
+      label: "Herisetra",
+      keys: ["herisetra"],
+      conseil: "Hamafisina ny rafitra fiarovana, fihainoana ary fanampiana ireo tanora iharan’ny herisetra.",
+    },
+    {
+      label: "Fahaverezan'ny fanantenana",
+      keys: ["fanantenana", "fahakiviana"],
+      conseil: "Hamafisina ny fanohanana ara-tsaina, fanatanjahantena, fialamboly ary mentorat ho an’ny tanora.",
+    },
+  ]
+)}
+
 <div style={styles.miniBox}>
-  <h4>Synthèse intelligente — Priorisation</h4>
+  <h4>Synthèse intelligente — Priorisation détaillée</h4>
 
-  {priorityLine(
-    "Vohoka aloha loatra",
-    vtiFahas,
-    "voina_tanora",
-    ["vohoka"]
-  )}
-
-  {priorityLine(
-    "Mariazin'ny ankizy",
-    vtiFahas,
-    "voina_tanora",
-    ["mariazy"]
-  )}
-
-  {priorityLine(
-    "Zava-mahadomelina",
-    vtiFahas,
-    "voina_tanora",
-    ["mahadomelina"]
-  )}
-
-  {priorityLine(
-    "Herisetra",
-    vtiFahas,
-    "voina_tanora",
-    ["herisetra"]
-  )}
-
-  {priorityLine(
-    "Fahaverezan'ny fanantenana",
-    vtiFahas,
-    "voina_tanora",
-    ["fanantenana"]
-  )}
+  {priorityLine("Vohoka aloha loatra", vtiFahas, "voina_tanora", ["vohoka"])}
+  {priorityLine("Mariazin'ny ankizy", vtiFahas, "voina_tanora", ["mariazy", "mariazin"])}
+  {priorityLine("Zava-mahadomelina", vtiFahas, "voina_tanora", ["mahadomelina", "fidorohana"])}
+  {priorityLine("Herisetra", vtiFahas, "voina_tanora", ["herisetra"])}
+  {priorityLine("Fahaverezan'ny fanantenana", vtiFahas, "voina_tanora", ["fanantenana", "fahakiviana"])}
 
   <h5>Valiny hafa / valiny manokana</h5>
 
   {otherResponses(vtiFahas, "voina_tanora", [
     "vohoka",
     "mariazy",
+    "mariazin",
     "mahadomelina",
+    "fidorohana",
     "herisetra",
-    "fanantenana"
+    "fanantenana",
+    "fahakiviana"
   ]).map((v, i) => (
     <p key={`voina-other-${i}`}>{v}</p>
   ))}
@@ -1365,9 +1369,8 @@ function DashboardAnalytique({ onBack }: any) {
   ))}
 </div>
 
-        <hr />
-
-     <h2>10. Dashboard Fandriampahalemana sy Ady amin'ny Kolikoly</h2>
+<hr />
+   <h2>10. Dashboard Fandriampahalemana sy Ady amin'ny Kolikoly</h2>
 
 <div style={styles.miniBox}>
   <h4>Références officielles — Formulaire VTI</h4>
@@ -1387,11 +1390,44 @@ function DashboardAnalytique({ onBack }: any) {
   ))}
 </div>
 
+{syntheseAutomatique(
+  "Synthèse automatique — Fandriampahalemana sy Ady amin'ny Kolikoly",
+  vtiEtika,
+  "olana_fandriampahalemana",
+  [
+    {
+      label: "Halatra be vava miaraka amin’ny vono olona",
+      keys: ["halatra be vava", "vono olona", "dahalo"],
+      conseil: "Hamafisina ny rafitra fandriampahalemana ifotony sy ny fiaraha-miasa amin’ny fokonolona.",
+    },
+    {
+      label: "Halabotry",
+      keys: ["halabotry"],
+      conseil: "Atao laharam-pahamehana ny fisorohana sy ny fanaraha-maso eny anivon’ny fiarahamonina.",
+    },
+    {
+      label: "Disadisa ara-piarahamonina",
+      keys: ["disadisa"],
+      conseil: "Hamafisina ny fihavanana, ny fifampihainoana ary ny fanelanelanana ara-piarahamonina.",
+    },
+    {
+      label: "Ady lahy sy fizarazarana ara-politika",
+      keys: ["ady lahy", "fizarazarana", "politika"],
+      conseil: "Ilaina ny fanabeazana olom-pirenena sy ny fanamafisana ny firaisankina.",
+    },
+    {
+      label: "Kolikoly sy fahalovana",
+      keys: ["kolikoly", "fahalovana"],
+      conseil: "Hamafisina ny etika, mangarahara, dina ary ady amin’ny fahalovana.",
+    },
+  ]
+)}
+
 <div style={styles.miniBox}>
-  <h4>Synthèse intelligente — Priorisation</h4>
+  <h4>Synthèse intelligente — Priorisation détaillée</h4>
 
   <h5>Sokajy voalohany : olana tena mafy, miantraika amin’ny daholobe / ankamaroany</h5>
-  {priorityLine("Halatra be vava miaraka amin’ny vono olona", vtiEtika, "olana_fandriampahalemana", ["halatra be vava", "vono olona"])}
+  {priorityLine("Halatra be vava miaraka amin’ny vono olona", vtiEtika, "olana_fandriampahalemana", ["halatra be vava", "vono olona", "dahalo"])}
   {priorityLine("Halabotry", vtiEtika, "olana_fandriampahalemana", ["halabotry"])}
   {priorityLine("Disadisa ara-piarahamonina", vtiEtika, "olana_fandriampahalemana", ["disadisa"])}
   {priorityLine("Ady lahy sy fizarazarana ara-politika", vtiEtika, "olana_fandriampahalemana", ["ady lahy", "fizarazarana", "politika"])}
@@ -1409,7 +1445,7 @@ function DashboardAnalytique({ onBack }: any) {
 
   <h5>Valiny hafa / valiny manokana</h5>
   {otherResponses(vtiEtika, "olana_fandriampahalemana", [
-    "halatra", "halabotry", "disadisa", "ady lahy", "fizarazarana", "politika", "kolikoly", "fahalovana"
+    "halatra", "vono olona", "dahalo", "halabotry", "disadisa", "ady lahy", "fizarazarana", "politika", "kolikoly", "fahalovana"
   ]).map((v, i) => <p key={`fd-other-${i}`}>{v}</p>)}
 </div>
 
@@ -1425,8 +1461,7 @@ function DashboardAnalytique({ onBack }: any) {
   ))}
 </div>
 
-<hr />
-
+<hr /> 
 <h2>11. Dashboard Tontolo Iainana sy Harena Voajanahary</h2>
 
 <div style={styles.miniBox}>
@@ -1449,13 +1484,51 @@ function DashboardAnalytique({ onBack }: any) {
   ))}
 </div>
 
+{syntheseAutomatique(
+  "Synthèse automatique — Tontolo Iainana sy Harena Voajanahary",
+  vtiEtika,
+  "olana_tontolo_iainana",
+  [
+    {
+      label: "Doro tanety",
+      keys: ["doro tanety"],
+      conseil: "Atao laharam-pahamehana ny ady amin’ny doro tanety sy ny fanentanana ifotony.",
+    },
+    {
+      label: "Fandripahana ny ala",
+      keys: ["fandripahana ala", "fandripahana ny ala", "ala"],
+      conseil: "Hamafisina ny fiarovana ala, fambolen-kazo ary fanaraha-maso iombonana.",
+    },
+    {
+      label: "Fandrobana harena voajanahary",
+      keys: ["harena voajanahary", "loharanon-karena", "fandrobana"],
+      conseil: "Apetraka ny rafitra fiarovana ny harena voajanahary sy ny loharanon-karena iombonana.",
+    },
+    {
+      label: "Faharitry ny loharano sy haintany",
+      keys: ["loharano", "haintany"],
+      conseil: "Hamafisina ny fiarovana loharano, fefy velona ary fambolena hazo.",
+    },
+    {
+      label: "Fiankinandoha amin’ny saribao sy kitay",
+      keys: ["saribao", "kitay"],
+      conseil: "Ampidirina ny paikady angovo maintso sy fomba fahandro mitsitsy angovo.",
+    },
+    {
+      label: "Loza voajanahary",
+      keys: ["rivo-doza", "tondradrano", "loza voajanahary"],
+      conseil: "Hatsangana ny fanomanana sy fiarovana amin’ny loza voajanahary.",
+    },
+  ]
+)}
+
 <div style={styles.miniBox}>
-  <h4>Synthèse intelligente — Priorisation</h4>
+  <h4>Synthèse intelligente — Priorisation détaillée</h4>
 
   <h5>Sokajy voalohany : olana tena mafy, miantraika amin’ny daholobe / ankamaroany</h5>
   {priorityLine("Doro tanety", vtiEtika, "olana_tontolo_iainana", ["doro tanety"])}
-  {priorityLine("Fandripahana ala", vtiEtika, "olana_tontolo_iainana", ["fandripahana ala", "fandripahana ny ala"])}
-  {priorityLine("Fandrobana harena voajanahary", vtiEtika, "olana_tontolo_iainana", ["harena voajanahary", "fandrobana"])}
+  {priorityLine("Fandripahana ala", vtiEtika, "olana_tontolo_iainana", ["fandripahana ala", "fandripahana ny ala", "ala"])}
+  {priorityLine("Fandrobana harena voajanahary", vtiEtika, "olana_tontolo_iainana", ["harena voajanahary", "loharanon-karena", "fandrobana"])}
   {priorityLine("Faharitry ny loharano sy haintany", vtiEtika, "olana_tontolo_iainana", ["loharano", "haintany"])}
   {priorityLine("Fiankinan-doha amin’ny saribao sy kitay", vtiEtika, "olana_tontolo_iainana", ["saribao", "kitay"])}
   {priorityLine("Loza voajanahary", vtiEtika, "olana_tontolo_iainana", ["rivo-doza", "tondradrano", "loza voajanahary"])}
@@ -1472,13 +1545,26 @@ function DashboardAnalytique({ onBack }: any) {
 
   <h5>Valiny hafa / valiny manokana</h5>
   {otherResponses(vtiEtika, "olana_tontolo_iainana", [
-    "doro tanety", "ala", "harena voajanahary", "loharano", "haintany", "saribao", "kitay", "rivo-doza", "tondradrano"
+    "doro tanety",
+    "ala",
+    "harena voajanahary",
+    "loharanon-karena",
+    "fandrobana",
+    "loharano",
+    "haintany",
+    "saribao",
+    "kitay",
+    "rivo-doza",
+    "tondradrano",
+    "loza voajanahary"
   ]).map((v, i) => <p key={`env-other-${i}`}>{v}</p>)}
 </div>
 
 <div style={styles.miniBox}>
   <h4>Paikady 140 andro — Tontolo iainana</h4>
-  <p>Références : 1-Fambolena hazo/ala ; 2-Fefy velona manodidina ny Taniketsa Voly rakotra 500m² ; 3-Ady amin’ny doro tanety sy fandripahana ala ; 4-Angovo maintso ; 5-Famokarana biolojika miaro ny natiora ; 6-Fanodinana fako ; 7-Paikady hafa.</p>
+  <p>
+    <strong>Références :</strong> 1-Fambolena hazo/ala ; 2-Fefy velona manodidina ny Taniketsa Voly rakotra 500m² ; 3-Ady amin’ny doro tanety sy fandripahana ala ; 4-Angovo maintso ; 5-Famokarana biolojika miaro ny natiora ; 6-Fanodinana fako ; 7-Paikady hafa.
+  </p>
 
   {vtiEtika.map((r: any) => (
     <p key={`env-paikady-${r.id}`}>
