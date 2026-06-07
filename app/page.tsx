@@ -1681,6 +1681,17 @@ function DashboardAnalytique({ onBack }: any) {
     </p>
   ))}
 </div>
+        <hr />
+
+<div style={styles.actions}>
+  <button style={styles.button} onClick={() => window.print()}>
+    Imprimer
+  </button>
+
+  <button style={styles.secondaryButton} onClick={() => window.print()}>
+    Télécharger PDF
+  </button>
+</div>
       </section>
     </main>
   );
