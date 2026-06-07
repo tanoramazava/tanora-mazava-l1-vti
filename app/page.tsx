@@ -979,7 +979,7 @@ function DashboardAnalytique({ onBack }: any) {
 
         <hr />
 
-       <h2>8. Dashboard Fandraharahana sy Toekarena</h2>
+     <h2>8. Dashboard Fandraharahana sy Toekarena</h2>
 
 <div style={styles.miniBox}>
   <h4>Références officielles — Olana ara-toekarena</h4>
@@ -1004,73 +1004,73 @@ function DashboardAnalytique({ onBack }: any) {
   ))}
 </div>
 
+{syntheseAutomatique(
+  "Synthèse automatique — Olana ara-toekarena",
+  vtiToek,
+  "olana_toekarena",
+  [
+    {
+      label: "Tsy fananana kolontsain’ny fandraharahana sy tsy fisian’ny torohay",
+      keys: ["kolontsain", "fandraharahana", "torohay"],
+      conseil: "Hamafisina ny fanabeazana ara-toekarena sy ny torohay ho an’ny tanora.",
+    },
+    {
+      label: "Famokarana tsy mitodika amin’ny varotra",
+      keys: ["famokarana", "varotra"],
+      conseil: "Ampifandraisina amin’ny tsena sy lalambarotra ny famokarana.",
+    },
+    {
+      label: "Olana fananantany",
+      keys: ["fananantany"],
+      conseil: "Atao laharam-pahamehana ny paikady fananantany miaraka amin’ny Kaomina sy ny servisy fananantany.",
+    },
+    {
+      label: "Tsy fahampian’ny fiofanana sy fanaraha-maso teknika",
+      keys: ["fiofanana", "fanaraha-maso", "teknika"],
+      conseil: "Apetraka ny Saha Sekoly sy encadrement teknika akaiky.",
+    },
+    {
+      label: "Tsy fahampian’ny tosika ara-pitaovana sy akora",
+      keys: ["tosika", "fitaovana", "akora"],
+      conseil: "Hojerena ny rafitra fanohanana ara-pitaovana sy famatsiana akora.",
+    },
+    {
+      label: "Tsy fahampian’ny fotodrafitrasa iombonana",
+      keys: ["fotodrafitrasa"],
+      conseil: "Faritana ireo fotodrafitrasa maika voalohany sy faharoa.",
+    },
+    {
+      label: "Tsy fisian’ny lalambarotra",
+      keys: ["lalambarotra", "tsena"],
+      conseil: "Hamafisina ny débouchés, tsena ary fifandraisana amin’ny mpividy.",
+    },
+    {
+      label: "Tsy fisian’ny fiarovana ny mpamokatra",
+      keys: ["fiarovana", "mpamokatra"],
+      conseil: "Apetraka ny rafitra fiarovana ny mpamokatra sy ny vokatra.",
+    },
+    {
+      label: "Fihenan’ny fahefa-mividy sy fiankinan-doha amin’ny PPN",
+      keys: ["fahefa-mividy", "ppn", "fiankinan-doha"],
+      conseil: "Hamafisina ny famokarana sakafo ifotony sy ny famatsiana maharitra.",
+    },
+  ]
+)}
+
 <div style={styles.miniBox}>
-  <h4>Synthèse intelligente — Priorisation</h4>
+  <h4>Synthèse intelligente — Priorisation détaillée</h4>
 
   <h5>Sokajy voalohany : Olana tena mafy, miantraika amin’ny daholobe / ankamaroany</h5>
 
-  {priorityLine(
-    "Tsy fananana kolontsain’ny fandraharahana sy tsy fisian’ny torohay",
-    vtiToek,
-    "olana_toekarena",
-    ["kolontsain", "fandraharahana", "torohay"]
-  )}
-
-  {priorityLine(
-    "Famokarana tsy mitodika amin’ny varotra",
-    vtiToek,
-    "olana_toekarena",
-    ["famokarana", "varotra"]
-  )}
-
-  {priorityLine(
-    "Olana fananantany",
-    vtiToek,
-    "olana_toekarena",
-    ["fananantany"]
-  )}
-
-  {priorityLine(
-    "Tsy fahampian’ny fiofanana sy fanaraha-maso teknika",
-    vtiToek,
-    "olana_toekarena",
-    ["fiofanana", "fanaraha-maso", "teknika"]
-  )}
-
-  {priorityLine(
-    "Tsy fahampian’ny tosika ara-pitaovana sy akora",
-    vtiToek,
-    "olana_toekarena",
-    ["tosika", "fitaovana", "akora"]
-  )}
-
-  {priorityLine(
-    "Tsy fahampian’ny fotodrafitrasa iombonana",
-    vtiToek,
-    "olana_toekarena",
-    ["fotodrafitrasa"]
-  )}
-
-  {priorityLine(
-    "Tsy fisian’ny lalambarotra",
-    vtiToek,
-    "olana_toekarena",
-    ["lalambarotra", "tsena"]
-  )}
-
-  {priorityLine(
-    "Tsy fisian’ny fiarovana ny mpamokatra",
-    vtiToek,
-    "olana_toekarena",
-    ["fiarovana", "mpamokatra"]
-  )}
-
-  {priorityLine(
-    "Fihenan’ny fahefa-mividy sy fiankinan-doha amin’ny PPN",
-    vtiToek,
-    "olana_toekarena",
-    ["fahefa-mividy", "ppn", "fiankinan-doha"]
-  )}
+  {priorityLine("Tsy fananana kolontsain’ny fandraharahana sy tsy fisian’ny torohay", vtiToek, "olana_toekarena", ["kolontsain", "fandraharahana", "torohay"])}
+  {priorityLine("Famokarana tsy mitodika amin’ny varotra", vtiToek, "olana_toekarena", ["famokarana", "varotra"])}
+  {priorityLine("Olana fananantany", vtiToek, "olana_toekarena", ["fananantany"])}
+  {priorityLine("Tsy fahampian’ny fiofanana sy fanaraha-maso teknika", vtiToek, "olana_toekarena", ["fiofanana", "fanaraha-maso", "teknika"])}
+  {priorityLine("Tsy fahampian’ny tosika ara-pitaovana sy akora", vtiToek, "olana_toekarena", ["tosika", "fitaovana", "akora"])}
+  {priorityLine("Tsy fahampian’ny fotodrafitrasa iombonana", vtiToek, "olana_toekarena", ["fotodrafitrasa"])}
+  {priorityLine("Tsy fisian’ny lalambarotra", vtiToek, "olana_toekarena", ["lalambarotra", "tsena"])}
+  {priorityLine("Tsy fisian’ny fiarovana ny mpamokatra", vtiToek, "olana_toekarena", ["fiarovana", "mpamokatra"])}
+  {priorityLine("Fihenan’ny fahefa-mividy sy fiankinan-doha amin’ny PPN", vtiToek, "olana_toekarena", ["fahefa-mividy", "ppn", "fiankinan-doha"])}
 
   <h5>Sokajy faharoa : Olana misy hafa, tranga vitsy na mbola azo leferina</h5>
 
@@ -1125,7 +1125,7 @@ function DashboardAnalytique({ onBack }: any) {
   ))}
 </div>
 
-        <hr />
+<hr />
 
        <h2>9. Dashboard Fahasalamana</h2>
 
