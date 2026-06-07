@@ -97,9 +97,50 @@ const extractSurfacesM2 = (texts: string[]) =>
         results.push(Number(m[1].replace(",", ".")) * 10000);
       }
 
-      const m2Matches = t.matchAll(/(\d+([.,]\d+)?)\s*(m2|m²|metatra toradroa)/g);
+    const parseSurfaceNumber = (raw: string) => {
+  const value = String(raw || "").trim().toLowerCase();
+
+  if (value.includes("/")) {
+    const [a, b] = value.split("/").map((x) => Number(x.trim()));
+    if (!isNaN(a) && !isNaN(b) && b !== 0) {
+      return a / b;
+    }
+  }
+
+  const cleaned = value
+    .replace(/\s/g, "")
+    .replace(/\./g, "")
+    .replace(",", ".");
+
+  return Number(cleaned);
+};
+
+const extractSurfacesM2 = (texts: string[]) =>
+  texts
+    .flatMap((text) => {
+      const t = String(text || "").toLowerCase();
+      const results: number[] = [];
+
+      const haMatches = t.matchAll(
+        /(\d+\/\d+|\d[\d\s.,]*)\s*(ha|hectare|hektara|hekitara)/g
+      );
+
+      for (const m of haMatches) {
+        const value = parseSurfaceNumber(m[1]);
+        if (!isNaN(value)) {
+          results.push(value * 10000);
+        }
+      }
+
+      const m2Matches = t.matchAll(
+        /(\d[\d\s.,]*)\s*(m2|m²|metatra toradroa)/g
+      );
+
       for (const m of m2Matches) {
-        results.push(Number(m[1].replace(",", ".")));
+        const value = parseSurfaceNumber(m[1]);
+        if (!isNaN(value)) {
+          results.push(value);
+        }
       }
 
       return results;
@@ -108,21 +149,30 @@ const extractSurfacesM2 = (texts: string[]) =>
 
 const surfaceStats = (texts: string[]) => {
   const nums = extractSurfacesM2(texts);
-  if (nums.length === 0) return { min: 0, max: 0 };
+
+  if (nums.length === 0) {
+    return {
+      min: 0,
+      max: 0,
+      total: 0,
+      avg: 0,
+    };
+  }
+
+  const total = nums.reduce((a, b) => a + b, 0);
 
   return {
     min: Math.min(...nums),
     max: Math.max(...nums),
+    total,
+    avg: Math.round(total / texts.length),
   };
 };
 
 const surfaceLabel = (m2: number) => {
   if (!m2) return "—";
-  if (m2 >= 10000) {
-    return `${(m2 / 10000).toLocaleString("fr-FR")} ha (${m2.toLocaleString("fr-FR")} m²)`;
-  }
   return `${m2.toLocaleString("fr-FR")} m²`;
-};
+}; 
   const thematicSummary = (title: string, texts: string[]) => {
     const themes = [
       { label: "Manana tany / tany azo ampiasaina", keys: ["manana tany", "taniko", "ahy", "tany misy"] },
@@ -480,19 +530,11 @@ const surfaceLabel = (m2: number) => {
   <div key={key} style={styles.miniBox}>
     <h3>{label}</h3>
 
-   <h4>Fananantany</h4>
+  <h4>Fananantany</h4>
 
 {(() => {
   const fananantanyTexts = extractTexts(repTaniketsa, `${key}_fananantany`);
   const stats = surfaceStats(fananantanyTexts);
-
-  const totalSurface = extractSurfacesM2(fananantanyTexts).reduce(
-    (a, b) => a + b,
-    0
-  );
-
-  const nombreJeunes = fananantanyTexts.length || 1;
-  const surfaceMoyenne = Math.round(totalSurface / nombreJeunes);
 
   return (
     <>
@@ -503,12 +545,11 @@ const surfaceLabel = (m2: number) => {
       <h5>Statistiques surface</h5>
       <p><strong>Refy ambany indrindra :</strong> {surfaceLabel(stats.min)}</p>
       <p><strong>Refy ambony indrindra :</strong> {surfaceLabel(stats.max)}</p>
-      <p><strong>Surface totale :</strong> {surfaceLabel(totalSurface)}</p>
-      <p><strong>Surface moyenne par Tanora :</strong> {surfaceLabel(surfaceMoyenne)}</p>
+      <p><strong>Surface totale :</strong> {surfaceLabel(stats.total)}</p>
+      <p><strong>Surface moyenne par Tanora :</strong> {surfaceLabel(stats.avg)}</p>
     </>
   );
 })()}
-
     <h4>Fiofanana</h4>
     {extractTexts(repTaniketsa, `${key}_fiofanana`).map((v, i) => (
       <p key={`${key}-fio-${i}`}>{v}</p>
