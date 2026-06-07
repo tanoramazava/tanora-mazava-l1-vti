@@ -1155,73 +1155,73 @@ function DashboardAnalytique({ onBack }: any) {
   ))}
 </div>
 
+{syntheseAutomatique(
+  "Synthèse automatique — Olana ara-pahasalamana",
+  vtiFahas,
+  "olana_fahasalamana",
+  [
+    {
+      label: "Tazo moka",
+      keys: ["tazo moka"],
+      conseil: "Atao laharam-pahamehana ny ady amin’ny moka, fanadiovana tontolo iainana ary fanentanana isan-tokantrano.",
+    },
+    {
+      label: "Aretim-pivalanana",
+      keys: ["aretim-pivalanana"],
+      conseil: "Hamafisina ny rano fisotro madio, fahadiovana ary fanentanana momba ny fidiovana.",
+    },
+    {
+      label: "VIH/SIDA sy IST",
+      keys: ["vih", "sida", "ist"],
+      conseil: "Hamafisina ny fanabeazana ara-pahasalamana sy ny fisorohana amin’ny tanora.",
+    },
+    {
+      label: "Tsy fahampian-tsakafo",
+      keys: ["tsy fahampian-tsakafo", "fanjarian-tsakafo"],
+      conseil: "Ampifandraisina amin’ny Taniketsa sy fanjarian-tsakafo ny paikady ara-pahasalamana.",
+    },
+    {
+      label: "Tosidra",
+      keys: ["tosidra"],
+      conseil: "Atao fanentanana momba ny fitiliana sy ny fomba fiaina ara-pahasalamana.",
+    },
+    {
+      label: "Diabeta",
+      keys: ["diabeta"],
+      conseil: "Ampidirina ao anatin’ny fanentanana ny sakafo ara-pahasalamana sy fitiliana.",
+    },
+    {
+      label: "Homamiadana",
+      keys: ["homamiadana"],
+      conseil: "Ilaina ny fanentanana momba ny fitiliana mialoha sy ny fanohanana ireo marary.",
+    },
+    {
+      label: "Fahasembanana",
+      keys: ["fahasembanana"],
+      conseil: "Hojerena ny fandraisana anjara sy ny fanohanana ireo olona manana fahasembanana.",
+    },
+    {
+      label: "Fahasalamana ara-tsaina",
+      keys: ["ara-tsaina", "stress", "fahakiviana"],
+      conseil: "Hamafisina ny fanohanana ara-tsaina, fanatanjahantena ary fialamboly mahasalama.",
+    },
+  ]
+)}
+
 <div style={styles.miniBox}>
-  <h4>Synthèse intelligente — Priorisation</h4>
+  <h4>Synthèse intelligente — Priorisation détaillée</h4>
 
   <h5>Sokajy voalohany : Olana tena mafy</h5>
 
-  {priorityLine(
-    "Tazo moka",
-    vtiFahas,
-    "olana_fahasalamana",
-    ["tazo moka"]
-  )}
-
-  {priorityLine(
-    "Aretim-pivalanana",
-    vtiFahas,
-    "olana_fahasalamana",
-    ["aretim-pivalanana"]
-  )}
-
-  {priorityLine(
-    "VIH/SIDA sy IST",
-    vtiFahas,
-    "olana_fahasalamana",
-    ["vih", "sida", "ist"]
-  )}
-
-  {priorityLine(
-    "Tsy fahampian-tsakafo",
-    vtiFahas,
-    "olana_fahasalamana",
-    ["tsy fahampian-tsakafo"]
-  )}
-
-  {priorityLine(
-    "Tosidra",
-    vtiFahas,
-    "olana_fahasalamana",
-    ["tosidra"]
-  )}
-
-  {priorityLine(
-    "Diabeta",
-    vtiFahas,
-    "olana_fahasalamana",
-    ["diabeta"]
-  )}
-
-  {priorityLine(
-    "Homamiadana",
-    vtiFahas,
-    "olana_fahasalamana",
-    ["homamiadana"]
-  )}
-
-  {priorityLine(
-    "Fahasembanana",
-    vtiFahas,
-    "olana_fahasalamana",
-    ["fahasembanana"]
-  )}
-
-  {priorityLine(
-    "Fahasalamana ara-tsaina",
-    vtiFahas,
-    "olana_fahasalamana",
-    ["ara-tsaina"]
-  )}
+  {priorityLine("Tazo moka", vtiFahas, "olana_fahasalamana", ["tazo moka"])}
+  {priorityLine("Aretim-pivalanana", vtiFahas, "olana_fahasalamana", ["aretim-pivalanana"])}
+  {priorityLine("VIH/SIDA sy IST", vtiFahas, "olana_fahasalamana", ["vih", "sida", "ist"])}
+  {priorityLine("Tsy fahampian-tsakafo", vtiFahas, "olana_fahasalamana", ["tsy fahampian-tsakafo"])}
+  {priorityLine("Tosidra", vtiFahas, "olana_fahasalamana", ["tosidra"])}
+  {priorityLine("Diabeta", vtiFahas, "olana_fahasalamana", ["diabeta"])}
+  {priorityLine("Homamiadana", vtiFahas, "olana_fahasalamana", ["homamiadana"])}
+  {priorityLine("Fahasembanana", vtiFahas, "olana_fahasalamana", ["fahasembanana"])}
+  {priorityLine("Fahasalamana ara-tsaina", vtiFahas, "olana_fahasalamana", ["ara-tsaina"])}
 
   <h5>Sokajy faharoa : Olana misy fa mbola tranga vitsy</h5>
 
@@ -1243,11 +1243,14 @@ function DashboardAnalytique({ onBack }: any) {
     "sida",
     "ist",
     "tsy fahampian-tsakafo",
+    "fanjarian-tsakafo",
     "tosidra",
     "diabeta",
     "homamiadana",
     "fahasembanana",
-    "ara-tsaina"
+    "ara-tsaina",
+    "stress",
+    "fahakiviana"
   ]).map((v, i) => (
     <p key={`fahas-other-${i}`}>{v}</p>
   ))}
