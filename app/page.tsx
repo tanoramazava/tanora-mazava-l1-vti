@@ -431,40 +431,102 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 
         <hr />
 
-        <h2>5. Analyse économique qualitative par filière</h2>
+      <h2>5. Analyse économique qualitative par filière</h2>
 
-        {[
-          ["Voly rakotra", "voly_rakotra"],
-          ["Vary", "vary"],
-          ["Akoho gasy", "akoho_gasy"],
-          ["Kisoa", "kisoa"],
-          ["Tantely", "tantely"],
-        ].map(([label, key]) => {
-          const texts = [
-            ...extractTexts(repTaniketsa, `${key}_fananantany`),
-            ...extractTexts(repTaniketsa, `${key}_fiofanana`),
-            ...extractTexts(repTaniketsa, `${key}_ezaka`),
-            ...extractTexts(repTaniketsa, `${key}_tohana`),
-            ...extractTexts(repTaniketsa, `${key}_diagnostic`),
-          ];
+{[
+  ["Voly rakotra", "voly_rakotra"],
+  ["Vary", "vary"],
+  ["Akoho gasy", "akoho_gasy"],
+  ["Kisoa", "kisoa"],
+  ["Tantely", "tantely"],
+].map(([label, key]) => {
+  const fananantany = extractTexts(repTaniketsa, `${key}_fananantany`);
+  const fiofanana = extractTexts(repTaniketsa, `${key}_fiofanana`);
+  const ezaka = extractTexts(repTaniketsa, `${key}_ezaka`);
+  const tohana = extractTexts(repTaniketsa, `${key}_tohana`);
+  const diagnostic = extractTexts(repTaniketsa, `${key}_diagnostic`);
+  const stats = surfaceStats(fananantany);
 
-          return (
-            <div key={key} style={styles.miniBox}>
-              <h3>{label}</h3>
+  return (
+    <div key={key} style={styles.miniBox}>
+      <h3>{label}</h3>
 
-              {thematicSummary("Fananantany", extractTexts(repTaniketsa, `${key}_fananantany`))}
-              {thematicSummary("Fiofanana", extractTexts(repTaniketsa, `${key}_fiofanana`))}
-              {thematicSummary("Anjara biriky", extractTexts(repTaniketsa, `${key}_ezaka`))}
-              {thematicSummary("Tohana ilaina", extractTexts(repTaniketsa, `${key}_tohana`))}
-              {thematicSummary("Diagnostic ara-toekarena sy ara-pitantanana", extractTexts(repTaniketsa, `${key}_diagnostic`))}
+      <h4>Références officielles — Formulaire ID Tanora</h4>
+      <p><strong>Fananantany :</strong> An’iza ny tany/toerana ? Firy ny refiny ? Azo ampiasaina maharitra ve ?</p>
+      <p><strong>Fiofanana :</strong> Efa nahazo fiofanana ve ? Inona no hainao ampiharina ?</p>
+      <p><strong>Anjara biriky :</strong> Tany, fitaovana, vola, asa tanana, akora, fanomanana efa natao.</p>
+      <p><strong>Tohana ilaina :</strong> Inona no tohana tena ilaina izay tsy vitanao irery intsony ?</p>
+      <p><strong>Diagnostic :</strong> Efa nivarotra ve ? Fantatrao ve ny dépenses sy tombom-barotra ? Inona ny fiofanana ilainao ?</p>
 
-              {thematicSummary("Synthèse globale de la filière", texts)}
-            </div>
-          );
-        })}
+      <h4>Valiny détaillées — Fananantany</h4>
+      {fananantany.map((v, i) => <p key={`${key}-fan-${i}`}>{v}</p>)}
 
-        <hr />
+      <h5>Statistiques surface</h5>
+      <p><strong>Refy ambany indrindra :</strong> {stats.min || "—"}</p>
+      <p><strong>Refy ambony indrindra :</strong> {stats.max || "—"}</p>
+      <p><strong>Moyenne :</strong> {stats.avg || "—"}</p>
 
+      <h5>Synthèse intelligente — Fananantany</h5>
+      {priorityLine("Tanin’ny tena / fananana manokana", repTaniketsa, `${key}_fananantany`, ["taniko", "ahy", "manokana"])}
+      {priorityLine("Tanin’ny ray aman-dreny / fianakaviana", repTaniketsa, `${key}_fananantany`, ["ray aman-dreny", "fianakaviana", "lova", "havana"])}
+      {priorityLine("Tany azo ampiasaina maharitra", repTaniketsa, `${key}_fananantany`, ["azo ampiasaina", "maharitra"])}
+      {priorityLine("Misoratra ara-dalàna", repTaniketsa, `${key}_fananantany`, ["titre", "certificat", "voasoratra", "ara-dalàna"])}
+      {priorityLine("Tsy mbola misoratra / tsy misy taratasy", repTaniketsa, `${key}_fananantany`, ["tsy misy taratasy", "tsy voasoratra", "mbola tsy"])}
+
+      <h4>Valiny détaillées — Fiofanana</h4>
+      {fiofanana.map((v, i) => <p key={`${key}-fiof-${i}`}>{v}</p>)}
+
+      <h5>Synthèse intelligente — Fiofanana</h5>
+      {priorityLine("Efa nahazo fiofanana", repTaniketsa, `${key}_fiofanana`, ["efa", "nahazo", "niofana"])}
+      {priorityLine("Mbola mila fiofanana", repTaniketsa, `${key}_fiofanana`, ["mila", "tsy mbola"])}
+      {priorityLine("Teknika famokarana", repTaniketsa, `${key}_fiofanana`, ["teknika", "famokarana"])}
+      {priorityLine("Gestion / comptabilité", repTaniketsa, `${key}_fiofanana`, ["gestion", "comptabilité", "bokim-bola"])}
+
+      <h4>Valiny détaillées — Anjara biriky</h4>
+      {ezaka.map((v, i) => <p key={`${key}-ezaka-${i}`}>{v}</p>)}
+
+      <h5>Synthèse intelligente — Anjara biriky</h5>
+      {priorityLine("Tany", repTaniketsa, `${key}_ezaka`, ["tany"])}
+      {priorityLine("Fitaovana", repTaniketsa, `${key}_ezaka`, ["fitaovana"])}
+      {priorityLine("Vola / renivola", repTaniketsa, `${key}_ezaka`, ["vola", "renivola"])}
+      {priorityLine("Asa tanana", repTaniketsa, `${key}_ezaka`, ["asa tanana"])}
+      {priorityLine("Akora / fanomanana", repTaniketsa, `${key}_ezaka`, ["akora", "fanomanana"])}
+
+      <h4>Valiny détaillées — Tohana ilaina</h4>
+      {tohana.map((v, i) => <p key={`${key}-tohana-${i}`}>{v}</p>)}
+
+      <h5>Synthèse intelligente — Tohana ilaina</h5>
+      {priorityLine("Renivola / financement", repTaniketsa, `${key}_tohana`, ["renivola", "vola", "financement"])}
+      {priorityLine("Masomboly / zanaka biby / akora", repTaniketsa, `${key}_tohana`, ["masomboly", "zanakisoa", "akora", "zanaka"])}
+      {priorityLine("Fitaovana", repTaniketsa, `${key}_tohana`, ["fitaovana"])}
+      {priorityLine("Fanaraha-maso teknika", repTaniketsa, `${key}_tohana`, ["fanaraha-maso", "teknika"])}
+      {priorityLine("Lalambarotra / tsena", repTaniketsa, `${key}_tohana`, ["lalambarotra", "tsena", "varotra"])}
+
+      <h4>Valiny détaillées — Diagnostic ara-toekarena sy ara-pitantanana</h4>
+      {diagnostic.map((v, i) => <p key={`${key}-diag-${i}`}>{v}</p>)}
+
+      <h5>Synthèse intelligente — Diagnostic</h5>
+      {priorityLine("Efa nivarotra", repTaniketsa, `${key}_diagnostic`, ["efa nivarotra", "nivarotra"])}
+      {priorityLine("Mahafantatra dépenses", repTaniketsa, `${key}_diagnostic`, ["dépenses", "depenses", "lani"])}
+      {priorityLine("Mahafantatra tombom-barotra", repTaniketsa, `${key}_diagnostic`, ["tombom-barotra", "benefice", "bénéfice"])}
+      {priorityLine("Mila gestion / comptabilité", repTaniketsa, `${key}_diagnostic`, ["gestion", "comptabilité", "bokim-bola"])}
+      {priorityLine("Mila marketing / lalambarotra", repTaniketsa, `${key}_diagnostic`, ["marketing", "lalambarotra", "tsena"])}
+
+      <h5>Valiny hafa / valiny manokana</h5>
+      {[
+        ...otherResponses(repTaniketsa, `${key}_fananantany`, ["tany", "ray aman-dreny", "fianakaviana", "titre", "certificat", "voasoratra"]),
+        ...otherResponses(repTaniketsa, `${key}_fiofanana`, ["fiofanana", "teknika", "gestion"]),
+        ...otherResponses(repTaniketsa, `${key}_ezaka`, ["tany", "fitaovana", "vola", "asa tanana", "akora"]),
+        ...otherResponses(repTaniketsa, `${key}_tohana`, ["renivola", "fitaovana", "masomboly", "teknika", "tsena"]),
+        ...otherResponses(repTaniketsa, `${key}_diagnostic`, ["nivarotra", "dépenses", "tombom-barotra", "gestion", "marketing"]),
+      ].map((v, i) => (
+        <p key={`${key}-other-${i}`}>{v}</p>
+      ))}
+    </div>
+  );
+})}
+
+<hr />
         <h2>6. Dashboard Identité VTI</h2>
 
         {vti.map((v) => {
