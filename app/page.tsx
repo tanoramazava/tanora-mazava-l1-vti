@@ -791,7 +791,7 @@ function DashboardAnalytique({ onBack }: any) {
 
         <hr />
 
-       <h2>7. Dashboard Ara-panahy sy Fanabeazana</h2>
+      <h2>7. Dashboard Ara-panahy sy Fanabeazana</h2>
 
 <div style={styles.miniBox}>
   <h4>Références officielles — Fanaka masina dimy / Soatoavina dimy</h4>
@@ -810,6 +810,39 @@ function DashboardAnalytique({ onBack }: any) {
     </p>
   ))}
 </div>
+
+{syntheseAutomatique(
+  "Synthèse automatique — Fanaka dimy / Soatoavina sarotra ampiharina",
+  vtiArap,
+  "fanaka_dimy",
+  [
+    {
+      label: "Fahamasinana",
+      keys: ["fahamasinana"],
+      conseil: "Hamafisina ny fampianarana sy fampiharana fiainana masina isan’andro.",
+    },
+    {
+      label: "Fanetre-tena",
+      keys: ["fanetre-tena", "fanetretena"],
+      conseil: "Ampidirina amin’ny fanofanana sy fijoroana vavolombelona ny fanetre-tena.",
+    },
+    {
+      label: "Fandeferana",
+      keys: ["fandeferana"],
+      conseil: "Hamafisina ny fanabeazana momba ny fihavanana, fifehezantena ary tsy fampirisihana ady.",
+    },
+    {
+      label: "Fahaizana mamela heloka",
+      keys: ["mamela heloka", "famelan-keloka"],
+      conseil: "Atao laharam-pahamehana ny fampianarana momba ny famelan-keloka sy ny fanasitranana fifandraisana.",
+    },
+    {
+      label: "Fiantrana ny madiniky ny Tompo",
+      keys: ["fiantrana", "madiniky"],
+      conseil: "Arotsaka amin’ny asa soa sy fanampiana ireo marefo ao amin’ny fiarahamonina.",
+    },
+  ]
+)}
 
 <div style={styles.miniBox}>
   <h4>Synthèse intelligente — Priorisation des soatoavina sarotra ampiharina</h4>
@@ -847,27 +880,53 @@ function DashboardAnalytique({ onBack }: any) {
       <strong>ID VTI {r.vti_id} :</strong> {r.fanamby_140_andro || "—"}
     </p>
   ))}
-<h5>Synthèse intelligente — Priorisation des fanamby ara-panahy</h5>
 
-{priorityLine("Fahamasinana", vtiArap, "fanamby_140_andro", ["fahamasinana"])}
-{priorityLine("Fanetre-tena", vtiArap, "fanamby_140_andro", ["fanetre-tena", "fanetretena"])}
-{priorityLine("Fandeferana", vtiArap, "fanamby_140_andro", ["fandeferana"])}
-{priorityLine("Fahaizana mamela heloka", vtiArap, "fanamby_140_andro", ["mamela heloka", "famelan-keloka"])}
-{priorityLine("Fiantrana ny madiniky ny Tompo", vtiArap, "fanamby_140_andro", ["fiantrana", "madiniky"])}
+  {syntheseAutomatique(
+    "Synthèse automatique — Fanamby ara-panahy 140 andro",
+    vtiArap,
+    "fanamby_140_andro",
+    [
+      {
+        label: "Fampianarana sy fampiharana Vavaka Betela",
+        keys: ["vavaka betela", "betela"],
+        conseil: "Atao laharam-pahamehana ny fampianarana sy fampiharana Vavaka Betela ao amin’ny VTI.",
+      },
+      {
+        label: "Fijoroana vavolombelona sy fitoriana",
+        keys: ["fijoroana vavolombelona", "fitoriana"],
+        conseil: "Hamafisina ny fijoroana vavolombelona sy fizarana ny tombontsoa azo amin’ny fampiharana.",
+      },
+      {
+        label: "Herinandro 05 ho an’ny Mpianatry ny Tompo",
+        keys: ["herinandro", "mpianatry ny tompo"],
+        conseil: "Apetraka tsara ny fandaharam-potoana 5 herinandro mifototra amin’ny soatoavina kristiana.",
+      },
+      {
+        label: "Fampahafantarana ny fiarahamonina",
+        keys: ["fampahafantarana", "fiarahamonina", "mpiara-monina"],
+        conseil: "Entina eny amin’ny fiarahamonina ny soatoavina mba ho lasa fomba fiaina iombonana.",
+      },
+    ]
+  )}
 
-<p>
-  <strong>Fehin-kevitra :</strong> Ny fanamby ara-panahy 140 andro dia asongadina araka ny priorisation napetraky ny VTI, mba hahitana izay soatoavina mila hamafisina voalohany.
-</p>
+  <h5>Synthèse intelligente — Priorisation des fanamby ara-panahy</h5>
+
+  {priorityLine("Fampianarana sy fampiharana Vavaka Betela", vtiArap, "fanamby_140_andro", ["vavaka betela", "betela"])}
+  {priorityLine("Fijoroana vavolombelona sy fitoriana", vtiArap, "fanamby_140_andro", ["fijoroana vavolombelona", "fitoriana"])}
+  {priorityLine("Herinandro 05 ho an’ny Mpianatry ny Tompo", vtiArap, "fanamby_140_andro", ["herinandro", "mpianatry ny tompo"])}
+  {priorityLine("Fampahafantarana ny fiarahamonina", vtiArap, "fanamby_140_andro", ["fampahafantarana", "fiarahamonina", "mpiara-monina"])}
+
   <h5>Valiny hafa / fanamby manokana</h5>
   {otherResponses(vtiArap, "fanamby_140_andro", [
-    "fahamasinana",
-    "fanetre-tena",
-    "fanetretena",
-    "fandeferana",
-    "mamela heloka",
-    "famelan-keloka",
-    "fiantrana",
-    "madiniky"
+    "vavaka betela",
+    "betela",
+    "fijoroana vavolombelona",
+    "fitoriana",
+    "herinandro",
+    "mpianatry ny tompo",
+    "fampahafantarana",
+    "fiarahamonina",
+    "mpiara-monina"
   ]).map((v, i) => (
     <p key={`fanamby-other-${i}`}>{v}</p>
   ))}
@@ -893,8 +952,31 @@ function DashboardAnalytique({ onBack }: any) {
   ))}
 </div>
 
+{syntheseAutomatique(
+  "Synthèse automatique — Olana ara-panabeazana",
+  vtiArap,
+  "olana_fanabeazana",
+  [
+    {
+      label: "Fahabadoana : tsy fahaizana mamaky teny, manoratra ary manisa",
+      keys: ["fahabadoana", "mamaky teny", "manoratra", "manisa"],
+      conseil: "Atao laharam-pahamehana ny fampianarana mamaky teny, manoratra ary manisa.",
+    },
+    {
+      label: "Fahantrana ara-panabeazana / pauvreté d’apprentissage",
+      keys: ["fahantrana ara-panabeazana", "pauvreté", "apprentissage"],
+      conseil: "Hamafisina ny tohana pedagojika ho an’ny ankizy sy tanora marefo ara-panabeazana.",
+    },
+    {
+      label: "Fitsoahana na fialana an-tsekoly",
+      keys: ["fitsoahana", "fialana", "an-tsekoly", "niala an-tsekoly"],
+      conseil: "Apetraka ny accompagnement sy tohana pedagojika ho an’ny tanora niala an-tsekoly.",
+    },
+  ]
+)}
+
 <div style={styles.miniBox}>
-  <h4>Synthèse intelligente — Priorisation</h4>
+  <h4>Synthèse intelligente — Priorisation détaillée</h4>
 
   <h5>Sokajy voalohany : olana tena mafy, miantraika amin’ny daholobe / ankamaroany</h5>
 
@@ -916,7 +998,7 @@ function DashboardAnalytique({ onBack }: any) {
     "Fitsoahana na fialana an-tsekoly",
     vtiArap,
     "olana_fanabeazana",
-    ["fitsoahana", "fialana", "an-tsekoly"]
+    ["fitsoahana", "fialana", "an-tsekoly", "niala an-tsekoly"]
   )}
 
   <h5>Sokajy faharoa : olana misy hafa, tranga vitsy na mbola azo leferina</h5>
@@ -940,7 +1022,8 @@ function DashboardAnalytique({ onBack }: any) {
     "apprentissage",
     "fitsoahana",
     "fialana",
-    "an-tsekoly"
+    "an-tsekoly",
+    "niala an-tsekoly"
   ]).map((v, i) => (
     <p key={`fanab-other-${i}`}>{v}</p>
   ))}
@@ -958,6 +1041,29 @@ function DashboardAnalytique({ onBack }: any) {
       <strong>ID VTI {r.vti_id} :</strong> {r.paikady_140_andro || "—"}
     </p>
   ))}
+
+  {syntheseAutomatique(
+    "Synthèse automatique — Paikady ara-panabeazana 140 andro",
+    vtiArap,
+    "paikady_140_andro",
+    [
+      {
+        label: "Fampianarana mamaky teny sy manoratra / ady amin’ny habadoana",
+        keys: ["mamaky teny", "manoratra", "habadoana"],
+        conseil: "Atomboka ny hetsika iombonana ho fampianarana mamaky teny sy manoratra.",
+      },
+      {
+        label: "Tohana pedagojika ho an’ny tanora niala an-tsekoly",
+        keys: ["tohana pedagojika", "nitsoaka", "niala an-tsekoly"],
+        conseil: "Apetraka ny accompagnement ho an’ny tanora nitsoaka an-daharana na niala an-tsekoly.",
+      },
+      {
+        label: "Sekoly Tsara Kalitao",
+        keys: ["sekoly tsara kalitao", "kaomina", "zap", "ray aman-dreny", "fokonolona"],
+        conseil: "Hamafisina ny fiaraha-miasa Kaomina, ZAP, ray aman-dreny, Fokonolona ary VTI.",
+      },
+    ]
+  )}
 
   <h5>Valiny hafa / paikady manokana</h5>
   {otherResponses(vtiArap, "paikady_140_andro", [
@@ -977,7 +1083,7 @@ function DashboardAnalytique({ onBack }: any) {
   ))}
 </div>
 
-        <hr />
+<hr />
 
      <h2>8. Dashboard Fandraharahana sy Toekarena</h2>
 
