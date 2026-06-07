@@ -5058,62 +5058,105 @@ function FicheRemplie({ onBack }: any) {
     );
   };
 
-  const TovanaVaomiera = () => {
-    if (!tanora?.vti_id) return null;
+ const TovanaVaomiera = () => {
+  if (!tanora?.vti_id) return null;
 
-    return (
-      <>
-        <hr />
-        <h2>TOVANA — Vaomiera mifandray amin’ny ID Tanora</h2>
+  const ChampLong = ({ label, value }: any) => (
+    <div style={styles.miniBox}>
+      <h4>{label}</h4>
+      <p>{show(value)}</p>
+    </div>
+  );
 
-        <h3>1. Fifandraisana Tanora — VTI</h3>
-        <Champ label="ID Tanora" value={tanora?.id} />
-        <Champ label="Anaran’ny Tanora" value={tanora?.anarana} />
-        <Champ label="ID VTI" value={tanora?.vti_id} />
-        <Champ
-          label="Anaran’ny VTI"
-          value={tanora?.nom_vti || vtiLie?.nom_vti}
-        />
-        <Champ
-          label="Vaomiera misy ilay Tanora"
-          value={tanora?.vaomiera_misy_azy || repVti?.vti_q5}
-        />
+  return (
+    <>
+      <hr />
+      <h2>TOVANA — Fiche VTI mifandray amin’ny Vaomiera misy ny Tanora</h2>
 
-        {vtiLie && (
-          <>
-            <h3>2. Famantarana ny VTI</h3>
-            <Champ label="VTI Anarany" value={vtiLie?.nom_vti} />
-            <Champ label="Faritra" value={vtiLie?.faritra} />
-            <Champ label="Distrika" value={vtiLie?.distrika} />
-            <Champ label="Kaomina" value={vtiLie?.kaomina} />
-            <Champ label="Karazana Kaomina" value={vtiLie?.type_kaomina} />
-            <Champ label="Fokontany" value={vtiLie?.fokontany} />
-          </>
-        )}
+      <h3>1. Fifandraisana Tanora — VTI</h3>
+      <Champ label="ID Tanora" value={tanora?.id} />
+      <Champ label="Anaran’ny Tanora" value={tanora?.anarana} />
+      <Champ label="ID VTI" value={tanora?.vti_id} />
+      <Champ label="Anaran’ny VTI" value={tanora?.nom_vti || vtiLie?.nom_vti} />
+      <Champ label="Vaomiera misy ilay Tanora" value={tanora?.vaomiera_misy_azy || repVti?.vti_q5} />
 
-        <h3>3. {annexeTitre || "Vaomiera tsy mbola voafaritra"}</h3>
+      {vtiLie && (
+        <>
+          <h3>2. Famantarana ny VTI</h3>
+          <Champ label="VTI Anarany" value={vtiLie?.nom_vti} />
+          <Champ label="Faritra" value={vtiLie?.faritra} />
+          <Champ label="Distrika" value={vtiLie?.distrika} />
+          <Champ label="Kaomina" value={vtiLie?.kaomina} />
+          <Champ label="Karazana Kaomina" value={vtiLie?.type_kaomina} />
+          <Champ label="Fokontany" value={vtiLie?.fokontany} />
+        </>
+      )}
 
-        {!annexeVaomiera && (
-          <p>
-            Tsy mbola hita ny données an’io Vaomiera io ao amin’ny Tombana
-            Iombonana VTI.
-          </p>
-        )}
+      <h3>3. {annexeTitre || "Vaomiera tsy mbola voafaritra"}</h3>
 
-        {annexeVaomiera && (
+      {!annexeVaomiera && (
+        <p>
+          Tsy mbola hita ny données feno an’io Vaomiera io ao amin’ny Tombana Iombonana VTI.
+        </p>
+      )}
+
+      {annexeVaomiera && (
+        <>
           <div style={styles.miniBox}>
-            <Champ
-              label="Total score Vaomiera"
-              value={`${annexeVaomiera.total_score || 0}`}
-            />
+            <Champ label="Total score Vaomiera" value={annexeVaomiera.total_score || 0} />
             <Champ label="Fivoriana" value={annexeVaomiera.mivory_score} />
             <Champ label="Ora iasana" value={annexeVaomiera.ora_score} />
-            <Champ label="Données Vaomiera" value="Voatahiry ao amin’ny Fiche VTI" />
           </div>
-        )}
-      </>
-    );
-  };
+
+          {annexeType === "arapanahy" && (
+            <>
+              <Champ label="Herinandro dimy" value={annexeVaomiera.herinandro_score} />
+              <ChampLong label="Fanaka dimy / Soatoavina dimy" value={annexeVaomiera.fanaka_dimy} />
+              <Champ label="Score Fanaka dimy" value={annexeVaomiera.fanaka_dimy_score} />
+              <ChampLong label="Fanamby ara-panahy 140 andro" value={annexeVaomiera.fanamby_140_andro} />
+              <Champ label="Score Fanamby 140 andro" value={annexeVaomiera.fanamby_140_andro_score} />
+              <ChampLong label="Olana ara-panabeazana" value={annexeVaomiera.olana_fanabeazana} />
+              <Champ label="Score Olana ara-panabeazana" value={annexeVaomiera.olana_fanabeazana_score} />
+              <ChampLong label="Paikady ara-panabeazana 140 andro" value={annexeVaomiera.paikady_140_andro} />
+              <Champ label="Score Paikady ara-panabeazana" value={annexeVaomiera.paikady_140_andro_score} />
+            </>
+          )}
+
+          {annexeType === "toekarena" && (
+            <>
+              <ChampLong label="Olana ara-toekarena" value={annexeVaomiera.olana_toekarena} />
+              <Champ label="Score Olana ara-toekarena" value={annexeVaomiera.olana_toekarena_score} />
+              <ChampLong label="Paikady ara-toekarena 140 andro" value={annexeVaomiera.paikady_toekarena} />
+              <Champ label="Score Paikady ara-toekarena" value={annexeVaomiera.paikady_toekarena_score} />
+            </>
+          )}
+
+          {annexeType === "fahasalamana" && (
+            <>
+              <ChampLong label="Olana ara-pahasalamana" value={annexeVaomiera.olana_fahasalamana} />
+              <Champ label="Score Olana ara-pahasalamana" value={annexeVaomiera.olana_fahasalamana_score} />
+              <ChampLong label="Voina manimba taranaka" value={annexeVaomiera.voina_tanora} />
+              <Champ label="Score Voina manimba taranaka" value={annexeVaomiera.voina_tanora_score} />
+              <ChampLong label="Vahaolana 140 andro — Fahasalamana sy Fiarovana" value={annexeVaomiera.paikady_fahasalamana} />
+              <Champ label="Score Vahaolana 140 andro" value={annexeVaomiera.paikady_fahasalamana_score} />
+            </>
+          )}
+
+          {annexeType === "etika" && (
+            <>
+              <ChampLong label="Olana fandriampahalemana sy kolikoly" value={annexeVaomiera.olana_fandriampahalemana} />
+              <Champ label="Score Fandriampahalemana sy kolikoly" value={annexeVaomiera.olana_fandriampahalemana_score} />
+              <ChampLong label="Olana tontolo iainana" value={annexeVaomiera.olana_tontolo_iainana} />
+              <Champ label="Score Tontolo iainana" value={annexeVaomiera.olana_tontolo_iainana_score} />
+              <ChampLong label="Vahaolana 140 andro — Etika sy fampandrosoana maharitra" value={annexeVaomiera.paikady_etika} />
+              <Champ label="Score Vahaolana 140 andro" value={annexeVaomiera.paikady_etika_score} />
+            </>
+          )}
+        </>
+      )}
+    </>
+  );
+};
 
   return (
     <main style={styles.main}>
