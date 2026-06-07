@@ -459,10 +459,25 @@ const surfaceStats = (texts: string[]) => {
   <div key={key} style={styles.miniBox}>
     <h3>{label}</h3>
 
-    <h4>Fananantany</h4>
-    {extractTexts(repTaniketsa, `${key}_fananantany`).map((v, i) => (
-      <p key={`${key}-fan-${i}`}>{v}</p>
-    ))}
+   <h4>Fananantany</h4>
+
+{(() => {
+  const fananantanyTexts = extractTexts(repTaniketsa, `${key}_fananantany`);
+  const stats = surfaceStats(fananantanyTexts);
+
+  return (
+    <>
+      {fananantanyTexts.map((v, i) => (
+        <p key={`${key}-fan-${i}`}>{v}</p>
+      ))}
+
+      <h5>Statistiques surface</h5>
+      <p><strong>Refy ambany indrindra :</strong> {stats.min || "—"}</p>
+      <p><strong>Refy ambony indrindra :</strong> {stats.max || "—"}</p>
+      <p><strong>Moyenne :</strong> {stats.avg || "—"}</p>
+    </>
+  );
+})()}
 
     <h4>Fiofanana</h4>
     {extractTexts(repTaniketsa, `${key}_fiofanana`).map((v, i) => (
