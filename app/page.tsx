@@ -566,6 +566,133 @@ function DashboardAnalytique({ onBack }: any) {
 ))}
 
 <hr /> 
+        <h2>5B. Dashboard Production & Valeur Ajoutée</h2>
+
+{(() => {
+  const sum = (rows: any[], field: string) =>
+    rows.reduce((s, r) => s + Number(r[field] || 0), 0);
+
+  const filieresProd = [
+    {
+      titre: "Voly rakotra",
+      type: "voly",
+      ca: "ca_voly_rakotra",
+      dep: "depenses_voly_rakotra",
+      ben: "benefice_voly_rakotra",
+    },
+    {
+      titre: "Vary",
+      type: "vary",
+      ca: "ca_vary",
+      dep: "depenses_vary",
+      ben: "benefice_vary",
+    },
+    {
+      titre: "Akoho gasy",
+      type: "akoho",
+      ca: "ca_akoho_gasy",
+      dep: "depenses_akoho_gasy",
+      ben: "benefice_akoho_gasy",
+    },
+    {
+      titre: "Kisoa",
+      type: "kisoa",
+      ca: "ca_kisoa",
+      dep: "depenses_kisoa",
+      ben: "benefice_kisoa",
+    },
+    {
+      titre: "Tantely",
+      type: "tantely",
+      ca: "ca_tantely",
+      dep: "depenses_tantely",
+      ben: "benefice_tantely",
+    },
+  ];
+
+  return (
+    <>
+      {filieresProd.map((f) => {
+        const rows = getFiliereRows(f);
+
+        const u1 = sum(rows, "unite_annee_1");
+        const u2 = sum(rows, "unite_annee_2");
+        const u3 = sum(rows, "unite_annee_3");
+        const uTotal = u1 + u2 + u3;
+
+        return (
+          <div key={f.type} style={styles.miniBox}>
+            <h3>{f.titre}</h3>
+
+            <p><strong>Isan’ny ID Tanora concernés :</strong> {rows.length}</p>
+
+            <h4>Quantités par année</h4>
+            <p><strong>Année 1 :</strong> {u1}</p>
+            <p><strong>Année 2 :</strong> {u2}</p>
+            <p><strong>Année 3 :</strong> {u3}</p>
+            <p><strong>Total unités 3 ans :</strong> {uTotal}</p>
+
+            {f.type === "voly" && (
+              <>
+                <h4>Production estimée Voly rakotra</h4>
+                <p><strong>Katsaka :</strong> {uTotal * 120} kg / 3 ans</p>
+                <p><strong>Tsaramaso :</strong> {uTotal * 60} kg / 3 ans</p>
+                <p><strong>Voanjo :</strong> {uTotal * 50} kg / 3 ans</p>
+                <p><strong>Anana / legioma :</strong> {uTotal * 80} kg / 3 ans</p>
+              </>
+            )}
+
+            {f.type === "vary" && (
+              <>
+                <h4>Production estimée Vary</h4>
+                <p><strong>Production totale :</strong> {uTotal * 300} kg / 3 ans</p>
+                <p><strong>Production totale :</strong> {(uTotal * 300 / 1000).toLocaleString("fr-FR")} tonnes / 3 ans</p>
+              </>
+            )}
+
+            {f.type === "akoho" && (
+              <>
+                <h4>Production estimée Akoho gasy</h4>
+                <p><strong>Akoho velona Année 1 :</strong> {u1 * 160}</p>
+                <p><strong>Akoho velona Année 2 :</strong> {u2 * 160}</p>
+                <p><strong>Akoho velona Année 3 :</strong> {u3 * 160}</p>
+                <p><strong>Total akoho velona 3 ans :</strong> {uTotal * 160}</p>
+                <p><strong>Akoho amidy estimés :</strong> {(uTotal * 160 * 0.75).toLocaleString("fr-FR")}</p>
+                <p><strong>Akoho tazonina fanitarana :</strong> {(uTotal * 160 * 0.25).toLocaleString("fr-FR")}</p>
+              </>
+            )}
+
+            {f.type === "kisoa" && (
+              <>
+                <h4>Production estimée Kisoa</h4>
+                <p><strong>Kisoa total 3 ans :</strong> {uTotal}</p>
+                <p><strong>Lanja total :</strong> {uTotal * 80} kg / 3 ans</p>
+                <p><strong>Lanja total :</strong> {(uTotal * 80 / 1000).toLocaleString("fr-FR")} tonnes / 3 ans</p>
+              </>
+            )}
+
+            {f.type === "tantely" && (
+              <>
+                <h4>Production estimée Tantely</h4>
+                <p><strong>Production Année 1 :</strong> {u1 * 7 * 6} litres</p>
+                <p><strong>Production Année 2 :</strong> {u2 * 7 * 6} litres</p>
+                <p><strong>Production Année 3 :</strong> {u3 * 7 * 6} litres</p>
+                <p><strong>Total 3 ans :</strong> {uTotal * 7 * 6} litres</p>
+              </>
+            )}
+
+            <h4>Valeur ajoutée économique</h4>
+            <p><strong>CA total 3 ans :</strong> {money(sum(rows, "ca_total"))}</p>
+            <p><strong>Dépenses totales 3 ans :</strong> {money(sum(rows, "dep_total"))}</p>
+            <p><strong>Bénéfice total 3 ans :</strong> {money(sum(rows, "ben_total"))}</p>
+          </div>
+        );
+      })}
+    </>
+  );
+})()}
+
+<hr />
         <h2>6. Dashboard Identité VTI</h2>
 
         {vti.map((v) => {
