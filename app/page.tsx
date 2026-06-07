@@ -533,32 +533,32 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 <div style={styles.miniBox}>
   <h3>Voly Rakotra</h3>
 
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(FILIERES[0]).length}</p>
+  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[0]).length}</p>
 
   <p><strong>Parcelles total A1 :</strong> {
-    getFiliereRows(FILIERES[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
+    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
   }</p>
 
   <p><strong>Surface totale A1 :</strong> {
-    getFiliereRows(FILIERES[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 500
+    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 500
   } m²</p>
 
   <h4>Karazam-bokatra estimée / an</h4>
 
   <p><strong>Katsaka estimée :</strong> {
-    getFiliereRows(FILIERES[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 120
+    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 120
   } kg/an</p>
 
   <p><strong>Tsaramaso estimée :</strong> {
-    getFiliereRows(FILIERES[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 60
+    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 60
   } kg/an</p>
 
   <p><strong>Voanjo estimée :</strong> {
-    getFiliereRows(FILIERES[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 50
+    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 50
   } kg/an</p>
 
   <p><strong>Anana / legioma estimée :</strong> {
-    getFiliereRows(FILIERES[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 80
+    getFiliereRows(filieres[0]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 80
   } kg/an</p>
 
   <p><strong>Karazam-bokatra hafa :</strong> azo ampidirina araka ny zava-misy eny ifotony.</p>
@@ -567,23 +567,23 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 <div style={styles.miniBox}>
   <h3>Vary</h3>
 
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(FILIERES[1]).length}</p>
+  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[1]).length}</p>
 
   <p><strong>Parcelles total A1 :</strong> {
-    getFiliereRows(FILIERES[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
+    getFiliereRows(filieres[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
   }</p>
 
   <p><strong>Surface totale A1 :</strong> {
-    getFiliereRows(FILIERES[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 750
+    getFiliereRows(filieres[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 750
   } m²</p>
 
   <p><strong>Production estimée :</strong> {
-    getFiliereRows(FILIERES[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 300
+    getFiliereRows(filieres[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 300
   } kg/an</p>
 
   <p><strong>Production estimée :</strong> {
     (
-      getFiliereRows(FILIERES[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 300 / 1000
+      getFiliereRows(filieres[1]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 300 / 1000
     ).toLocaleString("fr-FR")
   } tonne/an</p>
 </div>
@@ -591,46 +591,46 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 <div style={styles.miniBox}>
   <h3>Akoho Gasy</h3>
 
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(FILIERES[2]).length}</p>
+  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[2]).length}</p>
 
   <p><strong>Tokatran'akoho A1 :</strong> {
-    getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
+    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
   }</p>
 
   <p><strong>Tokatran'akoho A2 :</strong> {
-    getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0)
+    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0)
   }</p>
 
   <p><strong>Tokatran'akoho A3 :</strong> {
-    getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
+    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
   }</p>
 
   <p><strong>Akoho velona A1 :</strong> {
-    getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 160
+    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 160
   }</p>
 
   <p><strong>Akoho velona A2 :</strong> {
-    getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) * 160
+    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) * 160
   }</p>
 
   <p><strong>Akoho velona A3 :</strong> {
-    getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0) * 160
+    getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0) * 160
   }</p>
 
   <p><strong>Total akoho velona 3 ans :</strong> {
     (
-      getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) +
-      getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) +
-      getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
+      getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) +
+      getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) +
+      getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
     ) * 160
   }</p>
 
   <p><strong>Akoho amidy estimés :</strong> {
     (
       (
-        getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) +
-        getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) +
-        getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
+        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) +
+        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) +
+        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
       ) * 160 * 0.75
     ).toLocaleString("fr-FR")
   }</p>
@@ -638,9 +638,9 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
   <p><strong>Akoho tazonina fanitarana :</strong> {
     (
       (
-        getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) +
-        getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) +
-        getFiliereRows(FILIERES[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
+        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) +
+        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_2 || 0), 0) +
+        getFiliereRows(filieres[2]).reduce((s, r) => s + Number(r.unite_annee_3 || 0), 0)
       ) * 160 * 0.25
     ).toLocaleString("fr-FR")
   }</p>
@@ -649,19 +649,19 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 <div style={styles.miniBox}>
   <h3>Kisoa</h3>
 
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(FILIERES[3]).length}</p>
+  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[3]).length}</p>
 
   <p><strong>Kisoa total A1 :</strong> {
-    getFiliereRows(FILIERES[3]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
+    getFiliereRows(filieres[3]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
   }</p>
 
   <p><strong>Lanja estimée A1 :</strong> {
-    getFiliereRows(FILIERES[3]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 80
+    getFiliereRows(filieres[3]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 80
   } kg</p>
 
   <p><strong>Lanja estimée A1 :</strong> {
     (
-      getFiliereRows(FILIERES[3]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 80 / 1000
+      getFiliereRows(filieres[3]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 80 / 1000
     ).toLocaleString("fr-FR")
   } tonne</p>
 </div>
@@ -669,14 +669,14 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
 <div style={styles.miniBox}>
   <h3>Tantely</h3>
 
-  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(FILIERES[4]).length}</p>
+  <p><strong>Isan'ny tanora :</strong> {getFiliereRows(filieres[4]).length}</p>
 
   <p><strong>Tohotantely A1 :</strong> {
-    getFiliereRows(FILIERES[4]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
+    getFiliereRows(filieres[4]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0)
   }</p>
 
   <p><strong>Production estimée A1 :</strong> {
-    getFiliereRows(FILIERES[4]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 7 * 6
+    getFiliereRows(filieres[4]).reduce((s, r) => s + Number(r.unite_annee_1 || 0), 0) * 7 * 6
   } litres/an</p>
 
   <p><strong>Base de calcul :</strong> 7 litres × 6 saisons/an × nombre de tohotantely.</p>
