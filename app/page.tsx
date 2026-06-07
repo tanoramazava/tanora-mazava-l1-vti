@@ -86,14 +86,28 @@ const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
   rows
     .map((r) => String(r[field] || ""))
     .filter((v) => v && !knownKeys.some((k) => txt(v).includes(k)));
- const extractNumbers = (texts: string[]) =>
+const extractSurfacesM2 = (texts: string[]) =>
   texts
-    .flatMap((t) => String(t).match(/\d+([.,]\d+)?/g) || [])
-    .map((n) => Number(String(n).replace(",", ".")))
+    .flatMap((text) => {
+      const t = String(text || "").toLowerCase();
+      const results: number[] = [];
+
+      const haMatches = t.matchAll(/(\d+([.,]\d+)?)\s*(ha|hectare|hekitara)/g);
+      for (const m of haMatches) {
+        results.push(Number(m[1].replace(",", ".")) * 10000);
+      }
+
+      const m2Matches = t.matchAll(/(\d+([.,]\d+)?)\s*(m2|m²|metatra toradroa)/g);
+      for (const m of m2Matches) {
+        results.push(Number(m[1].replace(",", ".")));
+      }
+
+      return results;
+    })
     .filter((n) => !isNaN(n) && n > 0);
 
 const surfaceStats = (texts: string[]) => {
-  const nums = extractNumbers(texts);
+  const nums = extractSurfacesM2(texts);
   if (nums.length === 0) return { min: 0, max: 0, avg: 0 };
 
   return {
@@ -101,7 +115,15 @@ const surfaceStats = (texts: string[]) => {
     max: Math.max(...nums),
     avg: Math.round(nums.reduce((a, b) => a + b, 0) / nums.length),
   };
-}; 
+};
+
+const surfaceLabel = (m2: number) => {
+  if (!m2) return "—";
+  if (m2 >= 10000) {
+    return `${(m2 / 10000).toLocaleString("fr-FR")} ha (${m2.toLocaleString("fr-FR")} m²)`;
+  }
+  return `${m2.toLocaleString("fr-FR")} m²`;
+};
   const thematicSummary = (title: string, texts: string[]) => {
     const themes = [
       { label: "Manana tany / tany azo ampiasaina", keys: ["manana tany", "taniko", "ahy", "tany misy"] },
@@ -472,9 +494,9 @@ const surfaceStats = (texts: string[]) => {
       ))}
 
       <h5>Statistiques surface</h5>
-      <p><strong>Refy ambany indrindra :</strong> {stats.min || "—"}</p>
-      <p><strong>Refy ambony indrindra :</strong> {stats.max || "—"}</p>
-      <p><strong>Moyenne :</strong> {stats.avg || "—"}</p>
+<p><strong>Refy ambany indrindra :</strong> {surfaceLabel(stats.min)}</p>
+<p><strong>Refy ambony indrindra :</strong> {surfaceLabel(stats.max)}</p>
+<p><strong>Moyenne :</strong> {surfaceLabel(stats.avg)}</p>
     </>
   );
 })()}
