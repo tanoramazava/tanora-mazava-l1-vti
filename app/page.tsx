@@ -515,7 +515,48 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
         {loading && <p>Chargement...</p>}
 
         <hr />
+<h2>0. Structure démographique VTI & FO-MIRAY</h2>
 
+<div style={styles.miniBox}>
+  <h3>Répartition générale</h3>
+
+  <p>
+    <strong>Tanora VTI — 35 ans et moins :</strong> {nbTanoraVTI}
+  </p>
+
+  <p>
+    <strong>Vehivavy FO-MIRAY — plus de 35 ans :</strong> {nbVehivavyFOMIRAY}
+  </p>
+
+  <p>
+    <strong>Loholona FO-MIRAY — plus de 35 ans :</strong> {nbLoholonaFOMIRAY}
+  </p>
+
+  <p>
+    <strong>Total personnes enregistrées :</strong> {tanora.length}
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Lecture analytique</h3>
+
+  <p>
+    <strong>Tanora VTI :</strong> sokajy fototra ho an’ny fandraisana andraikitra,
+    fianarana, Taniketsa Fandraharahana ary fanovana eny ifotony.
+  </p>
+
+  <p>
+    <strong>Vehivavy FO-MIRAY :</strong> sokajy manohana ny ankohonana,
+    fanabeazana ankizy, fiarovana ny tanora ary fitoniana ara-pianakaviana.
+  </p>
+
+  <p>
+    <strong>Loholona FO-MIRAY :</strong> sokajy manohana ny leadership,
+    fanelanelanana, fandriampahalemana ary fitarihana iombonana ao amin’ny VTI.
+  </p>
+</div>
+
+<hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
           <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
