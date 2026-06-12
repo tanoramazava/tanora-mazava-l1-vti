@@ -12,39 +12,60 @@ function DashboardAnalytique({ onBack }: any) {
   const [unites, setUnites] = useState<any[]>([]);
   const [eco, setEco] = useState<any[]>([]);
   const [repTaniketsa, setRepTaniketsa] = useState<any[]>([]);
+  const [scoresDash, setScoresDash] = useState<any[]>([]);
 
   const [vtiArap, setVtiArap] = useState<any[]>([]);
   const [vtiToek, setVtiToek] = useState<any[]>([]);
   const [vtiFahas, setVtiFahas] = useState<any[]>([]);
   const [vtiEtika, setVtiEtika] = useState<any[]>([]);
-  // ===============================
-// SEGMENTATION VTI / FO-MIRAY
-// ===============================
-
-const tanoraVTI = tanora.filter(
-  (t) => Number(t.taona || 0) <= 35
-);
-
-const vehivavyFOMIRAY = tanora.filter(
-  (t) =>
-    Number(t.taona || 0) > 35 &&
-    String(t.sexe || "").toLowerCase().includes("vavy")
-);
-
-const loholonaFOMIRAY = tanora.filter(
-  (t) =>
-    Number(t.taona || 0) > 35 &&
-    String(t.sexe || "").toLowerCase().includes("lahy")
-);
-
-// Statistiques rapides
-
-const nbTanoraVTI = tanoraVTI.length;
-const nbVehivavyFOMIRAY = vehivavyFOMIRAY.length;
-const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
 
   const money = (v: any) => Number(v || 0).toLocaleString("fr-FR") + " Ar";
   const txt = (v: any) => String(v || "").toLowerCase();
+
+  const tanoraVTI = tanora.filter((t) => Number(t.taona || 0) <= 35);
+
+  const vehivavyFOMIRAY = tanora.filter(
+    (t) =>
+      Number(t.taona || 0) > 35 &&
+      String(t.sexe || "").toLowerCase().includes("vavy")
+  );
+
+  const loholonaFOMIRAY = tanora.filter(
+    (t) =>
+      Number(t.taona || 0) > 35 &&
+      String(t.sexe || "").toLowerCase().includes("lahy")
+  );
+
+  const nbTanoraVTI = tanoraVTI.length;
+  const nbVehivavyFOMIRAY = vehivavyFOMIRAY.length;
+  const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
+
+  const idsOf = (rows: any[]) => rows.map((t) => Number(t.id));
+
+  const idsTanoraVTI = idsOf(tanoraVTI);
+  const idsVehivavyFOMIRAY = idsOf(vehivavyFOMIRAY);
+  const idsLoholonaFOMIRAY = idsOf(loholonaFOMIRAY);
+
+  const avgByIds = (rows: any[], ids: number[], field: string) => {
+    const filtered = rows.filter((r) => ids.includes(Number(r.tanora_id)));
+    if (filtered.length === 0) return 0;
+
+    return Math.round(
+      filtered.reduce((s, r) => s + Number(r[field] || 0), 0) /
+        filtered.length
+    );
+  };
+
+  const moneyAvgByIds = (rows: any[], ids: number[], field: string) => {
+    const filtered = rows.filter((r) => ids.includes(Number(r.tanora_id)));
+    if (filtered.length === 0) return money(0);
+
+    const avg =
+      filtered.reduce((s, r) => s + Number(r[field] || 0), 0) /
+      filtered.length;
+
+    return money(Math.round(avg));
+  };
 
   const total = (rows: any[], field: string) =>
     rows.reduce((s, r) => s + Number(r[field] || 0), 0);
@@ -107,80 +128,85 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
       <strong>{label} :</strong> {countPriority(rows, field, keys)}
     </p>
   );
+
   const syntheseAutomatique = (
-  titre: string,
-  rows: any[],
-  field: string,
-  themes: { label: string; keys: string[]; conseil?: string }[]
-) => {
-  const totalReponses = rows.filter((r) => String(r[field] || "").trim()).length;
+    titre: string,
+    rows: any[],
+    field: string,
+    themes: { label: string; keys: string[]; conseil?: string }[]
+  ) => {
+    const totalReponses = rows.filter((r) =>
+      String(r[field] || "").trim()
+    ).length;
 
-  const resultats = themes
-    .map((theme) => ({
-      ...theme,
-      count: countPriority(rows, field, theme.keys),
-    }))
-    .filter((theme) => theme.count > 0)
-    .sort((a, b) => b.count - a.count);
+    const resultats = themes
+      .map((theme) => ({
+        ...theme,
+        count: countPriority(rows, field, theme.keys),
+      }))
+      .filter((theme) => theme.count > 0)
+      .sort((a, b) => b.count - a.count);
 
-  if (totalReponses === 0) {
+    if (totalReponses === 0) {
+      return (
+        <div style={styles.miniBox}>
+          <h4>{titre}</h4>
+          <p>Aucune réponse détaillée enregistrée pour le moment.</p>
+        </div>
+      );
+    }
+
+    if (resultats.length === 0) {
+      return (
+        <div style={styles.miniBox}>
+          <h4>{titre}</h4>
+          <p>
+            Les réponses existent, mais elles ne correspondent pas encore
+            clairement aux références prévues. Elles doivent être analysées
+            comme valiny hafa / cas particuliers.
+          </p>
+        </div>
+      );
+    }
+
+    const priorite1 = resultats[0];
+
     return (
       <div style={styles.miniBox}>
         <h4>{titre}</h4>
-        <p>Aucune réponse détaillée enregistrée pour le moment.</p>
+
+        <p>
+          <strong>Nombre de fiches analysées :</strong> {totalReponses}
+        </p>
+
+        <p>
+          <strong>Priorité principale :</strong> {priorite1.label}{" "}
+          ({priorite1.count} réponse(s)).
+        </p>
+
+        <p>
+          <strong>Synthèse :</strong> D’après les réponses détaillées
+          enregistrées, le thème le plus récurrent est{" "}
+          <strong>{priorite1.label}</strong>. Il doit être considéré comme une
+          priorité d’intervention ou de décision.
+        </p>
+
+        {priorite1.conseil && (
+          <p>
+            <strong>Orientation proposée :</strong> {priorite1.conseil}
+          </p>
+        )}
+
+        <h5>Classement automatique des thèmes</h5>
+        {resultats.map((r, i) => (
+          <p key={`${field}-${r.label}`}>
+            <strong>Priorité {i + 1} :</strong> {r.label} — {r.count}{" "}
+            réponse(s)
+          </p>
+        ))}
       </div>
     );
-  }
-
-  if (resultats.length === 0) {
-    return (
-      <div style={styles.miniBox}>
-        <h4>{titre}</h4>
-        <p>
-          Les réponses existent, mais elles ne correspondent pas encore clairement
-          aux références prévues. Elles doivent être analysées comme valiny hafa /
-          cas particuliers.
-        </p>
-      </div>
-    );
-  }
-
-  const priorite1 = resultats[0];
-
-  return (
-    <div style={styles.miniBox}>
-      <h4>{titre}</h4>
-
-      <p>
-        <strong>Nombre de fiches analysées :</strong> {totalReponses}
-      </p>
-
-      <p>
-        <strong>Priorité principale :</strong> {priorite1.label}{" "}
-        ({priorite1.count} réponse(s)).
-      </p>
-
-      <p>
-        <strong>Synthèse :</strong> D’après les réponses détaillées enregistrées,
-        le thème le plus récurrent est <strong>{priorite1.label}</strong>. Il
-        doit être considéré comme une priorité d’intervention ou de décision.
-      </p>
-
-      {priorite1.conseil && (
-        <p>
-          <strong>Orientation proposée :</strong> {priorite1.conseil}
-        </p>
-      )}
-
-      <h5>Classement automatique des thèmes</h5>
-      {resultats.map((r, i) => (
-        <p key={`${field}-${r.label}`}>
-          <strong>Priorité {i + 1} :</strong> {r.label} — {r.count} réponse(s)
-        </p>
-      ))}
-    </div>
-  );
-};
+  };
 
   const otherResponses = (rows: any[], field: string, knownKeys: string[]) =>
     rows
@@ -217,9 +243,7 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
 
         for (const m of haMatches) {
           const value = parseSurfaceNumber(m[1]);
-          if (!isNaN(value)) {
-            results.push(value * 10000);
-          }
+          if (!isNaN(value)) results.push(value * 10000);
         }
 
         const m2Matches = t.matchAll(
@@ -228,9 +252,7 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
 
         for (const m of m2Matches) {
           const value = parseSurfaceNumber(m[1]);
-          if (!isNaN(value)) {
-            results.push(value);
-          }
+          if (!isNaN(value)) results.push(value);
         }
 
         return results;
@@ -241,12 +263,7 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
     const nums = extractSurfacesM2(texts);
 
     if (nums.length === 0) {
-      return {
-        min: 0,
-        max: 0,
-        total: 0,
-        avg: 0,
-      };
+      return { min: 0, max: 0, total: 0, avg: 0 };
     }
 
     const totalSurface = nums.reduce((a, b) => a + b, 0);
@@ -264,6 +281,7 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
     if (!m2) return "—";
     return `${m2.toLocaleString("fr-FR")} m²`;
   };
+
   const thematicSummary = (title: string, texts: string[]) => {
     const themes = [
       { label: "Manana tany / tany azo ampiasaina", keys: ["manana tany", "taniko", "ahy", "tany misy"] },
@@ -315,93 +333,95 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
     );
   };
 
-  const chargerDashboard = async () => {
-    setLoading(true);
+ const chargerDashboard = async () => {
+  setLoading(true);
 
-    const { data: tanoraData } = await supabase.from("tanora").select("*");
-    const { data: vtiData } = await supabase.from("vti").select("*");
-    const { data: spirituelData } = await supabase.from("reponses_spirituel").select("*");
-    const { data: repVtiData } = await supabase.from("reponses_vti").select("*");
-    const { data: unitesData } = await supabase.from("taniketsa_unites").select("*");
-    const { data: ecoData } = await supabase.from("economies_taniketsa").select("*");
-    const { data: repTanData } = await supabase.from("reponses_taniketsa_detaillees").select("*");
+  const { data: tanoraData } = await supabase.from("tanora").select("*");
+  const { data: vtiData } = await supabase.from("vti").select("*");
+  const { data: spirituelData } = await supabase.from("reponses_spirituel").select("*");
+  const { data: repVtiData } = await supabase.from("reponses_vti").select("*");
+  const { data: unitesData } = await supabase.from("taniketsa_unites").select("*");
+  const { data: ecoData } = await supabase.from("economies_taniketsa").select("*");
+  const { data: repTanData } = await supabase.from("reponses_taniketsa_detaillees").select("*");
+  const { data: scoresData } = await supabase.from("scores").select("*");
 
-    const { data: arapData } = await supabase.from("vti_vaomiera_arapanahy_fanabeazana").select("*");
-    const { data: toekData } = await supabase.from("vti_vaomiera_fandraharahana_toekarena").select("*");
-    const { data: fahasData } = await supabase.from("vti_vaomiera_fahasalamana_fiarovana").select("*");
-    const { data: etikaData } = await supabase.from("vti_vaomiera_etika_fampandrosoana").select("*");
+  const { data: arapData } = await supabase.from("vti_vaomiera_arapanahy_fanabeazana").select("*");
+  const { data: toekData } = await supabase.from("vti_vaomiera_fandraharahana_toekarena").select("*");
+  const { data: fahasData } = await supabase.from("vti_vaomiera_fahasalamana_fiarovana").select("*");
+  const { data: etikaData } = await supabase.from("vti_vaomiera_etika_fampandrosoana").select("*");
 
-    setTanora(tanoraData || []);
-    setVti(vtiData || []);
+  setTanora(tanoraData || []);
+  setVti(vtiData || []);
 
-    setSpirituel(latestByTanoraId(spirituelData || []));
-    setRepVti(latestByTanoraId(repVtiData || []));
-    setUnites(latestByTanoraAndFiliere(unitesData || []));
-    setEco(latestByTanoraId(ecoData || []));
-    setRepTaniketsa(latestByTanoraId(repTanData || []));
+  setSpirituel(latestByTanoraId(spirituelData || []));
+  setRepVti(latestByTanoraId(repVtiData || []));
+  setUnites(latestByTanoraAndFiliere(unitesData || []));
+  setEco(latestByTanoraId(ecoData || []));
+  setRepTaniketsa(latestByTanoraId(repTanData || []));
+  setScoresDash(latestByTanoraId(scoresData || []));
 
-    setVtiArap(latestByVtiId(arapData || []));
-    setVtiToek(latestByVtiId(toekData || []));
-    setVtiFahas(latestByVtiId(fahasData || []));
-    setVtiEtika(latestByVtiId(etikaData || []));
+  setVtiArap(latestByVtiId(arapData || []));
+  setVtiToek(latestByVtiId(toekData || []));
+  setVtiFahas(latestByVtiId(fahasData || []));
+  setVtiEtika(latestByVtiId(etikaData || []));
 
-    setLoading(false);
-  };
+  setLoading(false);
+};
 
-  const age18 = tanora.filter((t) => Number(t.taona) <= 18).length;
-  const age19_24 = tanora.filter((t) => Number(t.taona) >= 19 && Number(t.taona) <= 24).length;
-  const age25_35 = tanora.filter((t) => Number(t.taona) >= 25 && Number(t.taona) <= 35).length;
-  const age35plus = tanora.filter((t) => Number(t.taona) > 35).length;
+const age18 = tanora.filter((t) => Number(t.taona) <= 18).length;
+const age19_24 = tanora.filter((t) => Number(t.taona) >= 19 && Number(t.taona) <= 24).length;
+const age25_35 = tanora.filter((t) => Number(t.taona) >= 25 && Number(t.taona) <= 35).length;
+const age35plus = tanora.filter((t) => Number(t.taona) > 35).length;
 
-  const filieres = [
-    {
-      type: "voly",
-      name: "Voly rakotra 500m²",
-      ca: "ca_voly_rakotra",
-      dep: "depenses_voly_rakotra",
-      ben: "benefice_voly_rakotra",
-    },
-    {
-      type: "vary",
-      name: "Voly vary 750m²",
-      ca: "ca_vary",
-      dep: "depenses_vary",
-      ben: "benefice_vary",
-    },
-    {
-      type: "akoho",
-      name: "Akoho gasy",
-      ca: "ca_akoho_gasy",
-      dep: "depenses_akoho_gasy",
-      ben: "benefice_akoho_gasy",
-    },
-    {
-      type: "kisoa",
-      name: "Fanatavezana kisoa",
-      ca: "ca_kisoa",
-      dep: "depenses_kisoa",
-      ben: "benefice_kisoa",
-    },
-    {
-      type: "tantely",
-      name: "Fiompiana tantely",
-      ca: "ca_tantely",
-      dep: "depenses_tantely",
-      ben: "benefice_tantely",
-    },
-  ];
+const filieres = [
+  {
+    type: "voly",
+    name: "Voly rakotra 500m²",
+    ca: "ca_voly_rakotra",
+    dep: "depenses_voly_rakotra",
+    ben: "benefice_voly_rakotra",
+  },
+  {
+    type: "vary",
+    name: "Voly vary 750m²",
+    ca: "ca_vary",
+    dep: "depenses_vary",
+    ben: "benefice_vary",
+  },
+  {
+    type: "akoho",
+    name: "Akoho gasy",
+    ca: "ca_akoho_gasy",
+    dep: "depenses_akoho_gasy",
+    ben: "benefice_akoho_gasy",
+  },
+  {
+    type: "kisoa",
+    name: "Fanatavezana kisoa",
+    ca: "ca_kisoa",
+    dep: "depenses_kisoa",
+    ben: "benefice_kisoa",
+  },
+  {
+    type: "tantely",
+    name: "Fiompiana tantely",
+    ca: "ca_tantely",
+    dep: "depenses_tantely",
+    ben: "benefice_tantely",
+  },
+];
 
-  const getEcoByTanora = (tanoraId: any) =>
-    eco.find((e) => Number(e.tanora_id) === Number(tanoraId));
+const getEcoByTanora = (tanoraId: any) =>
+  eco.find((e) => Number(e.tanora_id) === Number(tanoraId));
 
-  const getUnitsByTanoraAndType = (tanoraId: any, type: string) =>
-    unites.find(
-      (u) =>
-        Number(u.tanora_id) === Number(tanoraId) &&
-        String(u.type_taniketsa || "") === type
-    );
+const getUnitsByTanoraAndType = (tanoraId: any, type: string) =>
+  unites.find(
+    (u) =>
+      Number(u.tanora_id) === Number(tanoraId) &&
+      String(u.type_taniketsa || "") === type
+  );
 
-  const getFiliereRows = (f: any) => {
+const getFiliereRows = (f: any) => {
   const ids = new Set<number>();
 
   eco.forEach((e) => {
@@ -447,9 +467,7 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
 
     if ((!u1 && !u2 && !u3) && caEco > 0) {
       if (f.type === "akoho") {
-        const caParTokatrano3Ans = 82560000;
-        const initial = Math.round(caEco / caParTokatrano3Ans);
-
+        const initial = Math.round(caEco / 82560000);
         u1 = initial;
         u2 = initial * 6;
         u3 = initial * 36;
@@ -492,129 +510,123 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
   });
 };
 
-  const allFiliereRows = filieres.flatMap((f) => getFiliereRows(f));
+const allFiliereRows = filieres.flatMap((f) => getFiliereRows(f));
 
-  const caGlobal = allFiliereRows.reduce((s, r) => s + Number(r.ca_total || 0), 0);
-  const depensesGlobal = allFiliereRows.reduce((s, r) => s + Number(r.dep_total || 0), 0);
-  const beneficeGlobal = allFiliereRows.reduce((s, r) => s + Number(r.ben_total || 0), 0);
+const caGlobal = allFiliereRows.reduce((s, r) => s + Number(r.ca_total || 0), 0);
+const depensesGlobal = allFiliereRows.reduce((s, r) => s + Number(r.dep_total || 0), 0);
+const beneficeGlobal = allFiliereRows.reduce((s, r) => s + Number(r.ben_total || 0), 0);
 
-  return (
-    <main style={styles.main}>
-      <section style={styles.card}>
-        <h1 style={styles.titleSmall}>Dashboard Analytique Tanora Mazava L1 — V5</h1>
+return (
+  <main style={styles.main}>
+    <section style={styles.card}>
+      <h1 style={styles.titleSmall}>Dashboard Analytique Tanora Mazava L1 — V5</h1>
 
-        <div style={styles.actions}>
-          <button style={styles.button} onClick={chargerDashboard}>
-            Charger / Actualiser Dashboard
-          </button>
-          <button style={styles.secondaryButton} onClick={onBack}>
-            Miverina
-          </button>
-        </div>
+      <div style={styles.actions}>
+        <button style={styles.button} onClick={chargerDashboard}>
+          Charger / Actualiser Dashboard
+        </button>
+        <button style={styles.secondaryButton} onClick={onBack}>
+          Miverina
+        </button>
+      </div>
 
-        {loading && <p>Chargement...</p>}
+      {loading && <p>Chargement...</p>}
 
-        <hr />
-<h2>0. Structure démographique VTI & FO-MIRAY</h2>
+      <hr />
 
-<div style={styles.miniBox}>
-  <h3>Répartition générale</h3>
+      <h2>0. Structure démographique VTI & FO-MIRAY</h2>
 
-  <p>
-    <strong>Tanora VTI — 35 ans et moins :</strong> {nbTanoraVTI}
-  </p>
+      <div style={styles.miniBox}>
+        <h3>Répartition générale</h3>
+        <p><strong>Tanora VTI — 35 ans et moins :</strong> {nbTanoraVTI}</p>
+        <p><strong>Vehivavy FO-MIRAY — plus de 35 ans :</strong> {nbVehivavyFOMIRAY}</p>
+        <p><strong>Loholona FO-MIRAY — plus de 35 ans :</strong> {nbLoholonaFOMIRAY}</p>
+        <p><strong>Total personnes enregistrées :</strong> {tanora.length}</p>
+      </div>
 
-  <p>
-    <strong>Vehivavy FO-MIRAY — plus de 35 ans :</strong> {nbVehivavyFOMIRAY}
-  </p>
+      <div style={styles.miniBox}>
+        <h3>Lecture analytique</h3>
+        <p><strong>Tanora VTI :</strong> sokajy fototra ho an’ny fandraisana andraikitra, fianarana, Taniketsa Fandraharahana ary fanovana eny ifotony.</p>
+        <p><strong>Vehivavy FO-MIRAY :</strong> sokajy manohana ny ankohonana, fanabeazana ankizy, fiarovana ny tanora ary fitoniana ara-pianakaviana.</p>
+        <p><strong>Loholona FO-MIRAY :</strong> sokajy manohana ny leadership, fanelanelanana, fandriampahalemana ary fitarihana iombonana ao amin’ny VTI.</p>
+      </div>
 
-  <p>
-    <strong>Loholona FO-MIRAY — plus de 35 ans :</strong> {nbLoholonaFOMIRAY}
-  </p>
+      <div style={styles.miniBox}>
+        <h3>Comparaison stratégique VTI & FO-MIRAY</h3>
+        <p><strong>Tanora VTI :</strong> {nbTanoraVTI}</p>
+        <p><strong>Vehivavy FO-MIRAY :</strong> {nbVehivavyFOMIRAY}</p>
+        <p><strong>Loholona FO-MIRAY :</strong> {nbLoholonaFOMIRAY}</p>
+        <p><strong>Total personnes enregistrées :</strong> {tanora.length}</p>
+      </div>
 
-  <p>
-    <strong>Total personnes enregistrées :</strong> {tanora.length}
-  </p>
-</div>
+      <div style={styles.miniBox}>
+        <h3>Dashboard 0C — Comparaison des résultats réels</h3>
 
-<div style={styles.miniBox}>
-  <h3>Lecture analytique</h3>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <th>Indicateur</th>
+              <th>Tanora VTI</th>
+              <th>Vehivavy FO-MIRAY</th>
+              <th>Loholona FO-MIRAY</th>
+            </tr>
+          </thead>
 
-  <p>
-    <strong>Tanora VTI :</strong> sokajy fototra ho an’ny fandraisana andraikitra,
-    fianarana, Taniketsa Fandraharahana ary fanovana eny ifotony.
-  </p>
+          <tbody>
+            <tr>
+              <td><strong>Effectif</strong></td>
+              <td>{nbTanoraVTI}</td>
+              <td>{nbVehivavyFOMIRAY}</td>
+              <td>{nbLoholonaFOMIRAY}</td>
+            </tr>
 
-  <p>
-    <strong>Vehivavy FO-MIRAY :</strong> sokajy manohana ny ankohonana,
-    fanabeazana ankizy, fiarovana ny tanora ary fitoniana ara-pianakaviana.
-  </p>
+            <tr>
+              <td><strong>Score ara-panahy moyen</strong></td>
+              <td>{avgByIds(scoresDash, idsTanoraVTI, "score_arapanahy")} / 52</td>
+              <td>{avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_arapanahy")} / 52</td>
+              <td>{avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_arapanahy")} / 52</td>
+            </tr>
 
-  <p>
-    <strong>Loholona FO-MIRAY :</strong> sokajy manohana ny leadership,
-    fanelanelanana, fandriampahalemana ary fitarihana iombonana ao amin’ny VTI.
-  </p>
-</div>
+            <tr>
+              <td><strong>Score VTI moyen</strong></td>
+              <td>{avgByIds(scoresDash, idsTanoraVTI, "score_vti")} / 29</td>
+              <td>{avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_vti")} / 29</td>
+              <td>{avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_vti")} / 29</td>
+            </tr>
 
-<div style={styles.miniBox}>
-  <h3>Comparaison stratégique VTI & FO-MIRAY</h3>
+            <tr>
+              <td><strong>Score Taniketsa moyen</strong></td>
+              <td>{avgByIds(scoresDash, idsTanoraVTI, "score_taniketsa")}</td>
+              <td>{avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_taniketsa")}</td>
+              <td>{avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_taniketsa")}</td>
+            </tr>
 
-  <p><strong>Tanora VTI :</strong> {nbTanoraVTI}</p>
-  <p><strong>Vehivavy FO-MIRAY :</strong> {nbVehivavyFOMIRAY}</p>
-  <p><strong>Loholona FO-MIRAY :</strong> {nbLoholonaFOMIRAY}</p>
-  <p><strong>Total personnes enregistrées :</strong> {tanora.length}</p>
-</div>
-<div style={styles.miniBox}>
-  <h3>Comparaison des performances VTI & FO-MIRAY</h3>
+            <tr>
+              <td><strong>CA moyen 3 ans</strong></td>
+              <td>{moneyAvgByIds(eco, idsTanoraVTI, "ca_total")}</td>
+              <td>{moneyAvgByIds(eco, idsVehivavyFOMIRAY, "ca_total")}</td>
+              <td>{moneyAvgByIds(eco, idsLoholonaFOMIRAY, "ca_total")}</td>
+            </tr>
 
-  <p><strong>Objectif :</strong> mampitaha ny vokatra sy ny fandraisana andraikitra eo amin’ny Tanora VTI, Vehivavy FO-MIRAY ary Loholona FO-MIRAY.</p>
+            <tr>
+              <td><strong>Bénéfice moyen 3 ans</strong></td>
+              <td>{moneyAvgByIds(eco, idsTanoraVTI, "benefice_total")}</td>
+              <td>{moneyAvgByIds(eco, idsVehivavyFOMIRAY, "benefice_total")}</td>
+              <td>{moneyAvgByIds(eco, idsLoholonaFOMIRAY, "benefice_total")}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-  <table style={{ width: "100%", borderCollapse: "collapse" }}>
-    <thead>
-      <tr>
-        <th>Indicateur</th>
-        <th>Tanora VTI</th>
-        <th>Vehivavy FO-MIRAY</th>
-        <th>Loholona FO-MIRAY</th>
-      </tr>
-    </thead>
+      <div style={styles.miniBox}>
+        <h3>Synthèse automatique — FO-MIRAY</h3>
+        <p>
+          <strong>Fehin-kevitra :</strong> Ny Dashboard dia manavaka mazava ny Tanora VTI,
+          ny Vehivavy FO-MIRAY ary ny Loholona FO-MIRAY, sady mampitaha ny
+          résultats réels : scores, engagement VTI, Taniketsa, CA ary bénéfice.
+        </p>
+      </div>
 
-    <tbody>
-      <tr>
-        <td><strong>Effectif</strong></td>
-        <td>{nbTanoraVTI}</td>
-        <td>{nbVehivavyFOMIRAY}</td>
-        <td>{nbLoholonaFOMIRAY}</td>
-      </tr>
-
-      <tr>
-        <td><strong>Rôle stratégique</strong></td>
-        <td>Action, formation, Taniketsa</td>
-        <td>Ankohonana, ankizy, tohana VTI</td>
-        <td>Leadership, fanelanelanana, fitarihana</td>
-      </tr>
-
-      <tr>
-        <td><strong>Lecture analytique</strong></td>
-        <td>Mpandray andraikitra mivantana</td>
-        <td>Mpampiorina ny ankohonana sy fanabeazana</td>
-        <td>Mpitarika sy mpanoro lalana</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div style={styles.miniBox}>
-  <h3>Synthèse automatique — FO-MIRAY</h3>
-
-  <p>
-    <strong>Fehin-kevitra :</strong> Ny Dashboard dia manavaka mazava ny
-    Tanora VTI, ny Vehivavy FO-MIRAY ary ny Loholona FO-MIRAY, nefa mitazona
-    azy telo ao anatin’ny rafitra iray ihany. Izany dia ahafahana mampitaha
-    ny fandraisana andraikitra, ny fanohanana ara-pianakaviana ary ny
-    leadership communautaire.
-  </p>
-</div>
 <hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
