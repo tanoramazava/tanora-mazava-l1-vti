@@ -564,7 +564,57 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
   <p><strong>Loholona FO-MIRAY :</strong> {nbLoholonaFOMIRAY}</p>
   <p><strong>Total personnes enregistrées :</strong> {tanora.length}</p>
 </div>
+<div style={styles.miniBox}>
+  <h3>Comparaison des performances VTI & FO-MIRAY</h3>
 
+  <p><strong>Objectif :</strong> mampitaha ny vokatra sy ny fandraisana andraikitra eo amin’ny Tanora VTI, Vehivavy FO-MIRAY ary Loholona FO-MIRAY.</p>
+
+  <table style={{ width: "100%", borderCollapse: "collapse" }}>
+    <thead>
+      <tr>
+        <th>Indicateur</th>
+        <th>Tanora VTI</th>
+        <th>Vehivavy FO-MIRAY</th>
+        <th>Loholona FO-MIRAY</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td><strong>Effectif</strong></td>
+        <td>{nbTanoraVTI}</td>
+        <td>{nbVehivavyFOMIRAY}</td>
+        <td>{nbLoholonaFOMIRAY}</td>
+      </tr>
+
+      <tr>
+        <td><strong>Rôle stratégique</strong></td>
+        <td>Action, formation, Taniketsa</td>
+        <td>Ankohonana, ankizy, tohana VTI</td>
+        <td>Leadership, fanelanelanana, fitarihana</td>
+      </tr>
+
+      <tr>
+        <td><strong>Lecture analytique</strong></td>
+        <td>Mpandray andraikitra mivantana</td>
+        <td>Mpampiorina ny ankohonana sy fanabeazana</td>
+        <td>Mpitarika sy mpanoro lalana</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Synthèse automatique — FO-MIRAY</h3>
+
+  <p>
+    <strong>Fehin-kevitra :</strong> Ny Dashboard dia manavaka mazava ny
+    Tanora VTI, ny Vehivavy FO-MIRAY ary ny Loholona FO-MIRAY, nefa mitazona
+    azy telo ao anatin’ny rafitra iray ihany. Izany dia ahafahana mampitaha
+    ny fandraisana andraikitra, ny fanohanana ara-pianakaviana ary ny
+    leadership communautaire.
+  </p>
+</div>
 <hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
