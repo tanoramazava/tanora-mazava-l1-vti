@@ -556,6 +556,15 @@ const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
   </p>
 </div>
 
+<div style={styles.miniBox}>
+  <h3>Comparaison stratégique VTI & FO-MIRAY</h3>
+
+  <p><strong>Tanora VTI :</strong> {nbTanoraVTI}</p>
+  <p><strong>Vehivavy FO-MIRAY :</strong> {nbVehivavyFOMIRAY}</p>
+  <p><strong>Loholona FO-MIRAY :</strong> {nbLoholonaFOMIRAY}</p>
+  <p><strong>Total personnes enregistrées :</strong> {tanora.length}</p>
+</div>
+
 <hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
