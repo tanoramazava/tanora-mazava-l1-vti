@@ -17,6 +17,31 @@ function DashboardAnalytique({ onBack }: any) {
   const [vtiToek, setVtiToek] = useState<any[]>([]);
   const [vtiFahas, setVtiFahas] = useState<any[]>([]);
   const [vtiEtika, setVtiEtika] = useState<any[]>([]);
+  // ===============================
+// SEGMENTATION VTI / FO-MIRAY
+// ===============================
+
+const tanoraVTI = tanora.filter(
+  (t) => Number(t.taona || 0) <= 35
+);
+
+const vehivavyFOMIRAY = tanora.filter(
+  (t) =>
+    Number(t.taona || 0) > 35 &&
+    String(t.sexe || "").toLowerCase().includes("vavy")
+);
+
+const loholonaFOMIRAY = tanora.filter(
+  (t) =>
+    Number(t.taona || 0) > 35 &&
+    String(t.sexe || "").toLowerCase().includes("lahy")
+);
+
+// Statistiques rapides
+
+const nbTanoraVTI = tanoraVTI.length;
+const nbVehivavyFOMIRAY = vehivavyFOMIRAY.length;
+const nbLoholonaFOMIRAY = loholonaFOMIRAY.length;
 
   const money = (v: any) => Number(v || 0).toLocaleString("fr-FR") + " Ar";
   const txt = (v: any) => String(v || "").toLowerCase();
