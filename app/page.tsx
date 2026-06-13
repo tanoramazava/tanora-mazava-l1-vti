@@ -737,6 +737,115 @@ return (
 </div>
 
 <hr />
+      <h2>0E. Dashboard FO-MIRAY Loholona</h2>
+
+<div style={styles.miniBox}>
+  <h3>Statistiques générales</h3>
+
+  <p>
+    <strong>Isan'ny Loholona FO-MIRAY :</strong>{" "}
+    {nbLoholonaFOMIRAY}
+  </p>
+
+  <p>
+    <strong>Anjara asa lehibe :</strong>{" "}
+    Leadership, fandriampahalemana,
+    fanelanelanana, fitarihana ny VTI
+    ary fanohanana ny Fokonolona.
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Leadership ara-panahy</h3>
+
+  <p>
+    <strong>Score ara-panahy moyen :</strong>{" "}
+    {avgByIds(
+      scoresDash,
+      idsLoholonaFOMIRAY,
+      "score_arapanahy"
+    )} / 52
+  </p>
+
+  <p>
+    Mampiseho ny tanjaky ny fitarihana
+    ara-panahy sy ny fahaiza-mitarika.
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Fandraisana anjara ao amin'ny VTI</h3>
+
+  <p>
+    <strong>Score VTI moyen :</strong>{" "}
+    {avgByIds(
+      scoresDash,
+      idsLoholonaFOMIRAY,
+      "score_vti"
+    )} / 29
+  </p>
+
+  <p>
+    Mampiseho ny fandraisan'ny Loholona
+    anjara amin'ny fitarihana sy fanapahan-kevitra.
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Fandraharahana sy Toekarena</h3>
+
+  <p>
+    <strong>Score Taniketsa moyen :</strong>{" "}
+    {avgByIds(
+      scoresDash,
+      idsLoholonaFOMIRAY,
+      "score_taniketsa"
+    )}
+  </p>
+
+  <p>
+    <strong>CA moyen 3 ans :</strong>{" "}
+    {moneyAvgByIds(
+      eco,
+      idsLoholonaFOMIRAY,
+      "ca_total"
+    )}
+  </p>
+
+  <p>
+    <strong>Bénéfice moyen 3 ans :</strong>{" "}
+    {moneyAvgByIds(
+      eco,
+      idsLoholonaFOMIRAY,
+      "benefice_total"
+    )}
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Synthèse automatique — Loholona FO-MIRAY</h3>
+
+  <p>
+    Ny Loholona FO-MIRAY dia andry lehibe amin'ny:
+  </p>
+
+  <ul>
+    <li>Leadership communautaire</li>
+    <li>Fanelanelanana sy fandriampahalemana</li>
+    <li>Fitarihana ara-panahy</li>
+    <li>Fampihavanana sy fanorenana firaisankina</li>
+    <li>Fanohanana ny VTI sy ny Tanora</li>
+  </ul>
+
+  <p>
+    Ity Dashboard ity dia natao handrefesana
+    ny tanjaky ny fitarihana sy ny fandraisana
+    andraikitra ataon'ny Loholona eo anivon'ny
+    FO-MIRAY sy ny VTI.
+  </p>
+</div>
+
+<hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
           <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
