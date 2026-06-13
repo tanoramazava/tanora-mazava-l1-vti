@@ -629,219 +629,59 @@ return (
 
 <hr />
 
-<h2>0D. Dashboard FO-MIRAY Vehivavy</h2>
+<h2>0D. Dashboard FO-MIRAY Vehivavy — Mitovy lenta amin’ny Dashboard Tanora</h2>
 
 <div style={styles.miniBox}>
-  <h3>Statistiques générales</h3>
-
-  <p>
-    <strong>Isan'ny Vehivavy FO-MIRAY :</strong>{" "}
-    {nbVehivavyFOMIRAY}
-  </p>
-
-  <p>
-    <strong>Anjara asa lehibe :</strong>{" "}
-    Ankohonana, fanabeazana ankizy, fiarovana ny tanora,
-    fandraharahana ary fampandrosoana ny tokantrano.
-  </p>
+  <h3>Famantarana sy segmentation</h3>
+  <p><strong>Critère :</strong> Vehivavy mihoatra ny 35 taona.</p>
+  <p><strong>Isan'ny Vehivavy FO-MIRAY :</strong> {nbVehivavyFOMIRAY}</p>
 </div>
 
 <div style={styles.miniBox}>
-  <h3>Fandraisana anjara ara-panahy</h3>
-
-  <p>
-    <strong>Score ara-panahy moyen :</strong>{" "}
-    {avgByIds(
-      scoresDash,
-      idsVehivavyFOMIRAY,
-      "score_arapanahy"
-    )} / 52
-  </p>
-
-  <p>
-    Manampy hahitana ny haavon'ny fahamatorana
-    ara-panahy eo anivon'ny renim-pianakaviana.
-  </p>
+  <h3>Résultats analytiques — Vehivavy FO-MIRAY</h3>
+  <p><strong>Score ara-panahy moyen :</strong> {avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_arapanahy")} / 52</p>
+  <p><strong>Score VTI moyen :</strong> {avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_vti")} / 29</p>
+  <p><strong>Score Taniketsa moyen :</strong> {avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_taniketsa")}</p>
+  <p><strong>CA moyen 3 ans :</strong> {moneyAvgByIds(eco, idsVehivavyFOMIRAY, "ca_total")}</p>
+  <p><strong>Dépenses moyennes 3 ans :</strong> {moneyAvgByIds(eco, idsVehivavyFOMIRAY, "depenses_total")}</p>
+  <p><strong>Bénéfice moyen 3 ans :</strong> {moneyAvgByIds(eco, idsVehivavyFOMIRAY, "benefice_total")}</p>
 </div>
 
 <div style={styles.miniBox}>
-  <h3>Fandraisana anjara ao amin'ny VTI</h3>
-
+  <h3>Lecture analytique — Vehivavy FO-MIRAY</h3>
   <p>
-    <strong>Score VTI moyen :</strong>{" "}
-    {avgByIds(
-      scoresDash,
-      idsVehivavyFOMIRAY,
-      "score_vti"
-    )} / 29
-  </p>
-
-  <p>
-    Mampiseho ny fandraisan'ny vehivavy anjara
-    amin'ny vaomiera sy ny fiainam-pikambanana.
-  </p>
-</div>
-
-<div style={styles.miniBox}>
-  <h3>Taniketsa sy Fandraharahana</h3>
-
-  <p>
-    <strong>Score Taniketsa moyen :</strong>{" "}
-    {avgByIds(
-      scoresDash,
-      idsVehivavyFOMIRAY,
-      "score_taniketsa"
-    )}
-  </p>
-
-  <p>
-    <strong>CA moyen 3 ans :</strong>{" "}
-    {moneyAvgByIds(
-      eco,
-      idsVehivavyFOMIRAY,
-      "ca_total"
-    )}
-  </p>
-
-  <p>
-    <strong>Bénéfice moyen 3 ans :</strong>{" "}
-    {moneyAvgByIds(
-      eco,
-      idsVehivavyFOMIRAY,
-      "benefice_total"
-    )}
-  </p>
-</div>
-
-<div style={styles.miniBox}>
-  <h3>Synthèse automatique — Vehivavy FO-MIRAY</h3>
-
-  <p>
-    Ny Vehivavy FO-MIRAY dia andry lehibe
-    amin'ny:
-  </p>
-
-  <ul>
-    <li>Fanabeazana ny ankizy</li>
-    <li>Fitoniana ara-pianakaviana</li>
-    <li>Fiarovana ny tanora</li>
-    <li>Fandraharahana sy fitantanana tokantrano</li>
-    <li>Fampandrosoana ny fiaraha-monina</li>
-  </ul>
-
-  <p>
-    Ny Dashboard dia ahafahana mandrefy ny
-    tanjaky ny vehivavy amin'ireo sehatra ireo
-    sy manara-maso ny fivoarany isan-taona.
+    Ity dashboard ity dia mampiasa ilay formulaire tokana sy ireo données tena
+    voatahiry ihany. Noho izany dia mitovy lenta amin’ny Dashboard Tanora izy,
+    fa ny filtre ampiasaina dia : <strong>taona &gt; 35</strong> sy <strong>sexe = Vavy</strong>.
   </p>
 </div>
 
 <hr />
-      <h2>0E. Dashboard FO-MIRAY Loholona</h2>
+
+<h2>0E. Dashboard FO-MIRAY Loholona — Mitovy lenta amin’ny Dashboard Tanora</h2>
 
 <div style={styles.miniBox}>
-  <h3>Statistiques générales</h3>
-
-  <p>
-    <strong>Isan'ny Loholona FO-MIRAY :</strong>{" "}
-    {nbLoholonaFOMIRAY}
-  </p>
-
-  <p>
-    <strong>Anjara asa lehibe :</strong>{" "}
-    Leadership, fandriampahalemana,
-    fanelanelanana, fitarihana ny VTI
-    ary fanohanana ny Fokonolona.
-  </p>
+  <h3>Famantarana sy segmentation</h3>
+  <p><strong>Critère :</strong> Lehilahy mihoatra ny 35 taona.</p>
+  <p><strong>Isan'ny Loholona FO-MIRAY :</strong> {nbLoholonaFOMIRAY}</p>
 </div>
 
 <div style={styles.miniBox}>
-  <h3>Leadership ara-panahy</h3>
-
-  <p>
-    <strong>Score ara-panahy moyen :</strong>{" "}
-    {avgByIds(
-      scoresDash,
-      idsLoholonaFOMIRAY,
-      "score_arapanahy"
-    )} / 52
-  </p>
-
-  <p>
-    Mampiseho ny tanjaky ny fitarihana
-    ara-panahy sy ny fahaiza-mitarika.
-  </p>
+  <h3>Résultats analytiques — Loholona FO-MIRAY</h3>
+  <p><strong>Score ara-panahy moyen :</strong> {avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_arapanahy")} / 52</p>
+  <p><strong>Score VTI moyen :</strong> {avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_vti")} / 29</p>
+  <p><strong>Score Taniketsa moyen :</strong> {avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_taniketsa")}</p>
+  <p><strong>CA moyen 3 ans :</strong> {moneyAvgByIds(eco, idsLoholonaFOMIRAY, "ca_total")}</p>
+  <p><strong>Dépenses moyennes 3 ans :</strong> {moneyAvgByIds(eco, idsLoholonaFOMIRAY, "depenses_total")}</p>
+  <p><strong>Bénéfice moyen 3 ans :</strong> {moneyAvgByIds(eco, idsLoholonaFOMIRAY, "benefice_total")}</p>
 </div>
 
 <div style={styles.miniBox}>
-  <h3>Fandraisana anjara ao amin'ny VTI</h3>
-
+  <h3>Lecture analytique — Loholona FO-MIRAY</h3>
   <p>
-    <strong>Score VTI moyen :</strong>{" "}
-    {avgByIds(
-      scoresDash,
-      idsLoholonaFOMIRAY,
-      "score_vti"
-    )} / 29
-  </p>
-
-  <p>
-    Mampiseho ny fandraisan'ny Loholona
-    anjara amin'ny fitarihana sy fanapahan-kevitra.
-  </p>
-</div>
-
-<div style={styles.miniBox}>
-  <h3>Fandraharahana sy Toekarena</h3>
-
-  <p>
-    <strong>Score Taniketsa moyen :</strong>{" "}
-    {avgByIds(
-      scoresDash,
-      idsLoholonaFOMIRAY,
-      "score_taniketsa"
-    )}
-  </p>
-
-  <p>
-    <strong>CA moyen 3 ans :</strong>{" "}
-    {moneyAvgByIds(
-      eco,
-      idsLoholonaFOMIRAY,
-      "ca_total"
-    )}
-  </p>
-
-  <p>
-    <strong>Bénéfice moyen 3 ans :</strong>{" "}
-    {moneyAvgByIds(
-      eco,
-      idsLoholonaFOMIRAY,
-      "benefice_total"
-    )}
-  </p>
-</div>
-
-<div style={styles.miniBox}>
-  <h3>Synthèse automatique — Loholona FO-MIRAY</h3>
-
-  <p>
-    Ny Loholona FO-MIRAY dia andry lehibe amin'ny:
-  </p>
-
-  <ul>
-    <li>Leadership communautaire</li>
-    <li>Fanelanelanana sy fandriampahalemana</li>
-    <li>Fitarihana ara-panahy</li>
-    <li>Fampihavanana sy fanorenana firaisankina</li>
-    <li>Fanohanana ny VTI sy ny Tanora</li>
-  </ul>
-
-  <p>
-    Ity Dashboard ity dia natao handrefesana
-    ny tanjaky ny fitarihana sy ny fandraisana
-    andraikitra ataon'ny Loholona eo anivon'ny
-    FO-MIRAY sy ny VTI.
+    Ity dashboard ity dia mampiasa ilay formulaire tokana sy ireo données tena
+    voatahiry ihany. Noho izany dia mitovy lenta amin’ny Dashboard Tanora izy,
+    fa ny filtre ampiasaina dia : <strong>taona &gt; 35</strong> sy <strong>sexe = Lahy</strong>.
   </p>
 </div>
 
