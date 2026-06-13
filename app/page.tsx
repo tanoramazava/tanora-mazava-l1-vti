@@ -788,6 +788,58 @@ return (
 </div>
 
 <hr />
+      <h2>0H. Recommandations automatiques 140 andro — FO-MIRAY</h2>
+
+<div style={styles.miniBox}>
+  <h3>Plan d’action automatique</h3>
+
+  <p>
+    <strong>Fanamafisana ara-panahy :</strong>{" "}
+    Raha misy sokajy manana score ara-panahy ambany, dia atao laharam-pahamehana
+    ny vavaka, fanofanana ara-panahy ary fanaka dimy.
+  </p>
+
+  <p>
+    <strong>Fanamafisana VTI :</strong>{" "}
+    Raha ambany ny score VTI, dia hamafisina ny fandraisana andraikitra,
+    fivoriana, asa iombonana ary vaomiera.
+  </p>
+
+  <p>
+    <strong>Fanohanana Taniketsa :</strong>{" "}
+    Raha ambany ny score Taniketsa, dia omena fiofanana, fanaraha-maso teknika,
+    fitaovana ary tohana ara-toekarena.
+  </p>
+
+  <p>
+    <strong>Fanatsarana tombom-barotra :</strong>{" "}
+    Raha ambany ny bénéfice moyen, dia jerena ny dépenses, lalambarotra,
+    prix de vente ary gestion.
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Soso-kevitra stratejika</h3>
+
+  <p>
+    <strong>1.</strong> Tazonina ho moteur ny Tanora VTI.
+  </p>
+
+  <p>
+    <strong>2.</strong> Ampidirina mavitrika ao amin’ny FO-MIRAY ny Vehivavy.
+  </p>
+
+  <p>
+    <strong>3.</strong> Ampiasaina amin’ny leadership sy fanelanelanana ny Loholona.
+  </p>
+
+  <p>
+    <strong>4.</strong> Ampitahaina isaky ny 140 andro ny score sy vokatra
+    ara-toekarena an’ireo sokajy telo.
+  </p>
+</div>
+
+<hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
           <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
