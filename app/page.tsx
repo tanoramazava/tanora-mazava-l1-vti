@@ -628,6 +628,115 @@ return (
       </div>
 
 <hr />
+
+<h2>0D. Dashboard FO-MIRAY Vehivavy</h2>
+
+<div style={styles.miniBox}>
+  <h3>Statistiques générales</h3>
+
+  <p>
+    <strong>Isan'ny Vehivavy FO-MIRAY :</strong>{" "}
+    {nbVehivavyFOMIRAY}
+  </p>
+
+  <p>
+    <strong>Anjara asa lehibe :</strong>{" "}
+    Ankohonana, fanabeazana ankizy, fiarovana ny tanora,
+    fandraharahana ary fampandrosoana ny tokantrano.
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Fandraisana anjara ara-panahy</h3>
+
+  <p>
+    <strong>Score ara-panahy moyen :</strong>{" "}
+    {avgByIds(
+      scoresDash,
+      idsVehivavyFOMIRAY,
+      "score_arapanahy"
+    )} / 52
+  </p>
+
+  <p>
+    Manampy hahitana ny haavon'ny fahamatorana
+    ara-panahy eo anivon'ny renim-pianakaviana.
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Fandraisana anjara ao amin'ny VTI</h3>
+
+  <p>
+    <strong>Score VTI moyen :</strong>{" "}
+    {avgByIds(
+      scoresDash,
+      idsVehivavyFOMIRAY,
+      "score_vti"
+    )} / 29
+  </p>
+
+  <p>
+    Mampiseho ny fandraisan'ny vehivavy anjara
+    amin'ny vaomiera sy ny fiainam-pikambanana.
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Taniketsa sy Fandraharahana</h3>
+
+  <p>
+    <strong>Score Taniketsa moyen :</strong>{" "}
+    {avgByIds(
+      scoresDash,
+      idsVehivavyFOMIRAY,
+      "score_taniketsa"
+    )}
+  </p>
+
+  <p>
+    <strong>CA moyen 3 ans :</strong>{" "}
+    {moneyAvgByIds(
+      eco,
+      idsVehivavyFOMIRAY,
+      "ca_total"
+    )}
+  </p>
+
+  <p>
+    <strong>Bénéfice moyen 3 ans :</strong>{" "}
+    {moneyAvgByIds(
+      eco,
+      idsVehivavyFOMIRAY,
+      "benefice_total"
+    )}
+  </p>
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Synthèse automatique — Vehivavy FO-MIRAY</h3>
+
+  <p>
+    Ny Vehivavy FO-MIRAY dia andry lehibe
+    amin'ny:
+  </p>
+
+  <ul>
+    <li>Fanabeazana ny ankizy</li>
+    <li>Fitoniana ara-pianakaviana</li>
+    <li>Fiarovana ny tanora</li>
+    <li>Fandraharahana sy fitantanana tokantrano</li>
+    <li>Fampandrosoana ny fiaraha-monina</li>
+  </ul>
+
+  <p>
+    Ny Dashboard dia ahafahana mandrefy ny
+    tanjaky ny vehivavy amin'ireo sehatra ireo
+    sy manara-maso ny fivoarany isan-taona.
+  </p>
+</div>
+
+<hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
           <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
