@@ -840,10 +840,12 @@ return (
 </div>
 
 <hr />
-      <h2>0I. Listes chronologiques — ID Tanora, FO-MIRAY et VTI</h2>
+    <h2>0I. Listes chronologiques — ID Tanora, Vehivavy, Loholona ary VTI</h2>
 
 <div style={styles.miniBox}>
   <h3>Liste chronologique — ID Tanora VTI</h3>
+
+  {tanoraVTI.length === 0 && <p>Aucun ID Tanora enregistré.</p>}
 
   {tanoraVTI
     .slice()
@@ -858,6 +860,8 @@ return (
 <div style={styles.miniBox}>
   <h3>Liste chronologique — Vehivavy FO-MIRAY</h3>
 
+  {vehivavyFOMIRAY.length === 0 && <p>Aucune Vehivavy FO-MIRAY enregistrée.</p>}
+
   {vehivavyFOMIRAY
     .slice()
     .sort((a, b) => Number(a.id || 0) - Number(b.id || 0))
@@ -871,6 +875,8 @@ return (
 <div style={styles.miniBox}>
   <h3>Liste chronologique — Loholona FO-MIRAY</h3>
 
+  {loholonaFOMIRAY.length === 0 && <p>Aucun Loholona FO-MIRAY enregistré.</p>}
+
   {loholonaFOMIRAY
     .slice()
     .sort((a, b) => Number(a.id || 0) - Number(b.id || 0))
@@ -883,6 +889,8 @@ return (
 
 <div style={styles.miniBox}>
   <h3>Liste chronologique — VTI</h3>
+
+  {vti.length === 0 && <p>Aucun VTI enregistré.</p>}
 
   {vti
     .slice()
