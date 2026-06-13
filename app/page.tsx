@@ -840,6 +840,61 @@ return (
 </div>
 
 <hr />
+      <h2>0I. Listes chronologiques — ID Tanora, FO-MIRAY et VTI</h2>
+
+<div style={styles.miniBox}>
+  <h3>Liste chronologique — ID Tanora VTI</h3>
+
+  {tanoraVTI
+    .slice()
+    .sort((a, b) => Number(a.id || 0) - Number(b.id || 0))
+    .map((t: any) => (
+      <p key={`liste-tanora-${t.id}`}>
+        <strong>ID {t.id} :</strong> {t.anarana || "—"} — {t.taona || "—"} ans — {t.sexe || "—"} — VTI : {t.nom_vti || t.vti_id || "—"}
+      </p>
+    ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Liste chronologique — Vehivavy FO-MIRAY</h3>
+
+  {vehivavyFOMIRAY
+    .slice()
+    .sort((a, b) => Number(a.id || 0) - Number(b.id || 0))
+    .map((t: any) => (
+      <p key={`liste-vehivavy-${t.id}`}>
+        <strong>ID {t.id} :</strong> {t.anarana || "—"} — {t.taona || "—"} ans — {t.sexe || "—"} — VTI : {t.nom_vti || t.vti_id || "—"}
+      </p>
+    ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Liste chronologique — Loholona FO-MIRAY</h3>
+
+  {loholonaFOMIRAY
+    .slice()
+    .sort((a, b) => Number(a.id || 0) - Number(b.id || 0))
+    .map((t: any) => (
+      <p key={`liste-loholona-${t.id}`}>
+        <strong>ID {t.id} :</strong> {t.anarana || "—"} — {t.taona || "—"} ans — {t.sexe || "—"} — VTI : {t.nom_vti || t.vti_id || "—"}
+      </p>
+    ))}
+</div>
+
+<div style={styles.miniBox}>
+  <h3>Liste chronologique — VTI</h3>
+
+  {vti
+    .slice()
+    .sort((a, b) => Number(a.id || 0) - Number(b.id || 0))
+    .map((v: any) => (
+      <p key={`liste-vti-${v.id}`}>
+        <strong>ID VTI {v.id} :</strong> {v.nom_vti || "—"} — {v.faritra || "—"} — {v.distrika || "—"} — {v.kaomina || "—"} — {v.fokontany || "—"}
+      </p>
+    ))}
+</div>
+
+<hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
           <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
