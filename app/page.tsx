@@ -733,6 +733,61 @@ return (
 </div>
 
 <hr />
+      <h2>0G. Synthèse décisionnelle globale FO-MIRAY</h2>
+
+<div style={styles.miniBox}>
+  <h3>Lecture globale automatique</h3>
+
+  <p>
+    <strong>Groupe le plus représenté :</strong>{" "}
+    {nbTanoraVTI >= nbVehivavyFOMIRAY && nbTanoraVTI >= nbLoholonaFOMIRAY
+      ? "Tanora VTI"
+      : nbVehivavyFOMIRAY >= nbTanoraVTI && nbVehivavyFOMIRAY >= nbLoholonaFOMIRAY
+      ? "Vehivavy FO-MIRAY"
+      : "Loholona FO-MIRAY"}
+  </p>
+
+  <p>
+    <strong>Meilleur score ara-panahy moyen :</strong>{" "}
+    {avgByIds(scoresDash, idsTanoraVTI, "score_arapanahy") >= avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_arapanahy") &&
+    avgByIds(scoresDash, idsTanoraVTI, "score_arapanahy") >= avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_arapanahy")
+      ? "Tanora VTI"
+      : avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_arapanahy") >= avgByIds(scoresDash, idsTanoraVTI, "score_arapanahy") &&
+        avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_arapanahy") >= avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_arapanahy")
+      ? "Vehivavy FO-MIRAY"
+      : "Loholona FO-MIRAY"}
+  </p>
+
+  <p>
+    <strong>Meilleur score VTI moyen :</strong>{" "}
+    {avgByIds(scoresDash, idsTanoraVTI, "score_vti") >= avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_vti") &&
+    avgByIds(scoresDash, idsTanoraVTI, "score_vti") >= avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_vti")
+      ? "Tanora VTI"
+      : avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_vti") >= avgByIds(scoresDash, idsTanoraVTI, "score_vti") &&
+        avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_vti") >= avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_vti")
+      ? "Vehivavy FO-MIRAY"
+      : "Loholona FO-MIRAY"}
+  </p>
+
+  <p>
+    <strong>Meilleur score Taniketsa moyen :</strong>{" "}
+    {avgByIds(scoresDash, idsTanoraVTI, "score_taniketsa") >= avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_taniketsa") &&
+    avgByIds(scoresDash, idsTanoraVTI, "score_taniketsa") >= avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_taniketsa")
+      ? "Tanora VTI"
+      : avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_taniketsa") >= avgByIds(scoresDash, idsTanoraVTI, "score_taniketsa") &&
+        avgByIds(scoresDash, idsVehivavyFOMIRAY, "score_taniketsa") >= avgByIds(scoresDash, idsLoholonaFOMIRAY, "score_taniketsa")
+      ? "Vehivavy FO-MIRAY"
+      : "Loholona FO-MIRAY"}
+  </p>
+
+  <p>
+    <strong>Fehin-kevitra :</strong> Ity synthèse ity dia manampy ny VTI sy
+    FO-MIRAY hamantatra avy hatrany izay sokajy matanjaka indrindra sy izay
+    mila tohana bebe kokoa.
+  </p>
+</div>
+
+<hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
           <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
