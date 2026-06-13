@@ -686,6 +686,53 @@ return (
 </div>
 
 <hr />
+      <h2>0F. Comparaison Taniketsa par filière — Tanora / Vehivavy / Loholona</h2>
+
+<div style={styles.miniBox}>
+  <h3>Performance économique par filière</h3>
+
+  {filieres.map((f) => {
+    const rows = getFiliereRows(f);
+
+    const avgBen = (ids: number[]) => {
+      const filtered = rows.filter((r) => ids.includes(Number(r.tanora_id)));
+      if (filtered.length === 0) return money(0);
+      return money(
+        Math.round(
+          filtered.reduce((s, r) => s + Number(r.ben_total || 0), 0) /
+            filtered.length
+        )
+      );
+    };
+
+    const avgCA = (ids: number[]) => {
+      const filtered = rows.filter((r) => ids.includes(Number(r.tanora_id)));
+      if (filtered.length === 0) return money(0);
+      return money(
+        Math.round(
+          filtered.reduce((s, r) => s + Number(r.ca_total || 0), 0) /
+            filtered.length
+        )
+      );
+    };
+
+    return (
+      <div key={`compare-${f.type}`} style={styles.miniBox}>
+        <h4>{f.name}</h4>
+
+        <p><strong>CA moyen Tanora VTI :</strong> {avgCA(idsTanoraVTI)}</p>
+        <p><strong>CA moyen Vehivavy FO-MIRAY :</strong> {avgCA(idsVehivavyFOMIRAY)}</p>
+        <p><strong>CA moyen Loholona FO-MIRAY :</strong> {avgCA(idsLoholonaFOMIRAY)}</p>
+
+        <p><strong>Bénéfice moyen Tanora VTI :</strong> {avgBen(idsTanoraVTI)}</p>
+        <p><strong>Bénéfice moyen Vehivavy FO-MIRAY :</strong> {avgBen(idsVehivavyFOMIRAY)}</p>
+        <p><strong>Bénéfice moyen Loholona FO-MIRAY :</strong> {avgBen(idsLoholonaFOMIRAY)}</p>
+      </div>
+    );
+  })}
+</div>
+
+<hr />
         <h2>1. Dashboard Général</h2>
         <div style={styles.scoreBox}>
           <p><strong>Tanora voasoratra :</strong> {tanora.length}</p>
