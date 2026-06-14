@@ -3702,31 +3702,76 @@ function ModifierCompleterVti({ onBack }: any) {
     </>
   );
 
-  const Area = ({ label, value, onChange }: any) => {
-  const ouvrirEditeur = () => {
-    const texteActuel = String(value || "");
-    const nouveauTexte = window.prompt(label, texteActuel);
+ const Area = ({ label, value, onChange }: any) => {
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState("");
 
-    if (nouveauTexte !== null) {
-      onChange(nouveauTexte);
-    }
+  const startEdit = () => {
+    setDraft(String(value || ""));
+    setOpen(true);
+  };
+
+  const saveEdit = () => {
+    onChange(draft);
+    setOpen(false);
   };
 
   return (
     <div style={styles.miniBox}>
       <label style={styles.label}>{label}</label>
 
-      <p style={{ whiteSpace: "pre-wrap" }}>
-        {value || "—"}
-      </p>
+      {!open && (
+        <>
+          <p>
+            <strong>Statut :</strong>{" "}
+            {value ? "Texte déjà enregistré" : "Aucun texte enregistré"}
+          </p>
 
-      <button
-        type="button"
-        style={styles.secondaryButton}
-        onClick={ouvrirEditeur}
-      >
-        Modifier ce texte
-      </button>
+          <button
+            type="button"
+            style={styles.secondaryButton}
+            onClick={startEdit}
+          >
+            Ouvrir / Modifier ce champ
+          </button>
+        </>
+      )}
+
+      {open && (
+        <>
+          <textarea
+            style={{
+              ...styles.textarea,
+              minHeight: "260px",
+              fontSize: "16px",
+              lineHeight: "1.5",
+            }}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
+          />
+
+          <div style={styles.actions}>
+            <button
+              type="button"
+              style={styles.button}
+              onClick={saveEdit}
+            >
+              Valider ce champ
+            </button>
+
+            <button
+              type="button"
+              style={styles.secondaryButton}
+              onClick={() => setOpen(false)}
+            >
+              Annuler
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
