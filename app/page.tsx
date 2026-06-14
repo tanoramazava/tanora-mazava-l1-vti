@@ -3703,15 +3703,24 @@ function ModifierCompleterVti({ onBack }: any) {
   );
 
   const Area = ({ label, value, onChange }: any) => (
-    <>
-      <label style={styles.label}>{label}</label>
-      <textarea
-        style={styles.textarea}
-        defaultValue={value || ""}
-        onBlur={(e) => onChange(e.currentTarget.value)}
-      />
-    </>
-  );
+  <>
+    <label style={styles.label}>{label}</label>
+
+    <textarea
+      style={{
+        ...styles.textarea,
+        minHeight: "180px",
+        fontSize: "16px",
+        lineHeight: "1.5",
+      }}
+      defaultValue={value || ""}
+      spellCheck={false}
+      autoCorrect="off"
+      autoCapitalize="off"
+      onBlur={(e) => onChange(e.currentTarget.value)}
+    />
+  </>
+);
 
   if (vti && mode === "identite") {
     return (
