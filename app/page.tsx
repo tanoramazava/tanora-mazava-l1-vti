@@ -3702,26 +3702,34 @@ function ModifierCompleterVti({ onBack }: any) {
     </>
   );
 
-  const Area = ({ label, value, onChange }: any) => (
-  <>
-    <label style={styles.label}>{label}</label>
+  const Area = ({ label, value, onChange }: any) => {
+  const ouvrirEditeur = () => {
+    const texteActuel = String(value || "");
+    const nouveauTexte = window.prompt(label, texteActuel);
 
-    <textarea
-      style={{
-        ...styles.textarea,
-        minHeight: "180px",
-        fontSize: "16px",
-        lineHeight: "1.5",
-      }}
-      defaultValue={value || ""}
-      spellCheck={false}
-      autoCorrect="off"
-      autoCapitalize="off"
-      onBlur={(e) => onChange(e.currentTarget.value)}
-    />
-  </>
-);
+    if (nouveauTexte !== null) {
+      onChange(nouveauTexte);
+    }
+  };
 
+  return (
+    <div style={styles.miniBox}>
+      <label style={styles.label}>{label}</label>
+
+      <p style={{ whiteSpace: "pre-wrap" }}>
+        {value || "—"}
+      </p>
+
+      <button
+        type="button"
+        style={styles.secondaryButton}
+        onClick={ouvrirEditeur}
+      >
+        Modifier ce texte
+      </button>
+    </div>
+  );
+};
   if (vti && mode === "identite") {
     return (
       <main style={styles.main}>
