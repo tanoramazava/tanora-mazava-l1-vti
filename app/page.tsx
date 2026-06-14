@@ -3695,7 +3695,9 @@ function ModifierCompleterVti({ onBack }: any) {
         style={styles.input}
         type={type}
         value={value || ""}
-        onChange={(e) => onChange(type === "number" ? Number(e.target.value || 0) : e.target.value)}
+        onChange={(e) =>
+          onChange(type === "number" ? Number(e.target.value || 0) : e.target.value)
+        }
       />
     </>
   );
@@ -3705,8 +3707,8 @@ function ModifierCompleterVti({ onBack }: any) {
       <label style={styles.label}>{label}</label>
       <textarea
         style={styles.textarea}
-        value={value || ""}
-        onChange={(e) => onChange(e.target.value)}
+        defaultValue={value || ""}
+        onBlur={(e) => onChange(e.currentTarget.value)}
       />
     </>
   );
